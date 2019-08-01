@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Weather Comparator</string>
+    <string name="preferences">Переваги</string>
+    <string name="localization">ЛОКАЛІЗАЦІЯ</string>
+    <string name="units">ОДИНИЦІ</string>
+    <string name="use_celsius">Використовувати за Цельсієм</string>
+    <string name="use_gps">Використовувати Gps</string>
+    <string name="power_consumption">Споживання енергії</string>
+    <string name="refresh_time">Час оновлення</string>
+    <string name="pref_language">Мова</string>
+    <string name="location">ЛОКАЦІЯ</string>
+    <string name="other_apps">Інші застосунки</string>
+    <string name="rate_and_review">Оцінка і відгук</string>
+    <string name="error">Помилка</string>
+    <string name="permission">Програма вимагає дозволу на місцезнаходження!</string>
+    <string name="finish">Завершити</string>
+
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="power_criteria">
+        <item>НИЗЬКЕ</item>
+        <item>СЕРЕДНЄ</item>
+        <item>ВИСОКЕ</item>
+    </string-array>
+
+    <string-array name="power_criteria_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="time_criteria">
+        <item>НЕ ОНОВЛЮВАТИ</item>
+        <item>5 хв</item>
+        <item>10 хв</item>
+        <item>15 хв</item>
+        <item>30 хв</item>
+        <item>1 год</item>
+        <item>6 год</item>
+        <item>12 год</item>
+        <item>1 день</item>
+    </string-array>
+
+    <string-array name="time_criteria_values">
+        <item>0</item>
+        <item>300</item>
+        <item>600</item>
+        <item>900</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>21600</item>
+        <item>43200</item>
+        <item>86400</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Англійська</item>
+        <item>Українська</item>
+        <item>Російська</item>
+    </string-array>
+
+    <string-array name="languages_values">
+        <item>en</item>
+        <item>uk</item>
+        <item>ru</item>
+    </string-array>
+</resources>

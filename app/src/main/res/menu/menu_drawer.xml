@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/nav_rate"
+        android:icon="@mipmap/ic_rate"
+        android:title="@string/rate_and_review" />
+
+    <item android:title="@string/other_apps">
+        <menu>
+            <item
+                android:id="@+id/nav_seo"
+                android:icon="@mipmap/ic_seo"
+                android:title="@string/stack_offline" />
+            <item
+                android:id="@+id/nav_ujt"
+                android:icon="@mipmap/ic_ujt"
+                android:title="@string/upwork_java_test" />
+            <item
+                android:id="@+id/nav_b64"
+                android:icon="@mipmap/ic_b64"
+                android:title="@string/base64_file_encoderdecoder" />
+            <item
+                android:id="@+id/nav_afc"
+                android:icon="@mipmap/ic_afc"
+                android:title="@string/aliens_flashlight_compass" />
+        </menu>
+    </item>
+
+</menu>

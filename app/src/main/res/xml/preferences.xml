@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.preference.PreferenceCategory android:title="@string/units">
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/celsius"
+            android:title="@string/use_celsius" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory android:title="@string/location">
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/gps_check"
+            android:title="@string/use_gps" />
+
+
+        <androidx.preference.ListPreference
+            android:defaultValue="1"
+            android:entries="@array/power_criteria"
+            android:entryValues="@array/power_criteria_values"
+            android:key="@string/power"
+            android:title="@string/power_consumption" />
+
+        <androidx.preference.ListPreference
+            android:defaultValue="0"
+            android:entries="@array/time_criteria"
+            android:entryValues="@array/time_criteria_values"
+            android:key="@string/time"
+            android:title="@string/refresh_time" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory android:title="@string/localization">
+        <androidx.preference.ListPreference
+            android:defaultValue="en"
+            android:entries="@array/languages"
+            android:entryValues="@array/languages_values"
+            android:key="@string/language"
+            android:title="@string/pref_language" />
+    </androidx.preference.PreferenceCategory>
+
+
+</androidx.preference.PreferenceScreen>

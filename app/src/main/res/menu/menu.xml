@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+
+    <!--<item-->
+        <!--android:id="@+id/menu_item_location"-->
+        <!--android:title="@string/menu_location_title"-->
+        <!--android:icon="@android:drawable/ic_menu_mylocation"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:visible="false" />-->
+
+    <!--<item-->
+        <!--android:id="@+id/menu_item_share"-->
+        <!--android:title="@string/share"-->
+        <!--android:icon="@android:drawable/ic_menu_share"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:visible="false" />-->
+
+    <item
+        android:id="@+id/menu_item_settings"
+        android:title="@string/preferences"
+        android:icon="@android:drawable/ic_menu_preferences"
+        app:showAsAction="ifRoom"
+        android:visible="true" />
+
+</menu>
