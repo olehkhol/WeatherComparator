@@ -66,4 +66,5 @@ public class BindingAdapters {
                 firstSign, current, secondSign);
         textView.setText(formatted);
     }
+
 }

@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="city"
             type="ua.in.khol.oleh.touristweathercomparer.views.observables.City" />
@@ -78,14 +80,16 @@
                                 android:layout_weight="0.5"
                                 android:gravity="end"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, city.latitude)}" />
+                                android:text="@{String.format(@string/location_format, city.latitude)}"
+                                android:visibility="@{city.name != null ? View.VISIBLE : View.GONE}" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, city.longitude)}" />
+                                android:text="@{String.format(@string/location_format, city.longitude)}"
+                                android:visibility="@{city.name != null ? View.VISIBLE : View.GONE}" />
 
                         </LinearLayout>
                     </LinearLayout>
