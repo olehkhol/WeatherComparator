@@ -5,12 +5,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,41 +19,30 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import ua.in.khol.oleh.touristweathercomparer.BR;
 import ua.in.khol.oleh.touristweathercomparer.MainApplication;
 import ua.in.khol.oleh.touristweathercomparer.R;
-import ua.in.khol.oleh.touristweathercomparer.contracts.MainContract;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
 import ua.in.khol.oleh.touristweathercomparer.helpers.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
-import ua.in.khol.oleh.touristweathercomparer.presenters.MainPresenter;
-import ua.in.khol.oleh.touristweathercomparer.presenters.PresenterFactory;
-import ua.in.khol.oleh.touristweathercomparer.presenters.PresenterLoader;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.City;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
 public class MainView extends AppCompatActivity
         implements
-        MainContract.View,
-        LoaderManager.LoaderCallbacks<MainContract.Presenter>,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = MainView.class.getSimpleName();
     private static final String SETTINGS_FRAGMENT_TAG = "SettingsFragment";
     private static final String SETTINGS_FRAGMENT_NAME = "Settings";
     private static final int LOCATION_PERMISSION_ID = 11;
@@ -65,12 +52,8 @@ public class MainView extends AppCompatActivity
     private RecyclerView mUpperRecycler;
     private UpperAdapter mUpperAdapter;
     private RecyclerAdapter<Title> mLowerAdapter;
-    // UI observables
-    private ViewMainBinding mBinding;
     private City mCity = new City();
-    // MVP variables
-    private static final int LOADER_ID = 0;
-    private MainContract.Presenter mMainPresenter;
+
     @Inject
     Repository mRepository;
 
@@ -81,98 +64,21 @@ public class MainView extends AppCompatActivity
         // Dagger injection
         ((MainApplication) getApplication()).getAppComponent().inject(this);
         // Set content view
-        mBinding = DataBindingUtil.setContentView(this, R.layout.view_main);
-        initUI(mBinding);
+        // UI observables
+        ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
+        initUI(binding);
         // Set UI variables
         setUI();
         // Request permissions
         requestPermissions();
     }
-
-    @Override
-    protected void onStop() {
-        if (mMainPresenter != null)
-            mMainPresenter.detachView();
-
-        super.onStop();
-    }
     // ----------------[LIFECYCLE CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[CONTRACT METHODS]=-=-=-=-=-=-=-=-
-    @Override
-    public void setPresenter(MainContract.Presenter presenter) {
-        mMainPresenter = presenter;
-        if (mHasPermissions)
-            runEntireFunctionality();
-    }
-
-    @Override
-    public void showCityName(String name) {
-        mCity.setName(name);
-    }
-
-    @Override
-    public void showLocation(double latitude, double longitude) {
-        mCity.setLatitude(latitude);
-        mCity.setLongitude(longitude);
-    }
-
-    @Override
-    public void showError(String error) {
-        Snackbar.make(mBinding.getRoot(), error, Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Log.d(TAG, message);
-    }
-
-    @Override
-    public void showTitles(List<Title> titles) {
-        mLowerAdapter.update(titles);
-        mLowerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showProviders(List<Provider> providers) {
-        mUpperAdapter.update(providers);
-        mUpperAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void scrollTo(int position) {
         mUpperRecycler.getLayoutManager().scrollToPosition(position);
     }
-
-    @Override
-    public void updateUI() {
-        overridePendingTransition(0, 0);
-        recreate();
-        overridePendingTransition(0, 0);
-    }
     // ----------------[CONTRACT METHODS]----------------
-
-    // -=-=-=-=-=-=-=-=[LOADERMANAGER CALLBACKS]=-=-=-=-=-=-=-=-
-    @NonNull
-    @Override
-    public Loader<MainContract.Presenter> onCreateLoader(int id, @Nullable Bundle args) {
-        return new PresenterLoader<>(this, getPresenterFactory());
-    }
-
-    private PresenterFactory<MainContract.Presenter> getPresenterFactory() {
-        return () -> new MainPresenter(mRepository);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<MainContract.Presenter> loader,
-                               MainContract.Presenter presenter) {
-        setPresenter(presenter);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<MainContract.Presenter> loader) {
-    }
-    // ----------------[LOADERMANAGER CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
 
@@ -241,7 +147,6 @@ public class MainView extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            mMainPresenter.destroy();
             super.onBackPressed();
         }
     }
@@ -327,26 +232,18 @@ public class MainView extends AppCompatActivity
 
     // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
     private void runEntireFunctionality() {
-        if (mMainPresenter != null)
-            mMainPresenter.attachView(this);
-        else {
-            // Create or get saved presenter
-            loadPresenter();
-        }
-    }
-
-    private void loadPresenter() {
-        LoaderManager loaderManager = LoaderManager.getInstance(this);
-        Loader<MainContract.Presenter> loader = loaderManager.getLoader(LOADER_ID);
-        if (loader == null) {
-            loaderManager.initLoader(LOADER_ID, null, this);
-            loader = loaderManager.getLoader(LOADER_ID);
-            if (loader != null && !loader.isReset()) {
-                loaderManager.restartLoader(LOADER_ID, null, this);
-            }
-        } else {
-            setPresenter(((PresenterLoader<MainContract.Presenter>) loader).getPresenter());
-        }
+        // MVVM variables
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.setRepository(mRepository);
+        viewModel.getCityName().observe(this, name -> mCity.setName(name));
+        viewModel.getCityLocation().observe(this, cityLocation -> {
+            mCity.setLatitude(cityLocation.getLatitude());
+            mCity.setLongitude(cityLocation.getLongitude());
+        });
+        viewModel.getTitlesObservable().observe(this,
+                titles -> mLowerAdapter.update(titles));
+        viewModel.getProvidersObservable().observe(this,
+                providers -> mUpperAdapter.update(providers));
     }
 
     // ----------------[REGULAR METHODS]----------------
@@ -370,8 +267,13 @@ public class MainView extends AppCompatActivity
         lowerRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         mLowerAdapter = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
-        mLowerAdapter.setOnItemClickListener((position, item)
-                -> mMainPresenter.onProviderClicked(position));
+        mLowerAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener<Title>() {
+            @Override
+            public void onItemClick(int position, Title item) {
+                // TODO
+                // mMainPresenter.onProviderClicked(position);
+            }
+        });
         lowerRecycler.setAdapter(mLowerAdapter);
     }
 

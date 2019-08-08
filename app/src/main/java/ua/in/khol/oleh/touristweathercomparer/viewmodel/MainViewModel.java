@@ -1,11 +1,13 @@
-package ua.in.khol.oleh.touristweathercomparer.presenters;
+package ua.in.khol.oleh.touristweathercomparer.viewmodel;
+
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import ua.in.khol.oleh.touristweathercomparer.contracts.MainContract;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.model.location.data.CityLocation;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
@@ -14,51 +16,27 @@ import ua.in.khol.oleh.touristweathercomparer.views.observables.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
-public class MainPresenter extends AbstractPresenter
-        implements MainContract.Presenter, BasePresenter<MainContract.View> {
-
-    private MainContract.View mView;
-    private String mCityName;
-    private CityLocation mCityLocation;
+public class MainViewModel extends ViewModel {
+    private MutableLiveData<List<Title>> mTitlesObservable = new MutableLiveData<>();
+    private MutableLiveData<List<Provider>> mProvidersObservable = new MutableLiveData<>();
+    private MutableLiveData<String> mCityName = new MutableLiveData<>();
+    private MutableLiveData<CityLocation> mCityLocation = new MutableLiveData<>();
+    private boolean mRefreshed;
     private Disposable mLocationDisposable;
     private Disposable mCityNameDisposable;
     private Disposable mProvidersDataDisposable;
-    private List<Title> mTitles;
-    private List<Provider> mProviders;
-    private boolean mRefreshed;
     private Disposable mRefreshDisposable;
 
-    public MainPresenter(Repository repository) {
-        super(repository);
-        mTitles = new ArrayList<>();
-        mProviders = new ArrayList<>();
+    private Repository mRepository;
+    private List<Title> mTitles = new ArrayList<>();
+    private List<Provider> mProviders = new ArrayList<>();
+
+    public MainViewModel() {
     }
 
-    @Override
-    public void attachView(MainContract.View view) {
-        mView = view;
-
-        if (mRefreshed) {
-            mView.showLocation(mCityLocation.getLatitude(), mCityLocation.getLongitude());
-            mView.showCityName(mCityName);
-            mView.showProviders(mProviders);
-            mView.showTitles(mTitles);
-        } else {
-            processData();
-        }
-
-        mRefreshDisposable = mRepository.getRefreshObservable()
-                .subscribe(update -> {
-                    if (update)
-                        mView.updateUI();
-                });
-    }
-
-
-    @Override
-    public void detachView() {
-        mRefreshDisposable.dispose();
-        mView = null;
+    public void setRepository(Repository repository) {
+        mRepository = repository;
+        processData();
     }
 
     private void processData() {
@@ -76,21 +54,16 @@ public class MainPresenter extends AbstractPresenter
 
                     @Override
                     public void onNext(CityLocation location) {
-                        mCityLocation = location;
+                        mCityLocation.setValue(location);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (mView != null)
-                            mView.showError("Location error!");
                     }
 
                     @Override
                     public void onComplete() {
                         mLocationDisposable.dispose();
-                        if (mView != null)
-                            mView.showLocation(mCityLocation.getLatitude(),
-                                    mCityLocation.getLongitude());
                         subscribeCityName();
                         subscribeProvidersData();
                     }
@@ -98,7 +71,8 @@ public class MainPresenter extends AbstractPresenter
     }
 
     private void subscribeCityName() {
-        mRepository.getCityName(mCityLocation.getLatitude(), mCityLocation.getLongitude())
+        mRepository.getCityName(mCityLocation.getValue().getLatitude(),
+                mCityLocation.getValue().getLongitude())
                 .subscribe(new Observer<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -107,27 +81,24 @@ public class MainPresenter extends AbstractPresenter
 
                     @Override
                     public void onNext(String name) {
-                        mCityName = name;
+                        mCityName.setValue(name);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (mView != null)
-                            mView.showError("Network error!");
                     }
 
                     @Override
                     public void onComplete() {
                         mCityNameDisposable.dispose();
-                        if (mView != null)
-                            mView.showCityName(mCityName);
                     }
                 });
     }
 
     private void subscribeProvidersData() {
 
-        mRepository.getProvidersData(mCityLocation.getLatitude(), mCityLocation.getLongitude())
+        mRepository.getProvidersData(mCityLocation.getValue().getLatitude(),
+                mCityLocation.getValue().getLongitude())
                 .subscribe(new Observer<ProviderData>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -148,16 +119,14 @@ public class MainPresenter extends AbstractPresenter
 
                     @Override
                     public void onError(Throwable e) {
-                        if (mView != null)
-                            mView.showError("Weather error!");
                     }
 
                     @Override
                     public void onComplete() {
                         mProvidersDataDisposable.dispose();
                         mRefreshed = true;
-                        mView.showProviders(mProviders);
-                        mView.showTitles(mTitles);
+                        mTitlesObservable.setValue(mTitles);
+                        mProvidersObservable.setValue(mProviders);
                     }
                 });
     }
@@ -181,22 +150,19 @@ public class MainPresenter extends AbstractPresenter
         return forecastList;
     }
 
-    @Override
-    public void destroy() {
-        if (mProvidersDataDisposable != null)
-            mProvidersDataDisposable.dispose();
-        if (mCityNameDisposable != null)
-            mCityNameDisposable.dispose();
-        if (mLocationDisposable != null)
-            mLocationDisposable.dispose();
-        if (mRefreshDisposable != null)
-            mRefreshDisposable.dispose();
+    public MutableLiveData<String> getCityName() {
+        return mCityName;
     }
 
-    @Override
-    public void onProviderClicked(int position) {
-        if (mView != null)
-            mView.scrollTo(position);
+    public MutableLiveData<CityLocation> getCityLocation() {
+        return mCityLocation;
     }
 
+    public MutableLiveData<List<Title>> getTitlesObservable() {
+        return mTitlesObservable;
+    }
+
+    public MutableLiveData<List<Provider>> getProvidersObservable() {
+        return mProvidersObservable;
+    }
 }

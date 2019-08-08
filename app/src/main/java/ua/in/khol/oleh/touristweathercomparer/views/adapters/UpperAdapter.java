@@ -57,6 +57,7 @@ public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder>
 
     public void update(List<Provider> providers) {
         mProviders = providers;
+        notifyDataSetChanged();
     }
 
     // UPPER HOLDER

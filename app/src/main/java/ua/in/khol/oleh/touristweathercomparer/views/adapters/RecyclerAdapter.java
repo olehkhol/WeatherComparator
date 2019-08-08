@@ -59,6 +59,7 @@ public class RecyclerAdapter<T>
 
     public void update(List<T> items) {
         mItems = items;
+        notifyDataSetChanged();
     }
 
     // RECYCLER BINDING HOLDER

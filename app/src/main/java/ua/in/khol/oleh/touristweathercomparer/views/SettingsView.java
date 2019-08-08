@@ -3,7 +3,6 @@ package ua.in.khol.oleh.touristweathercomparer.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -23,8 +21,6 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +28,8 @@ import javax.inject.Inject;
 
 import ua.in.khol.oleh.touristweathercomparer.MainApplication;
 import ua.in.khol.oleh.touristweathercomparer.R;
-import ua.in.khol.oleh.touristweathercomparer.contracts.SettingsContract;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
-import ua.in.khol.oleh.touristweathercomparer.presenters.PresenterFactory;
-import ua.in.khol.oleh.touristweathercomparer.presenters.PresenterLoader;
-import ua.in.khol.oleh.touristweathercomparer.presenters.SettingsPresenter;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
 
 import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.CELSIUS;
 import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.GPS_CHECK;
@@ -47,17 +40,14 @@ import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.TIME;
 public class SettingsView extends PreferenceFragmentCompat
         implements
         View.OnKeyListener,
-        SettingsContract.View,
-        LoaderManager.LoaderCallbacks<SettingsContract.Presenter>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = SettingsView.class.getSimpleName();
     private Context mContext;
     private View mView;
     private boolean mCriticalChanges = false;
-    // MVP variables
-    private static final int LOADER_ID = 33;
-    private SettingsContract.Presenter mSettingsPresenter;
+    private SettingsViewModel mViewModel;
+
     @Inject
     Repository mRepository;
 
@@ -70,7 +60,6 @@ public class SettingsView extends PreferenceFragmentCompat
         ((MainApplication) context.getApplicationContext())
                 .getAppComponent()
                 .inject(this);
-        mRepository.updatePreferences();
     }
 
     @Override
@@ -144,26 +133,9 @@ public class SettingsView extends PreferenceFragmentCompat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        LoaderManager loaderManager = LoaderManager.getInstance(this);
-        Loader<SettingsContract.Presenter> loader = loaderManager.getLoader(LOADER_ID);
-        if (loader == null) {
-            loaderManager.initLoader(LOADER_ID, null, this);
-            loader = loaderManager.getLoader(LOADER_ID);
-            if (loader != null && !loader.isReset()) {
-                loaderManager.restartLoader(LOADER_ID, null, this);
-            }
-        } else {
-            mSettingsPresenter
-                    = ((PresenterLoader<SettingsContract.Presenter>) loader).getPresenter();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (mSettingsPresenter != null)
-            mSettingsPresenter.attachView(this);
+        mViewModel
+                = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        mViewModel.setRepository(mRepository);
     }
 
     @Override
@@ -179,10 +151,9 @@ public class SettingsView extends PreferenceFragmentCompat
 
     @Override
     public void onStop() {
-        if (mSettingsPresenter != null) {
+        if (mViewModel != null) {
             if (mCriticalChanges)
-                mSettingsPresenter.onValuesChanged();
-            mSettingsPresenter.detachView();
+                mViewModel.onValuesChanged();
         }
         super.onStop();
     }
@@ -193,8 +164,6 @@ public class SettingsView extends PreferenceFragmentCompat
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-                mSettingsPresenter.destroy();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().remove(this).commit();
                 fragmentManager.popBackStack();
@@ -206,49 +175,6 @@ public class SettingsView extends PreferenceFragmentCompat
         return false;
     }
     // ----------------[VIEW CALLBACKS]----------------
-
-    // -=-=-=-=-=-=-=-=[CONTRACT METHODS]=-=-=-=-=-=-=-=-
-    @Override
-    public void setPresenter(SettingsContract.Presenter presenter) {
-        mSettingsPresenter = presenter;
-        if (mSettingsPresenter != null) {
-            mSettingsPresenter.attachView(this);
-        }
-    }
-
-    @Override
-    public void showError(String error) {
-        Snackbar.make(mView, error, Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Log.d(TAG, message);
-    }
-    // ----------------[CONTRACT METHODS]----------------
-
-    // -=-=-=-=-=-=-=-=[LOADERMANAGER CALLBACKS]=-=-=-=-=-=-=-=-
-    @NonNull
-    @Override
-    public Loader<SettingsContract.Presenter> onCreateLoader(int id,
-                                                             @Nullable Bundle args) {
-        return new PresenterLoader<>(mContext, getPresenterFactory());
-    }
-
-    private PresenterFactory<SettingsContract.Presenter> getPresenterFactory() {
-        return () -> new SettingsPresenter(mRepository);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<SettingsContract.Presenter> loader,
-                               SettingsContract.Presenter presenter) {
-        setPresenter(presenter);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<SettingsContract.Presenter> loader) {
-    }
-    // ----------------[LOADERMANAGER CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PREFERENCE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
