@@ -1,134 +1,72 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableDouble;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
-import ua.in.khol.oleh.touristweathercomparer.model.location.data.CityLocation;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
-public class MainViewModel extends ViewModel {
-    private MutableLiveData<List<Title>> mTitlesObservable = new MutableLiveData<>();
-    private MutableLiveData<List<Provider>> mProvidersObservable = new MutableLiveData<>();
-    private MutableLiveData<String> mCityName = new MutableLiveData<>();
-    private MutableLiveData<CityLocation> mCityLocation = new MutableLiveData<>();
-    private boolean mRefreshed;
-    private Disposable mLocationDisposable;
-    private Disposable mCityNameDisposable;
-    private Disposable mProvidersDataDisposable;
-    private Disposable mRefreshDisposable;
+public class MainViewModel extends BaseViewModel {
+    private ObservableField<String> mCityName = new ObservableField<>();
+    private ObservableDouble mLatitude = new ObservableDouble();
+    private ObservableDouble mLongitude = new ObservableDouble();
+    private ObservableList<Title> mTitles = new ObservableArrayList<>();
+    private ObservableList<Provider> mProviders = new ObservableArrayList<>();
 
-    private Repository mRepository;
-    private List<Title> mTitles = new ArrayList<>();
-    private List<Provider> mProviders = new ArrayList<>();
-
-    public MainViewModel() {
+    public MainViewModel(Repository repository) {
+        super(repository);
     }
 
-    public void setRepository(Repository repository) {
-        mRepository = repository;
-        processData();
-    }
-
-    private void processData() {
-        mRefreshed = false;
+    public void processData() {
         subscribeLocation();
     }
 
     private void subscribeLocation() {
-        mRepository.getSingleLocation()
-                .subscribe(new Observer<CityLocation>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mLocationDisposable = d;
-                    }
-
-                    @Override
-                    public void onNext(CityLocation location) {
-                        mCityLocation.setValue(location);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mLocationDisposable.dispose();
-                        subscribeCityName();
-                        subscribeProvidersData();
-                    }
-                });
+        setIsRefreshing(true);
+        getCompositeDisposable().add(getRepository()
+                .getSingleLocation()
+                .doOnComplete(() -> {
+                    subscribeCityName();
+                    subscribeProvidersData();
+                })
+                .doOnError(throwable -> setIsRefreshing(false))
+                .subscribe(cityLocation -> {
+                    mLatitude.set(cityLocation.getLatitude());
+                    mLongitude.set(cityLocation.getLongitude());
+                }));
     }
 
     private void subscribeCityName() {
-        mRepository.getCityName(mCityLocation.getValue().getLatitude(),
-                mCityLocation.getValue().getLongitude())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mCityNameDisposable = d;
-                    }
-
-                    @Override
-                    public void onNext(String name) {
-                        mCityName.setValue(name);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mCityNameDisposable.dispose();
-                    }
-                });
+        getCompositeDisposable().add(getRepository()
+                .getCityName(mLatitude.get(), mLongitude.get())
+                .doOnError(throwable -> setIsRefreshing(false))
+                .subscribe(name -> mCityName.set(name)));
     }
 
     private void subscribeProvidersData() {
-
-        mRepository.getProvidersData(mCityLocation.getValue().getLatitude(),
-                mCityLocation.getValue().getLongitude())
-                .subscribe(new Observer<ProviderData>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mProvidersDataDisposable = d;
-                    }
-
-                    @Override
-                    public void onNext(ProviderData providerData) {
-                        WeatherData weatherData = providerData.getWeatherDataList().get(0);
-                        Title title = new Title(providerData.getName(), weatherData.getCurrent(),
-                                weatherData.getTextExtra(), weatherData.getSrcExtra());
-                        mTitles.add(title);
-                        Provider provider = new Provider(providerData.getUrl(),
-                                providerData.getBanner());
-                        provider.setForecasts(providerDataToForecast(providerData));
-                        mProviders.add(provider);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mProvidersDataDisposable.dispose();
-                        mRefreshed = true;
-                        mTitlesObservable.setValue(mTitles);
-                        mProvidersObservable.setValue(mProviders);
-                    }
-                });
+        getCompositeDisposable().add(getRepository()
+                .getProvidersData(mLatitude.get(), mLongitude.get())
+                .doOnComplete(() -> setIsRefreshing(false))
+                .doOnError(throwable -> setIsRefreshing(false))
+                .subscribe(providerData -> {
+                    WeatherData weatherData = providerData.getWeatherDataList().get(0);
+                    Title title = new Title(providerData.getName(), weatherData.getCurrent(),
+                            weatherData.getTextExtra(), weatherData.getSrcExtra());
+                    mTitles.add(title);
+                    Provider provider = new Provider(providerData.getUrl(),
+                            providerData.getBanner());
+                    provider.setForecasts(providerDataToForecast(providerData));
+                    mProviders.add(provider);
+                }));
     }
 
     private List<Forecast> providerDataToForecast(ProviderData providerData) {
@@ -150,19 +88,24 @@ public class MainViewModel extends ViewModel {
         return forecastList;
     }
 
-    public MutableLiveData<String> getCityName() {
+
+    public ObservableField<String> getCityName() {
         return mCityName;
     }
 
-    public MutableLiveData<CityLocation> getCityLocation() {
-        return mCityLocation;
+    public ObservableDouble getLatitude() {
+        return mLatitude;
     }
 
-    public MutableLiveData<List<Title>> getTitlesObservable() {
-        return mTitlesObservable;
+    public ObservableDouble getLongitude() {
+        return mLongitude;
     }
 
-    public MutableLiveData<List<Provider>> getProvidersObservable() {
-        return mProvidersObservable;
+    public ObservableList<Title> getTitles() {
+        return mTitles;
+    }
+
+    public ObservableList<Provider> getProviders() {
+        return mProviders;
     }
 }

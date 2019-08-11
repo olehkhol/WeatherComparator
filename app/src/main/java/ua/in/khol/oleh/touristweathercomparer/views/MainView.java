@@ -34,9 +34,9 @@ import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
 import ua.in.khol.oleh.touristweathercomparer.helpers.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
 public class MainView extends AppCompatActivity
@@ -49,10 +49,7 @@ public class MainView extends AppCompatActivity
 
     private boolean mHasPermissions = false;
     // UI variables
-    private RecyclerView mUpperRecycler;
-    private UpperAdapter mUpperAdapter;
-    private RecyclerAdapter<Title> mLowerAdapter;
-    private City mCity = new City();
+    private MainViewModel mViewModel;
 
     @Inject
     Repository mRepository;
@@ -63,22 +60,21 @@ public class MainView extends AppCompatActivity
         super.onCreate(savedInstanceState);
         // Dagger injection
         ((MainApplication) getApplication()).getAppComponent().inject(this);
-        // Set content view
-        // UI observables
-        ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
-        initUI(binding);
         // Set UI variables
+        mViewModel = ViewModelProviders
+                .of(this, new ViewModelProviderFactory(mRepository))
+                .get(MainViewModel.class);
+        ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
+        binding.setViewModel(mViewModel);
+
+        // TODO
+        initRecyclerViews(binding);
+
         setUI();
         // Request permissions
         requestPermissions();
     }
     // ----------------[LIFECYCLE CALLBACKS]----------------
-
-    // -=-=-=-=-=-=-=-=[CONTRACT METHODS]=-=-=-=-=-=-=-=-
-    public void scrollTo(int position) {
-        mUpperRecycler.getLayoutManager().scrollToPosition(position);
-    }
-    // ----------------[CONTRACT METHODS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
 
@@ -232,25 +228,35 @@ public class MainView extends AppCompatActivity
 
     // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
     private void runEntireFunctionality() {
-        // MVVM variables
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.setRepository(mRepository);
-        viewModel.getCityName().observe(this, name -> mCity.setName(name));
-        viewModel.getCityLocation().observe(this, cityLocation -> {
-            mCity.setLatitude(cityLocation.getLatitude());
-            mCity.setLongitude(cityLocation.getLongitude());
-        });
-        viewModel.getTitlesObservable().observe(this,
-                titles -> mLowerAdapter.update(titles));
-        viewModel.getProvidersObservable().observe(this,
-                providers -> mUpperAdapter.update(providers));
+        mViewModel.processData();
     }
-
     // ----------------[REGULAR METHODS]----------------
 
     // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
-    private void initUI(ViewMainBinding binding) {
-        binding.setCity(mCity);
+    private void setUI() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+    // ----------------[UI]----------------
+
+
+    private RecyclerView mUpperRecycler;
+    private UpperAdapter mUpperAdapter;
+    private RecyclerAdapter<Title> mLowerAdapter;
+
+
+    // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
+    private void initRecyclerViews(ViewMainBinding binding) {
         mUpperRecycler = binding.upperRecycler;
         mUpperRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
@@ -267,30 +273,11 @@ public class MainView extends AppCompatActivity
         lowerRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         mLowerAdapter = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
-        mLowerAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener<Title>() {
-            @Override
-            public void onItemClick(int position, Title item) {
-                // TODO
-                // mMainPresenter.onProviderClicked(position);
-            }
+        mLowerAdapter.setOnItemClickListener((position, item) -> {
+            // TODO
+            // mViewModel.onProviderClicked(position);
         });
         lowerRecycler.setAdapter(mLowerAdapter);
     }
-
-    private void setUI() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-    }
-    // ----------------[UI]----------------
 
 }

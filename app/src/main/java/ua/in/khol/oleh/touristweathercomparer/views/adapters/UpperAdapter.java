@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.in.khol.oleh.touristweathercomparer.BR;
@@ -17,7 +18,7 @@ import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 // UPPER ADAPTER
 public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder> {
 
-    private List<Provider> mProviders;
+    private List<Provider> mProviders = new ArrayList<>();
     private OnBannerClickListener mBannerClickListener;
 
     @NonNull
@@ -55,9 +56,15 @@ public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder>
         mBannerClickListener = bannerClickListener;
     }
 
-    public void update(List<Provider> providers) {
-        mProviders = providers;
+
+    public void addItems(List<Provider> providers) {
+        if (providers != null)
+            mProviders.addAll(providers);
         notifyDataSetChanged();
+    }
+
+    public void clearItems() {
+        mProviders.clear();
     }
 
     // UPPER HOLDER

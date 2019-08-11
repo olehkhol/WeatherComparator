@@ -4,26 +4,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import ua.in.khol.oleh.touristweathercomparer.helpers.Dictionary;
 import ua.in.khol.oleh.touristweathercomparer.helpers.LocaleUnits;
+import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
+import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
-public class BindingAdapters {
+public final class BindingAdapters {
 
-    @BindingAdapter("bind:image")
+    private BindingAdapters() {
+
+    }
+
+    @BindingAdapter("image")
     public static void loadBanner(ImageView imageView, String path) {
         Picasso.get()
                 .load(path)
                 .into(imageView);
     }
 
-    @BindingAdapter("bind:date")
+    @BindingAdapter("date")
     public static void putDate(TextView textView, int date) {
         long time = date * 1000L;
         Date raw = new Date(time);
@@ -33,13 +41,13 @@ public class BindingAdapters {
         textView.setText(format.format(raw));
     }
 
-    @BindingAdapter("bind:translate")
+    @BindingAdapter("translate")
     public static void doTranslate(TextView textView, String text) {
         textView.setText(Dictionary.translate(text,
                 Locale.getDefault().toString()));
     }
 
-    @BindingAdapter({"bind:tempLow", "bind:tempHigh"})
+    @BindingAdapter({"tempLow", "tempHigh"})
     public static void temLowHigh(TextView textView, float tempLow, float tempHigh) {
 
         boolean celsius = LocaleUnits.getInstance().isCelsius();
@@ -54,7 +62,7 @@ public class BindingAdapters {
         textView.setText(formatted);
     }
 
-    @BindingAdapter("bind:current")
+    @BindingAdapter("current")
     public static void tempCurrent(TextView textView, float currentTemp) {
 
         boolean celsius = LocaleUnits.getInstance().isCelsius();
@@ -67,4 +75,21 @@ public class BindingAdapters {
         textView.setText(formatted);
     }
 
+    @BindingAdapter("adapter")
+    public static void titlesAdapter(RecyclerView recyclerView, List<Title> titles) {
+        RecyclerAdapter<Title> adapter = (RecyclerAdapter<Title>) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.clearItems();
+            adapter.addItems(titles);
+        }
+    }
+
+    @BindingAdapter("adapter")
+    public static void providersAdapter(RecyclerView recyclerView, List<Provider> providers) {
+        UpperAdapter adapter = (UpperAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.clearItems();
+            adapter.addItems(providers);
+        }
+    }
 }

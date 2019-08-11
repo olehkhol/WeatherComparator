@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // RECYCLER BINDING ADAPTER
@@ -16,13 +17,14 @@ public class RecyclerAdapter<T>
         extends RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder> {
 
     private int mHolderLayout, mItemsVariableId;
-    private List<T> mItems;
+    private List<T> mItems = new ArrayList<>();
     private OnItemClickListener<T> mItemClickListener;
 
     public RecyclerAdapter(int holderLayout, int itemsVariableId, List<T> items) {
         mHolderLayout = holderLayout;
         mItemsVariableId = itemsVariableId;
-        mItems = items;
+        if (items != null)
+            mItems.addAll(items);
     }
 
     @NonNull
@@ -57,9 +59,14 @@ public class RecyclerAdapter<T>
         mItemClickListener = itemClickListener;
     }
 
-    public void update(List<T> items) {
-        mItems = items;
+    public void addItems(List<T> items) {
+        if (items != null)
+            mItems.addAll(items);
         notifyDataSetChanged();
+    }
+
+    public void clearItems() {
+        mItems.clear();
     }
 
     // RECYCLER BINDING HOLDER

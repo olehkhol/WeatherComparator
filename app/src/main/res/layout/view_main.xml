@@ -2,6 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,8 +10,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="city"
-            type="ua.in.khol.oleh.touristweathercomparer.views.observables.City" />
+            name="viewModel"
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -64,9 +65,10 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@{city.name}"
+                            android:text="@{viewModel.cityName}"
                             android:textAlignment="center"
-                            android:textSize="24sp" />
+                            android:textSize="24sp"
+                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -79,16 +81,16 @@
                                 android:layout_weight="0.5"
                                 android:gravity="end"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, city.latitude)}"
-                                android:visibility="@{city.name != null ? View.VISIBLE : View.GONE}" />
+                                android:text="@{String.format(@string/location_format, viewModel.latitude)}"
+                                android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, city.longitude)}"
-                                android:visibility="@{city.name != null ? View.VISIBLE : View.GONE}" />
+                                android:text="@{String.format(@string/location_format, viewModel.longitude)}"
+                                android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -102,13 +104,17 @@
                             android:id="@+id/upper_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"
+                            bind:adapter="@{viewModel.providers}" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/lower_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom" />
+                            android:layout_gravity="bottom"
+                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"
+                            bind:adapter="@{viewModel.titles}" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -126,5 +132,6 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header_layout"
             app:menu="@menu/menu_drawer" />
+
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
