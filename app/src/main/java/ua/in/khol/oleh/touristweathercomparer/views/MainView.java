@@ -64,10 +64,18 @@ public class MainView extends AppCompatActivity
         mViewModel = ViewModelProviders
                 .of(this, new ViewModelProviderFactory(mRepository))
                 .get(MainViewModel.class);
+        mViewModel.getIsRecreate().observe(this, aBoolean -> {
+            if (aBoolean) {
+                mViewModel.setIsRecreate(false);
+                MainView.this.overridePendingTransition(0, 0);
+                MainView.this.recreate();
+                MainView.this.overridePendingTransition(0, 0);
+            }
+        });
+
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setViewModel(mViewModel);
 
-        // TODO
         initRecyclerViews(binding);
 
         setUI();
@@ -247,37 +255,31 @@ public class MainView extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
-    // ----------------[UI]----------------
 
-
-    private RecyclerView mUpperRecycler;
-    private UpperAdapter mUpperAdapter;
-    private RecyclerAdapter<Title> mLowerAdapter;
-
-
-    // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
     private void initRecyclerViews(ViewMainBinding binding) {
-        mUpperRecycler = binding.upperRecycler;
-        mUpperRecycler.setLayoutManager(new LinearLayoutManager(this,
+        RecyclerView upperRecycler = binding.upperRecycler;
+        upperRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        mUpperAdapter = new UpperAdapter();
-        mUpperAdapter.setOnBannerClickListener(url -> {
+        UpperAdapter upperAdapter = new UpperAdapter();
+        upperAdapter.setOnBannerClickListener(url -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
         });
-        mUpperRecycler.setAdapter(mUpperAdapter);
+        upperRecycler.setAdapter(upperAdapter);
 
         RecyclerView lowerRecycler = binding.lowerRecycler;
         lowerRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        mLowerAdapter = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
-        mLowerAdapter.setOnItemClickListener((position, item) -> {
+        RecyclerAdapter<Title> lowerAdapter
+                = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
+        lowerAdapter.setOnItemClickListener((position, item) -> {
             // TODO
             // mViewModel.onProviderClicked(position);
         });
-        lowerRecycler.setAdapter(mLowerAdapter);
+        lowerRecycler.setAdapter(lowerAdapter);
     }
+    // ----------------[UI]----------------
 
 }

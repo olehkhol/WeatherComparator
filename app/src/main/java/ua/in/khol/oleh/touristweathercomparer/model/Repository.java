@@ -202,13 +202,11 @@ public class Repository implements BaseRepository {
         config.locale = locale;
         mAppContext.getResources()
                 .updateConfiguration(config, mAppContext.getResources().getDisplayMetrics());
-
-
     }
 
     public void update() {
         updatePreferences();
-        mRefreshNeeded.onNext(mCelsius);
+        mRefreshNeeded.onNext(true);
     }
 
     public Observable<Boolean> getRefreshObservable() {

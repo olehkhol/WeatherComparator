@@ -4,6 +4,7 @@ import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableDouble;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +17,24 @@ import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
 public class MainViewModel extends BaseViewModel {
-    private ObservableField<String> mCityName = new ObservableField<>();
-    private ObservableDouble mLatitude = new ObservableDouble();
-    private ObservableDouble mLongitude = new ObservableDouble();
-    private ObservableList<Title> mTitles = new ObservableArrayList<>();
-    private ObservableList<Provider> mProviders = new ObservableArrayList<>();
+    private final ObservableField<String> mCityName = new ObservableField<>();
+    private final ObservableDouble mLatitude = new ObservableDouble();
+    private final ObservableDouble mLongitude = new ObservableDouble();
+    private final ObservableList<Title> mTitles = new ObservableArrayList<>();
+    private final ObservableList<Provider> mProviders = new ObservableArrayList<>();
+    private final MutableLiveData<Boolean> mIsRecreate = new MutableLiveData<>();
 
     public MainViewModel(Repository repository) {
         super(repository);
+        getCompositeDisposable().add(getRepository()
+                .getRefreshObservable()
+                .subscribe(mIsRecreate::setValue));
     }
 
     public void processData() {
-        subscribeLocation();
+        if (!isRefreshed())
+            if (!getIsRefreshing().get())
+                subscribeLocation();
     }
 
     private void subscribeLocation() {
@@ -49,13 +56,16 @@ public class MainViewModel extends BaseViewModel {
         getCompositeDisposable().add(getRepository()
                 .getCityName(mLatitude.get(), mLongitude.get())
                 .doOnError(throwable -> setIsRefreshing(false))
-                .subscribe(name -> mCityName.set(name)));
+                .subscribe(mCityName::set));
     }
 
     private void subscribeProvidersData() {
         getCompositeDisposable().add(getRepository()
                 .getProvidersData(mLatitude.get(), mLongitude.get())
-                .doOnComplete(() -> setIsRefreshing(false))
+                .doOnComplete(() -> {
+                    setIsRefreshing(false);
+                    setRefreshed(true);
+                })
                 .doOnError(throwable -> setIsRefreshing(false))
                 .subscribe(providerData -> {
                     WeatherData weatherData = providerData.getWeatherDataList().get(0);
@@ -107,5 +117,13 @@ public class MainViewModel extends BaseViewModel {
 
     public ObservableList<Provider> getProviders() {
         return mProviders;
+    }
+
+    public MutableLiveData<Boolean> getIsRecreate() {
+        return mIsRecreate;
+    }
+
+    public void setIsRecreate(Boolean isRecreate) {
+        mIsRecreate.setValue(isRecreate);
     }
 }

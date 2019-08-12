@@ -10,6 +10,7 @@ public abstract class BaseViewModel extends ViewModel {
     private Repository mRepository;
     private ObservableBoolean mIsRefreshing = new ObservableBoolean();
     private CompositeDisposable mCompositeDisposable;
+    private boolean isRefreshed;
 
     public BaseViewModel(Repository repository) {
         mRepository = repository;
@@ -36,5 +37,13 @@ public abstract class BaseViewModel extends ViewModel {
 
     public void setIsRefreshing(Boolean isRefreshing) {
         mIsRefreshing.set(isRefreshing);
+    }
+
+    public boolean isRefreshed() {
+        return isRefreshed;
+    }
+
+    public void setRefreshed(boolean refreshed) {
+        isRefreshed = refreshed;
     }
 }

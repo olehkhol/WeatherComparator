@@ -42,9 +42,6 @@ public class SettingsView extends PreferenceFragmentCompat
         View.OnKeyListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = SettingsView.class.getSimpleName();
-    private Context mContext;
-    private View mView;
     private boolean mCriticalChanges = false;
     private SettingsViewModel mViewModel;
 
@@ -55,7 +52,6 @@ public class SettingsView extends PreferenceFragmentCompat
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
         // Dagger injection
         ((MainApplication) context.getApplicationContext())
                 .getAppComponent()
@@ -108,17 +104,17 @@ public class SettingsView extends PreferenceFragmentCompat
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        if (mView != null) {
+        if (view != null) {
             Context context = getContext();
             if (context != null) {
-                mView.setBackgroundColor(ContextCompat
+                view.setBackgroundColor(ContextCompat
                         .getColor(context, R.color.toolbar_background));
             }
         }
 
-        return mView;
+        return view;
     }
 
     @Override
@@ -193,6 +189,7 @@ public class SettingsView extends PreferenceFragmentCompat
     }
     // ----------------[PREFERENCE CALLBACKS]----------------
 
+    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
     private List<Preference> getPreferenceList(Preference preference,
                                                List<Preference> list) {
         if (preference instanceof PreferenceCategory
@@ -211,4 +208,5 @@ public class SettingsView extends PreferenceFragmentCompat
     private void updateListPreference(ListPreference listPreference) {
         listPreference.setSummary(listPreference.getEntry());
     }
+    // ----------------[REGULAR METHODS]----------------
 }
