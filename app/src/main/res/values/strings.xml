@@ -14,11 +14,11 @@
     <string name="base64_file_encoderdecoder" translatable="false">Base64 File EncoderDecoder</string>
     <string name="aliens_flashlight_compass" translatable="false">Aliens Flashlight Compass</string>
 
-    <string name="celsius" translatable="false">celsius</string>
-    <string name="gps_check" translatable="false">gps_check</string>
-    <string name="power" translatable="false">power</string>
-    <string name="time" translatable="false">time</string>
-    <string name="language" translatable="false">language</string>
+    <string name="celsius" translatable="false">PREF_KEY_CELSIUS</string>
+    <string name="gps_check" translatable="false">PREF_KEY_ACCURACY</string>
+    <string name="power" translatable="false">PREF_KEY_POWER</string>
+    <string name="time" translatable="false">PREF_KEY_TIME</string>
+    <string name="language" translatable="false">PREF_KEY_LANGUAGE</string>
 
     <string name="localization">LOCALIZATION</string>
     <string name="location">LOCATION</string>

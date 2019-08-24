@@ -26,65 +26,56 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ua.in.khol.oleh.touristweathercomparer.MainApplication;
+import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
-import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
-
-import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.CELSIUS;
-import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.GPS_CHECK;
-import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.LANGUAGE;
-import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.POWER;
-import static ua.in.khol.oleh.touristweathercomparer.model.Preferences.TIME;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 public class SettingsView extends PreferenceFragmentCompat
-        implements
-        View.OnKeyListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        implements View.OnKeyListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private boolean mCriticalChanges = false;
     private SettingsViewModel mViewModel;
 
     @Inject
-    Repository mRepository;
+    ViewModelProviderFactory mViewModelProviderFactory;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
         // Dagger injection
-        ((MainApplication) context.getApplicationContext())
-                .getAppComponent()
-                .inject(this);
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         SwitchPreferenceCompat celsius
-                = (SwitchPreferenceCompat) findPreference(CELSIUS);
+                = (SwitchPreferenceCompat) findPreference(getString(R.string.celsius));
         celsius.setOnPreferenceChangeListener((preference, newValue) -> {
             mCriticalChanges = true;
             return true;
         });
 
         SwitchPreferenceCompat useGps
-                = (SwitchPreferenceCompat) findPreference(GPS_CHECK);
+                = (SwitchPreferenceCompat) findPreference(getString(R.string.gps_check));
         useGps.setOnPreferenceChangeListener((preference, newValue) -> {
             mCriticalChanges = true;
             return true;
         });
 
         ListPreference powerPref
-                = (ListPreference) findPreference(POWER);
+                = (ListPreference) findPreference(getString(R.string.power));
         powerPref.setOnPreferenceChangeListener((preference, newValue) -> {
             mCriticalChanges = true;
             return true;
         });
 
         ListPreference timePref
-                = (ListPreference) findPreference(TIME);
+                = (ListPreference) findPreference(getString(R.string.time));
         timePref.setOnPreferenceChangeListener((preference, newValue) -> {
             mCriticalChanges = true;
             return true;
@@ -93,7 +84,7 @@ public class SettingsView extends PreferenceFragmentCompat
         timePref.setVisible(false);
 
         ListPreference langPref
-                = (ListPreference) findPreference(LANGUAGE);
+                = (ListPreference) findPreference(getString(R.string.language));
         langPref.setOnPreferenceChangeListener((preference, newValue) -> {
             mCriticalChanges = true;
             return true;
@@ -127,11 +118,12 @@ public class SettingsView extends PreferenceFragmentCompat
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        mViewModel = ViewModelProviders.of(this, mViewModelProviderFactory)
+                .get(SettingsViewModel.class);
+        mViewModel.wakeUp();
+
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel
-                = ViewModelProviders.of(this).get(SettingsViewModel.class);
-        mViewModel.setRepository(mRepository);
     }
 
     @Override

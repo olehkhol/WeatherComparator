@@ -10,10 +10,10 @@ import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.LocationData;
  * Created by Oleh Kholiavchuk.
  */
 
-public interface RxLocationCityService {
+public interface LocationDataService {
 
     @GET("/maps/api/geocode/json")
-    Observable<LocationData> getCityName(@Query("latlng") String latlng,
-                                         @Query("language") String language,
-                                         @Query("key") String key);
+    Observable<LocationData> getLocationData(@Query("latlng") String latlng,
+                                             @Query("language") String language,
+                                             @Query("key") String key);
 }

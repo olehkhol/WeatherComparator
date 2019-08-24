@@ -31,37 +31,33 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(mIsRecreate::setValue));
     }
 
+    @Override
+    public void wakeUp() {
+        getRepository().updateConfiguration();
+    }
+
     public void processData() {
         if (!isRefreshed())
             if (!getIsRefreshing().get())
-                subscribeLocation();
+                subscribeCity();
     }
 
-    private void subscribeLocation() {
+    private void subscribeCity() {
         setIsRefreshing(true);
         getCompositeDisposable().add(getRepository()
-                .getSingleLocation()
-                .doOnComplete(() -> {
-                    subscribeCityName();
-                    subscribeProvidersData();
-                })
+                .getCity()
                 .doOnError(throwable -> setIsRefreshing(false))
-                .subscribe(cityLocation -> {
-                    mLatitude.set(cityLocation.getLatitude());
-                    mLongitude.set(cityLocation.getLongitude());
+                .doOnComplete(this::subscribeProvidersData)
+                .subscribe(city -> {
+                    mCityName.set(city.getName());
+                    mLatitude.set(city.getLatitude());
+                    mLongitude.set(city.getLongitude());
                 }));
-    }
-
-    private void subscribeCityName() {
-        getCompositeDisposable().add(getRepository()
-                .getCityName(mLatitude.get(), mLongitude.get())
-                .doOnError(throwable -> setIsRefreshing(false))
-                .subscribe(mCityName::set));
     }
 
     private void subscribeProvidersData() {
         getCompositeDisposable().add(getRepository()
-                .getProvidersData(mLatitude.get(), mLongitude.get())
+                .getProvidersData()
                 .doOnComplete(() -> {
                     setIsRefreshing(false);
                     setRefreshed(true);

@@ -1,4 +1,4 @@
-package ua.in.khol.oleh.touristweathercomparer.helpers;
+package ua.in.khol.oleh.touristweathercomparer.utils;
 
 /**
  * Created by Oleh Kholiavchuk.
@@ -7,6 +7,7 @@ package ua.in.khol.oleh.touristweathercomparer.helpers;
 public class LocaleUnits {
 
     private boolean mCelsius;
+    private String mLanguage;
     private static LocaleUnits sLocaleUnits;
 
     private LocaleUnits() {
@@ -28,4 +29,19 @@ public class LocaleUnits {
         mCelsius = celsius;
     }
 
+    public String getLanguage() {
+        return mLanguage;
+    }
+
+    public void setLanguage(String language) {
+        mLanguage = language;
+    }
+
+    public static LocaleUnits getLocaleUnits() {
+        return sLocaleUnits;
+    }
+
+    public static void setLocaleUnits(LocaleUnits localeUnits) {
+        sLocaleUnits = localeUnits;
+    }
 }

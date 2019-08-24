@@ -7,8 +7,9 @@ android {
         applicationId "ua.in.khol.oleh.touristweathercomparer"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 15
-        versionName "1.14"
+        versionCode 16
+        versionName "1.15"
+        buildToolsVersion = '29.0.2'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -20,7 +21,6 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -59,16 +59,17 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.1.0'
     annotationProcessor "androidx.room:room-compiler:2.1.0"
 
-    implementation 'com.google.dagger:dagger:2.21'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
-    implementation 'com.google.dagger:dagger-android:2.16'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
+    implementation 'com.google.dagger:dagger:2.24'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.24'
+    implementation 'com.google.dagger:dagger-android:2.24'
+    implementation 'com.google.dagger:dagger-android-support:2.24'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.24'
 
     api 'com.google.guava:guava:28.0-android'
 
     // implementation 'org.greenrobot:eventbus:3.1.1'
 
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.11'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // Leave it with 3.12.3 for Android 4.4 coz OkHttp 3.13 Requires Android 5+
@@ -80,6 +81,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.6'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

@@ -1,21 +1,19 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
-import androidx.lifecycle.ViewModel;
-
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 
-public class SettingsViewModel extends ViewModel {
+public class SettingsViewModel extends BaseViewModel {
 
-    private Repository mRepository;
-
-    public SettingsViewModel() {
+    public SettingsViewModel(Repository repository) {
+        super(repository);
     }
 
-    public void setRepository(Repository repository) {
-        mRepository = repository;
+    @Override
+    public void wakeUp() {
+        getRepository().updateConfiguration();
     }
 
     public void onValuesChanged() {
-        mRepository.update();
+        getRepository().update();
     }
 }

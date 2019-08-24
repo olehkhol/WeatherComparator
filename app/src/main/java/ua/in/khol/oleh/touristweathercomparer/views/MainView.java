@@ -27,12 +27,11 @@ import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
 import ua.in.khol.oleh.touristweathercomparer.BR;
-import ua.in.khol.oleh.touristweathercomparer.MainApplication;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
-import ua.in.khol.oleh.touristweathercomparer.helpers.MarketView;
-import ua.in.khol.oleh.touristweathercomparer.model.Repository;
+import ua.in.khol.oleh.touristweathercomparer.utils.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
@@ -40,8 +39,7 @@ import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
 public class MainView extends AppCompatActivity
-        implements
-        NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String SETTINGS_FRAGMENT_TAG = "SettingsFragment";
     private static final String SETTINGS_FRAGMENT_NAME = "Settings";
@@ -52,18 +50,19 @@ public class MainView extends AppCompatActivity
     private MainViewModel mViewModel;
 
     @Inject
-    Repository mRepository;
+    ViewModelProviderFactory mViewModelProviderFactory;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         // Dagger injection
-        ((MainApplication) getApplication()).getAppComponent().inject(this);
-        // Set UI variables
-        mViewModel = ViewModelProviders
-                .of(this, new ViewModelProviderFactory(mRepository))
+        AndroidInjection.inject(this);
+        // TODO Dagger this peace of code
+        mViewModel = ViewModelProviders.of(this, mViewModelProviderFactory)
                 .get(MainViewModel.class);
+        mViewModel.wakeUp();
+        super.onCreate(savedInstanceState);
+        // Init UI and Binding
         mViewModel.getIsRecreate().observe(this, aBoolean -> {
             if (aBoolean) {
                 mViewModel.setIsRecreate(false);
@@ -72,13 +71,10 @@ public class MainView extends AppCompatActivity
                 MainView.this.overridePendingTransition(0, 0);
             }
         });
-
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setViewModel(mViewModel);
-
-        initRecyclerViews(binding);
-
-        setUI();
+        initBinding(binding);
+        initUI();
         // Request permissions
         requestPermissions();
     }
@@ -241,7 +237,7 @@ public class MainView extends AppCompatActivity
     // ----------------[REGULAR METHODS]----------------
 
     // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
-    private void setUI() {
+    private void initUI() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -256,7 +252,7 @@ public class MainView extends AppCompatActivity
         toggle.syncState();
     }
 
-    private void initRecyclerViews(ViewMainBinding binding) {
+    private void initBinding(ViewMainBinding binding) {
         RecyclerView upperRecycler = binding.upperRecycler;
         upperRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
@@ -274,12 +270,11 @@ public class MainView extends AppCompatActivity
                 LinearLayoutManager.HORIZONTAL, false));
         RecyclerAdapter<Title> lowerAdapter
                 = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
-        lowerAdapter.setOnItemClickListener((position, item) -> {
-            // TODO
-            // mViewModel.onProviderClicked(position);
-        });
+        lowerAdapter.setOnItemClickListener((position, item)
+                -> upperRecycler.getLayoutManager().scrollToPosition(position));
         lowerRecycler.setAdapter(lowerAdapter);
     }
+
     // ----------------[UI]----------------
 
 }

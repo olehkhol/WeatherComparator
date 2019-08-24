@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 
 public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFactory {
-    private Repository mRepository;
+    private final Repository mRepository;
 
     public ViewModelProviderFactory(Repository repository) {
         mRepository = repository;
@@ -19,6 +19,9 @@ public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFacto
         if (modelClass.isAssignableFrom(MainViewModel.class)) {
             //noinspection unchecked
             return (T) new MainViewModel(mRepository);
+        } else if (modelClass.isAssignableFrom(SettingsViewModel.class)) {
+            //noinspection unchecked
+            return (T) new SettingsViewModel(mRepository);
         }
 
         throw new RuntimeException("Wrong ViewModel " + modelClass.getName());

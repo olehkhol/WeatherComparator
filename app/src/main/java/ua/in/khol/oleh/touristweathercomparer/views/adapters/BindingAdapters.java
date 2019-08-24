@@ -1,5 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.views.adapters;
 
+import android.annotation.SuppressLint;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,10 +12,9 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import ua.in.khol.oleh.touristweathercomparer.helpers.Dictionary;
-import ua.in.khol.oleh.touristweathercomparer.helpers.LocaleUnits;
+import ua.in.khol.oleh.touristweathercomparer.utils.Dictionary;
+import ua.in.khol.oleh.touristweathercomparer.utils.LocaleUnits;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
 
@@ -35,8 +35,8 @@ public final class BindingAdapters {
     public static void putDate(TextView textView, int date) {
         long time = date * 1000L;
         Date raw = new Date(time);
-        SimpleDateFormat format
-                = new SimpleDateFormat("EEE dd MMM yyyy", Locale.getDefault());
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format
+                = new SimpleDateFormat("EEE dd MMM yyyy");
 
         textView.setText(format.format(raw));
     }
@@ -44,7 +44,7 @@ public final class BindingAdapters {
     @BindingAdapter("translate")
     public static void doTranslate(TextView textView, String text) {
         textView.setText(Dictionary.translate(text,
-                Locale.getDefault().toString()));
+                LocaleUnits.getInstance().getLanguage()));
     }
 
     @BindingAdapter({"tempLow", "tempHigh"})
@@ -57,8 +57,9 @@ public final class BindingAdapters {
         float low = celsius ? (tempLow - 32) * 5 / 9 : tempLow;
         float high = celsius ? (tempHigh - 32) * 5 / 9 : tempHigh;
 
-        String formatted = String.format(Locale.getDefault(), "%s%.1f..%s%.1f%s",
-                firstSign, low, secondSign, high, thirdSign);
+        @SuppressLint("DefaultLocale")
+        String formatted
+                = String.format("%s%.1f..%s%.1f%s", firstSign, low, secondSign, high, thirdSign);
         textView.setText(formatted);
     }
 
@@ -70,8 +71,8 @@ public final class BindingAdapters {
         String secondSign = celsius ? "\u2103" : "\u2109";
         float current = celsius ? (currentTemp - 32) * 5 / 9 : currentTemp;
 
-        String formatted = String.format(Locale.getDefault(), "%s%.1f%s",
-                firstSign, current, secondSign);
+        @SuppressLint("DefaultLocale")
+        String formatted = String.format("%s%.1f%s", firstSign, current, secondSign);
         textView.setText(formatted);
     }
 

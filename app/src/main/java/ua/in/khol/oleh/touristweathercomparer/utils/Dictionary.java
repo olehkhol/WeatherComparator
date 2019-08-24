@@ -1,13 +1,13 @@
-package ua.in.khol.oleh.touristweathercomparer.helpers;
+package ua.in.khol.oleh.touristweathercomparer.utils;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Dictionary {
+public final class Dictionary {
 
-    private static String[] languages = {"en", "uk", "ru"};
+    private static final String[] languages = {"en", "uk", "ru"};
 
-    private static List<String> sentences = Arrays.asList(
+    private static final List<String> sentences = Arrays.asList(
             // Yahoo
             "tornado", "торнадо", "торнадо",
             "tropical storm", "тропічний шторм", "тропическая буря",

@@ -1,4 +1,4 @@
-package ua.in.khol.oleh.touristweathercomparer.helpers;
+package ua.in.khol.oleh.touristweathercomparer.utils;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * Created by Oleh Kholiavchuk on 22-Jan-18.
  */
 
-public class MarketView {
+public final class MarketView {
 
     /**
      * Opens application page in Google Play

@@ -8,19 +8,28 @@ import androidx.multidex.MultiDex;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import ua.in.khol.oleh.touristweathercomparer.dagger.AppComponent;
-import ua.in.khol.oleh.touristweathercomparer.dagger.AppModule;
-import ua.in.khol.oleh.touristweathercomparer.dagger.DaggerAppComponent;
-import ua.in.khol.oleh.touristweathercomparer.dagger.RepositoryModule;
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
+import ua.in.khol.oleh.touristweathercomparer.di.AppModule;
+import ua.in.khol.oleh.touristweathercomparer.di.DaggerAppComponent;
 
 /**
  * Created by oleh.
  */
 
-public class MainApplication extends Application {
+public class MainApplication extends Application implements HasAndroidInjector {
 
+    @Inject
+    DispatchingAndroidInjector<Object> mDispatchingAndroidInjector;
     private RefWatcher mRefWatcher;
-    private AppComponent mAppComponent;
+
+    @Override
+    public AndroidInjector<Object> androidInjector() {
+        return mDispatchingAndroidInjector;
+    }
 
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -37,15 +46,13 @@ public class MainApplication extends Application {
             return;
         }
         mRefWatcher = LeakCanary.install(this);
-        // Normal app updatePreferences code...
 
         // Instantiating the components of dagger
-        mAppComponent = DaggerAppComponent.builder()
-                // For any module whose @Provides methods are all static,
-                // the implementation doesn’t need an instance at all.
+        DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .repositoryModule(new RepositoryModule())
-                .build();
+                .build()
+                .inject(this);
+
     }
 
     public static RefWatcher getRefWatcher(Context context) {
@@ -53,7 +60,4 @@ public class MainApplication extends Application {
         return mainApplication.mRefWatcher;
     }
 
-    public AppComponent getAppComponent() {
-        return mAppComponent;
-    }
 }
