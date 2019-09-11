@@ -13,7 +13,7 @@ import java.util.List;
 import ua.in.khol.oleh.touristweathercomparer.BR;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ProviderItemBinding;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 
 // UPPER ADAPTER
 public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder> {

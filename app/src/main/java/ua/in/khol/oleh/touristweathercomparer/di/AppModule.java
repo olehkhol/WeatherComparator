@@ -13,11 +13,11 @@ import dagger.Provides;
 import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.model.db.AppDatabase;
-import ua.in.khol.oleh.touristweathercomparer.model.db.AppDbHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.db.DbHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.location.AppLocationHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.db.RxDatabaseHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.db.DatabaseHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.preferences.AppPreferencesHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.preferences.RxPreferencesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
 import ua.in.khol.oleh.touristweathercomparer.utils.Constants;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
@@ -59,8 +59,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    DbHelper provideAppDbHelper(AppDatabase appDatabase) {
-        return new AppDbHelper(appDatabase);
+    DatabaseHelper provideAppDbHelper(AppDatabase appDatabase) {
+        return new RxDatabaseHelper(appDatabase);
     }
 
     @Provides
@@ -74,22 +74,23 @@ public class AppModule {
     @Provides
     @Singleton
     LocationHelper provideLocationHelper(Context context) {
-        return new AppLocationHelper(context);
+        return new RxLocationHelper(context);
     }
 
     @Provides
     @Singleton
     PreferencesHelper providePreferencesHelper(Context context,
                                                @Named("pref") String preferencesFileName) {
-        return new AppPreferencesHelper(context, preferencesFileName);
+        return new RxPreferencesHelper(context, preferencesFileName);
     }
 
     @Provides
     @Singleton
     Repository provideGodRepository(Application application,
                                     LocationHelper locationHelper,
-                                    PreferencesHelper preferencesHelper) {
-        return new GodRepository(application, locationHelper, preferencesHelper);
+                                    PreferencesHelper preferencesHelper,
+                                    DatabaseHelper databaseHelper) {
+        return new GodRepository(application, locationHelper, preferencesHelper, databaseHelper);
     }
 
     @Provides

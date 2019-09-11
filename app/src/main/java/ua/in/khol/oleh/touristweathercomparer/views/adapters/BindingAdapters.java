@@ -15,8 +15,8 @@ import java.util.List;
 
 import ua.in.khol.oleh.touristweathercomparer.utils.Dictionary;
 import ua.in.khol.oleh.touristweathercomparer.utils.LocaleUnits;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public final class BindingAdapters {
 

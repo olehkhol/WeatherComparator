@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
@@ -28,7 +29,7 @@ public class Wwo extends AbstractProvider {
 
         Observable<WWOData> observable = mService
                 .getLocationWeather(latitude + "," + longitude,
-                        WwoAuth.PREMIUM_KEY,
+                        WwoAuth.getPremiumKey(),
                         language,
                         "7",
                         "json",
@@ -46,19 +47,19 @@ public class Wwo extends AbstractProvider {
                 if (count < DAYS) {
                     WeatherData.Builder builder = new WeatherData.Builder();
                     builder
-                            .withDate(getDate(item))
-                            .withLow(Float.parseFloat(getLow(item)))
-                            .withHigh(Float.parseFloat(getHigh(item)))
-                            .withText(getText(item))
-                            .withSrc(getSrc(item));
+                            .withDate(Wwo.this.getDate(item))
+                            .withLow(Float.parseFloat(Wwo.this.getLow(item)))
+                            .withHigh(Float.parseFloat(Wwo.this.getHigh(item)))
+                            .withText(Wwo.this.getText(item))
+                            .withSrc(Wwo.this.getSrc(item));
 
                     if (count == 0) {
                         builder
-                                .withCurrent(Float.parseFloat(getCurrent(condition)))
-                                .withWind(getWindSpeed(condition))
+                                .withCurrent(Float.parseFloat(Wwo.this.getCurrent(condition)))
+                                .withWind(Wwo.this.getWindSpeed(condition))
                                 .withHumidity(condition.getHumidity())
-                                .withTextExtra(getTextExtra(condition))
-                                .withSrcExtra(getSrcExtra(condition));
+                                .withTextExtra(Wwo.this.getTextExtra(condition))
+                                .withSrcExtra(Wwo.this.getSrcExtra(condition));
                     }
 
                     weatherDataList.add(builder.build());
@@ -66,7 +67,7 @@ public class Wwo extends AbstractProvider {
                 }
             }
 
-            return compositeProviderData(weatherDataList);
+            return Wwo.this.compositeProviderData(weatherDataList);
         });
     }
 

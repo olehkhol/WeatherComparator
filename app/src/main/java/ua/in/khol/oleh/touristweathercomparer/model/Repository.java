@@ -1,18 +1,26 @@
 package ua.in.khol.oleh.touristweathercomparer.model;
 
 import io.reactivex.Observable;
-import ua.in.khol.oleh.touristweathercomparer.model.location.data.City;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Location;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public interface Repository {
 
+    Observable<Location> getLocation();
+
     Observable<City> getCity();
 
-    Observable<ProviderData> getProvidersData();
+    Observable<Title> getTitle();
 
-    Observable<Boolean> getRefreshObservable();
+    Observable<Provider> getProvider();
+
+    Observable<GodRepository.Status> getRefreshObservable();
 
     void update();
+
+    void onPreferencesUpdate();
 
     void updateConfiguration();
 }

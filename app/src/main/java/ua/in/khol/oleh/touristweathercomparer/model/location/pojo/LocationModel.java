@@ -9,7 +9,7 @@ import java.util.List;
  * Created by oleh.
  */
 
-public class LocationData {
+public class LocationModel {
 
     @SerializedName("results")
     @Expose

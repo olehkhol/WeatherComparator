@@ -42,7 +42,7 @@ public class MainApplication extends Application implements HasAndroidInjector {
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
-            // You should not updatePreferences your app in this process.
+            // You should not onPreferencesUpdate your app in this process.
             return;
         }
         mRefWatcher = LeakCanary.install(this);

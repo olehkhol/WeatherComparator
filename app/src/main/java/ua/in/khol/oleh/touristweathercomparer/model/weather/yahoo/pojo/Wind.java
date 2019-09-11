@@ -1,16 +1,20 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Wind {
 
     @SerializedName("chill")
+    @Expose
     private int chill;
 
     @SerializedName("speed")
+    @Expose
     private double speed;
 
     @SerializedName("direction")
+    @Expose
     private int direction;
 
     public void setChill(int chill) {

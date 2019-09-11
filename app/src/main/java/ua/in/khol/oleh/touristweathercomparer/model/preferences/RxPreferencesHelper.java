@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class AppPreferencesHelper implements PreferencesHelper {
+public class RxPreferencesHelper implements PreferencesHelper {
 
     private static final String PREF_KEY_CURRENT_LATITUDE = "PREF_KEY_CURRENT_LATITUDE";
     private static final String PREF_KEY_CURRENT_LONGITUDE = "PREF_KEY_CURRENT_LONGITUDE";
@@ -28,7 +28,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private final Editor mSharedPreferencesEditor;
 
     @SuppressLint("CommitPrefEdits")
-    public AppPreferencesHelper(Context context, String preferencesFileName) {
+    public RxPreferencesHelper(Context context, String preferencesFileName) {
         mSharedPreferences = context
                 .getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
         mSharedPreferencesEditor = mSharedPreferences.edit();

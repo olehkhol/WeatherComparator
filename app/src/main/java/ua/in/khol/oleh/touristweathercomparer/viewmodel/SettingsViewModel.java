@@ -14,6 +14,6 @@ public class SettingsViewModel extends BaseViewModel {
     }
 
     public void onValuesChanged() {
-        getRepository().update();
+        getRepository().onPreferencesUpdate();
     }
 }

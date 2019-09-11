@@ -96,8 +96,10 @@ public final class Dictionary {
     public static String translate(String text, String language) {
         if (text != null) { // check why this happens
             int languageIndex = getLanguageIndex(language);
-            int sentenceIndex = sentences.indexOf(text.replace('-', ' ').toLowerCase()
-                    .trim());
+            String spaced = text.replace('-', ' ');
+            String lowerCased = spaced.toLowerCase();
+            String trimmed = lowerCased.trim();
+            int sentenceIndex = sentences.indexOf(trimmed);
 
             if (sentenceIndex != -1)
                 return capitalize(sentences.get(sentenceIndex + languageIndex));

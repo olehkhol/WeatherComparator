@@ -1,16 +1,20 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Condition {
 
     @SerializedName("code")
+    @Expose
     private int code;
 
     @SerializedName("temperature")
+    @Expose
     private int temperature;
 
     @SerializedName("text")
+    @Expose
     private String text;
 
     public void setCode(int code) {

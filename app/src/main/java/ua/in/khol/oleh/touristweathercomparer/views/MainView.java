@@ -36,7 +36,7 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class MainView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

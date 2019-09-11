@@ -1,28 +1,36 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Location {
 
     @SerializedName("country")
+    @Expose
     private String country;
 
     @SerializedName("city")
+    @Expose
     private String city;
 
     @SerializedName("woeid")
+    @Expose
     private int woeid;
 
     @SerializedName("timezone_id")
+    @Expose
     private String timezoneId;
 
     @SerializedName("region")
+    @Expose
     private String region;
 
     @SerializedName("lat")
+    @Expose
     private double lat;
 
     @SerializedName("long")
+    @Expose
     private double jsonMemberLong;
 
     public void setCountry(String country) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -16,7 +17,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.Condition
 import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.CurrentObservation;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.ForecastsItem;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.Wind;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.YahooData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.YahooModel;
 
 public class Yahoo extends AbstractProvider {
     private YahooService mService;
@@ -29,10 +30,13 @@ public class Yahoo extends AbstractProvider {
 
     @Override
     protected Retrofit buildRetrofit() {
+        String appId = YahooAuth.getAppId();
+        String consumerKey = YahooAuth.getConsumerKey();
+        String consumerSecret = YahooAuth.getConsumerSecret();
         YahooInterceptor interceptor = new YahooInterceptor.Builder()
-                .appId(YahooAuth.APP_ID)
-                .consumerKey(YahooAuth.CONSUMER_KEY)
-                .consumerSecret(YahooAuth.CONSUMER_SECRET)
+                .appId(appId)
+                .consumerKey(consumerKey)
+                .consumerSecret(consumerSecret)
                 .build();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
@@ -49,19 +53,14 @@ public class Yahoo extends AbstractProvider {
     @Override
     public Observable<ProviderData> getWeatherObservable(double latitude,
                                                          double longitude) {
-        String u = "f";
-        String format = "json";
 
-        Observable<YahooData> observable = mService
-                .getLocationWeather(String.valueOf(latitude), String.valueOf(longitude),
-                        format, u);
-
-        return observable
-                .map(yahooData -> {
+        return mService
+                .getLocationWeather(String.valueOf(latitude), String.valueOf(longitude), "json", "f")
+                .map(yahooModel -> {
                     List<WeatherData> weatherDataList = new ArrayList<>();
 
                     int count = 0;
-                    for (ForecastsItem forecast : yahooData.getForecasts()) {
+                    for (ForecastsItem forecast : yahooModel.getForecasts()) {
                         if (count < DAYS) {
                             WeatherData.Builder builder = new WeatherData.Builder();
                             builder
@@ -73,16 +72,18 @@ public class Yahoo extends AbstractProvider {
 
                             if (count == 0) {
                                 CurrentObservation currentObservation
-                                        = yahooData.getCurrentObservation();
-                                Condition condition = currentObservation.getCondition();
-                                Wind wind = currentObservation.getWind();
-                                Atmosphere atmosphere = currentObservation.getAtmosphere();
-                                builder
-                                        .withCurrent(condition.getTemperature())
-                                        .withWind(String.valueOf(wind.getSpeed()))
-                                        .withHumidity(String.valueOf(atmosphere.getHumidity()))
-                                        .withTextExtra(condition.getText())
-                                        .withSrcExtra(PATH + condition.getCode());
+                                        = yahooModel.getCurrentObservation();
+                                if (currentObservation != null) {
+                                    Condition condition = currentObservation.getCondition();
+                                    Wind wind = currentObservation.getWind();
+                                    Atmosphere atmosphere = currentObservation.getAtmosphere();
+                                    builder
+                                            .withCurrent(condition.getTemperature())
+                                            .withWind(String.valueOf(wind.getSpeed()))
+                                            .withHumidity(String.valueOf(atmosphere.getHumidity()))
+                                            .withTextExtra(condition.getText())
+                                            .withSrcExtra(PATH + condition.getCode());
+                                }
                             }
 
                             weatherDataList.add(builder.build());
@@ -90,7 +91,7 @@ public class Yahoo extends AbstractProvider {
                         }
                     }
 
-                    return Yahoo.this.compositeProviderData(weatherDataList);
+                    return compositeProviderData(weatherDataList);
                 });
     }
 }

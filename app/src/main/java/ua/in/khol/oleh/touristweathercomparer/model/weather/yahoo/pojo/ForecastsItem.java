@@ -1,25 +1,32 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ForecastsItem {
 
     @SerializedName("date")
+    @Expose
     private int date;
 
     @SerializedName("high")
+    @Expose
     private int high;
 
     @SerializedName("code")
+    @Expose
     private int code;
 
     @SerializedName("low")
+    @Expose
     private int low;
 
     @SerializedName("text")
+    @Expose
     private String text;
 
     @SerializedName("day")
+    @Expose
     private String day;
 
     public void setDate(int date) {

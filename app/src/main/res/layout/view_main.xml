@@ -65,15 +65,14 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@{viewModel.cityName}"
+                            android:text="@{viewModel.city.name}"
                             android:textAlignment="center"
-                            android:textSize="24sp"
-                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
+                            android:textSize="24sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal" >
 
                             <TextView
                                 android:layout_width="0dp"
@@ -81,16 +80,14 @@
                                 android:layout_weight="0.5"
                                 android:gravity="end"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, viewModel.latitude)}"
-                                android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
+                                android:text="@{String.format(@string/location_format, viewModel.location.latitude)}" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, viewModel.longitude)}"
-                                android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}" />
+                                android:text="@{String.format(@string/location_format, viewModel.location.longitude)}" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -105,7 +102,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"
                             bind:adapter="@{viewModel.providers}" />
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -113,7 +109,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"
                             bind:adapter="@{viewModel.titles}" />
                     </LinearLayout>
 
@@ -135,3 +130,6 @@
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
+
+
+<!--android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"-->

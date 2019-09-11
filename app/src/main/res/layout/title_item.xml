@@ -7,7 +7,7 @@
 
         <variable
             name="title"
-            type="ua.in.khol.oleh.touristweathercomparer.views.observables.Title" />
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -1,34 +1,33 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
 import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableDouble;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.reactivex.functions.Consumer;
+import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.views.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Location;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class MainViewModel extends BaseViewModel {
-    private final ObservableField<String> mCityName = new ObservableField<>();
-    private final ObservableDouble mLatitude = new ObservableDouble();
-    private final ObservableDouble mLongitude = new ObservableDouble();
+    private final ObservableField<City> mCity = new ObservableField<>();
+    private final ObservableField<Location> mLocation = new ObservableField<>();
     private final ObservableList<Title> mTitles = new ObservableArrayList<>();
     private final ObservableList<Provider> mProviders = new ObservableArrayList<>();
     private final MutableLiveData<Boolean> mIsRecreate = new MutableLiveData<>();
 
     public MainViewModel(Repository repository) {
         super(repository);
-        getCompositeDisposable().add(getRepository()
-                .getRefreshObservable()
-                .subscribe(mIsRecreate::setValue));
+
+        subscribeRecreate();
+        subscribeLocation();
+        subscribeCity();
+        subscribeTitle();
+        subscribeProvider();
     }
 
     @Override
@@ -39,72 +38,66 @@ public class MainViewModel extends BaseViewModel {
     public void processData() {
         if (!isRefreshed())
             if (!getIsRefreshing().get())
-                subscribeCity();
+                getRepository().update();
+    }
+
+    private void subscribeRecreate() {
+        getCompositeDisposable()
+                .add(getRepository().getRefreshObservable().subscribe(new Consumer<GodRepository.Status>() {
+                    @Override
+                    public void accept(GodRepository.Status value) throws Exception {
+                        switch (value) {
+                            case NEED_CONNECTION:
+                                break;
+                            case CONNECTED:
+                                break;
+                            case ERROR:
+                            case REFRESHING:
+                                setIsRefreshing(true);
+                                setRefreshed(false);
+                                break;
+                            case REFRESHED:
+                                setIsRefreshing(false);
+                                setRefreshed(true);
+                                break;
+                            case NEED_RECREATE:
+                            default:
+                                mIsRecreate.setValue(true);
+                                break;
+                        }
+                    }
+                }));
+    }
+
+    private void subscribeLocation() {
+        getCompositeDisposable().add(getRepository().getLocation().subscribe(mLocation::set));
     }
 
     private void subscribeCity() {
-        setIsRefreshing(true);
-        getCompositeDisposable().add(getRepository()
-                .getCity()
-                .doOnError(throwable -> setIsRefreshing(false))
-                .doOnComplete(this::subscribeProvidersData)
-                .subscribe(city -> {
-                    mCityName.set(city.getName());
-                    mLatitude.set(city.getLatitude());
-                    mLongitude.set(city.getLongitude());
+        getCompositeDisposable().add(getRepository().getCity().subscribe(mCity::set));
+    }
+
+    private void subscribeTitle() {
+        getCompositeDisposable().add(getRepository().getTitle()
+                .subscribe(title -> {
+                    int index = mTitles.indexOf(title);
+                    if (index != -1)
+                        mTitles.set(index, title);// Replace if existed
+                    else
+                        mTitles.add(title);
                 }));
     }
 
-    private void subscribeProvidersData() {
-        getCompositeDisposable().add(getRepository()
-                .getProvidersData()
-                .doOnComplete(() -> {
-                    setIsRefreshing(false);
-                    setRefreshed(true);
-                })
-                .doOnError(throwable -> setIsRefreshing(false))
-                .subscribe(providerData -> {
-                    WeatherData weatherData = providerData.getWeatherDataList().get(0);
-                    Title title = new Title(providerData.getName(), weatherData.getCurrent(),
-                            weatherData.getTextExtra(), weatherData.getSrcExtra());
-                    mTitles.add(title);
-                    Provider provider = new Provider(providerData.getUrl(),
-                            providerData.getBanner());
-                    provider.setForecasts(providerDataToForecast(providerData));
-                    mProviders.add(provider);
-                }));
+    private void subscribeProvider() {
+        getCompositeDisposable().add(getRepository().getProvider().subscribe(mProviders::add));
     }
 
-    private List<Forecast> providerDataToForecast(ProviderData providerData) {
-        List<Forecast> forecastList = new ArrayList<>();
-        List<WeatherData> weatherDataList = providerData.getWeatherDataList();
-
-        for (int i = 0; i < weatherDataList.size(); i++) {
-            WeatherData weatherData = weatherDataList.get(i);
-            Forecast forecast = new Forecast();
-            forecast.setDate(weatherData.getDate());
-            forecast.setLow(weatherData.getLow());
-            forecast.setHigh(weatherData.getHigh());
-            forecast.setText(weatherData.getText());
-            forecast.setSrc(weatherData.getSrc());
-            forecast.setHumidity(weatherData.getHumidity());
-            forecastList.add(forecast);
-        }
-
-        return forecastList;
+    public ObservableField<Location> getLocation() {
+        return mLocation;
     }
 
-
-    public ObservableField<String> getCityName() {
-        return mCityName;
-    }
-
-    public ObservableDouble getLatitude() {
-        return mLatitude;
-    }
-
-    public ObservableDouble getLongitude() {
-        return mLongitude;
+    public ObservableField<City> getCity() {
+        return mCity;
     }
 
     public ObservableList<Title> getTitles() {

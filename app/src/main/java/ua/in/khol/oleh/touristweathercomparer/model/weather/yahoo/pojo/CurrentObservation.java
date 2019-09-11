@@ -1,22 +1,28 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class CurrentObservation {
 
     @SerializedName("atmosphere")
+    @Expose
     private Atmosphere atmosphere;
 
     @SerializedName("condition")
+    @Expose
     private Condition condition;
 
     @SerializedName("astronomy")
+    @Expose
     private Astronomy astronomy;
 
     @SerializedName("pubDate")
+    @Expose
     private int pubDate;
 
     @SerializedName("wind")
+    @Expose
     private Wind wind;
 
     public void setAtmosphere(Atmosphere atmosphere) {

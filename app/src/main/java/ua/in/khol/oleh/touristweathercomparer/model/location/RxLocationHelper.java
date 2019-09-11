@@ -14,35 +14,35 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.LocationData;
+import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.LocationModel;
 import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.Result;
 
-public class AppLocationHelper implements LocationHelper {
+public class RxLocationHelper implements LocationHelper {
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
-    public AppLocationHelper(Context context) {
+    public RxLocationHelper(Context context) {
         mLocationManager = (LocationManager) context.getApplicationContext()
                 .getSystemService(Context.LOCATION_SERVICE);
     }
 
 
-    public Observable<Location> getSingleLocation(int accuracy, int power) {
+    public Single<Location> getSingleLocation(int accuracy, int power) {
 
-        return Observable.create((ObservableOnSubscribe<Location>) emitter -> {
+        return Single.create(emitter -> {
             if (mLocationListener == null) {
                 mLocationListener = new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
-                        emitter.onNext(location);
-                        emitter.onComplete();
+                        emitter.onSuccess(location);
                     }
 
                     @Override
@@ -60,7 +60,7 @@ public class AppLocationHelper implements LocationHelper {
             }
 
             update(accuracy, power);
-        }).doOnComplete(this::cancel);
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -121,48 +121,51 @@ public class AppLocationHelper implements LocationHelper {
                 .client(new OkHttpClient.Builder().cache(null).build())
                 .build();
         LocationDataService service = retrofit.create(LocationDataService.class);
-        Observable<LocationData> observable = service
+        Observable<LocationModel> observable = service
                 .getLocationData(latitude + "," + longitude, language,
                         LocationCityKey.getApiKey());
 
         return observable
-                .map(locationData -> {
-                    String name = null;
-                    boolean nameFound = false;
+                .map(new Function<LocationModel, String>() {
+                    @Override
+                    public String apply(LocationModel locationData) throws Exception {
+                        String name = "...";
 
-                    List<Result> results;
-                    if (locationData != null) {
-                        results = locationData.getResults();
-                        search_locality_name:
-                        {
-                            for (Result result : results) {
-                                for (String type : result.getTypes()) {
-                                    if ("locality".compareToIgnoreCase(type) == 0) {
-                                        nameFound = true;
-                                        name = result
-                                                .getAddressComponents().get(0).getShortName();
-                                        break search_locality_name;
-                                    }
-                                }
-                            }
-                        }
+                        if (locationData != null) {
+                            List<Result> results = locationData.getResults();
+                            boolean nameFound = false;
 
-
-                        if (!nameFound) {
-                            for (Result result : results) {
-                                for (String type : result.getTypes()) {
-                                    if ("administrative_area_level_2"
-                                            .compareToIgnoreCase(type) == 0) {
-                                        name = result.getFormattedAddress();
-                                        break;
+                            search_locality_name:
+                            {
+                                for (Result result : results) {
+                                    for (String type : result.getTypes()) {
+                                        if ("locality".compareToIgnoreCase(type) == 0) {
+                                            nameFound = true;
+                                            name = result
+                                                    .getAddressComponents().get(0).getShortName();
+                                            break search_locality_name;
+                                        }
                                     }
                                 }
                             }
 
+
+                            if (!nameFound) {
+                                for (Result result : results) {
+                                    for (String type : result.getTypes()) {
+                                        if ("administrative_area_level_2"
+                                                .compareToIgnoreCase(type) == 0) {
+                                            name = result.getFormattedAddress();
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
                         }
+
+                        return name;
                     }
-
-                    return name;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

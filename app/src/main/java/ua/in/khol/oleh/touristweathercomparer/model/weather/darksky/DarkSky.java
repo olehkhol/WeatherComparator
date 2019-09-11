@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
@@ -29,7 +30,7 @@ public class DarkSky extends AbstractProvider {
         String language = getLanguage();
 
         Observable<DarkSkyData> observable = mService
-                .getLocationWeather(DarkSkyAuth.SECRET_KEY,
+                .getLocationWeather(DarkSkyAuth.getSecretKey(),
                         String.valueOf(latitude), String.valueOf(longitude),
                         exclude, language, unit);
 
