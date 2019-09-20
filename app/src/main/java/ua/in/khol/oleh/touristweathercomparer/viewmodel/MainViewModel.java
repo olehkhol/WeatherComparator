@@ -1,5 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
+import android.location.Location;
+
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
@@ -9,7 +11,6 @@ import io.reactivex.functions.Consumer;
 import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Location;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
@@ -24,7 +25,6 @@ public class MainViewModel extends BaseViewModel {
         super(repository);
 
         subscribeRecreate();
-        subscribeLocation();
         subscribeCity();
         subscribeTitle();
         subscribeProvider();
@@ -47,9 +47,9 @@ public class MainViewModel extends BaseViewModel {
                     @Override
                     public void accept(GodRepository.Status value) throws Exception {
                         switch (value) {
-                            case NEED_CONNECTION:
+                            case OFFLINE:
                                 break;
-                            case CONNECTED:
+                            case ONLINE:
                                 break;
                             case ERROR:
                             case REFRESHING:
@@ -69,10 +69,6 @@ public class MainViewModel extends BaseViewModel {
                 }));
     }
 
-    private void subscribeLocation() {
-        getCompositeDisposable().add(getRepository().getLocation().subscribe(mLocation::set));
-    }
-
     private void subscribeCity() {
         getCompositeDisposable().add(getRepository().getCity().subscribe(mCity::set));
     }
@@ -82,14 +78,23 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(title -> {
                     int index = mTitles.indexOf(title);
                     if (index != -1)
-                        mTitles.set(index, title);// Replace if existed
+                        mTitles.set(index, title);
                     else
                         mTitles.add(title);
                 }));
     }
 
     private void subscribeProvider() {
-        getCompositeDisposable().add(getRepository().getProvider().subscribe(mProviders::add));
+        getCompositeDisposable().add(getRepository().getProvider().subscribe(new Consumer<Provider>() {
+            @Override
+            public void accept(Provider provider) throws Exception {
+                int index = mProviders.indexOf(provider);
+                if (index != -1)
+                    mProviders.set(index, provider);
+                else
+                    mProviders.add(provider);
+            }
+        }));
     }
 
     public ObservableField<Location> getLocation() {

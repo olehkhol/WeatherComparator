@@ -9,5 +9,7 @@ public interface LocationHelper {
 
     Single<Location> getSingleLocation(int accuracy, int power);
 
-    Observable<String> getLocationName(double latitude, double longitude, String language);
+    Observable<String> getLocationName(Location location, String language);
+
+    String getLocationName(double latitude, double longitude, String language);
 }

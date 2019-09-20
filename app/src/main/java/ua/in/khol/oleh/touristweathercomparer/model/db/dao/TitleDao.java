@@ -14,6 +14,6 @@ public interface TitleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertTitle(Title title);
 
-    @Query("SELECT * FROM Title WHERE location_id = :id ORDER BY id ASC")
+    @Query("SELECT * FROM Title WHERE city_id = :id ORDER BY id ASC")
     List<Title> queryAll(long id);
 }

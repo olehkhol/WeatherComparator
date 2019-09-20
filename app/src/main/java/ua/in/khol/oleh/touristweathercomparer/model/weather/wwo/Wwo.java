@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
@@ -23,43 +22,35 @@ public class Wwo extends AbstractProvider {
     }
 
     @Override
-    public Observable<ProviderData> getWeatherObservable(double latitude,
-                                                         double longitude) {
-        String language = getLanguage();
-
-        Observable<WWOData> observable = mService
-                .getLocationWeather(latitude + "," + longitude,
-                        WwoAuth.getPremiumKey(),
-                        language,
-                        "7",
-                        "json",
-                        "12");
+    public Observable<ProviderData> observeProviderData(double latitude,
+                                                        double longitude) {
+        Observable<WWOData> observable = mService.getLocationWeather(latitude + "," + longitude,
+                WwoAuth.getPremiumKey(), "en", "7", "json", "12");
 
 
         return observable.map(WWOData -> {
             List<WeatherData> weatherDataList = new ArrayList<>();
             List<WeatherItem> forecastList = WWOData.getData().getWeather();
-            CurrentConditionItem condition
-                    = WWOData.getData().getCurrentCondition().get(0);
+            CurrentConditionItem condition = WWOData.getData().getCurrentCondition().get(0);
 
             int count = 0;
             for (WeatherItem item : forecastList) {
                 if (count < DAYS) {
                     WeatherData.Builder builder = new WeatherData.Builder();
                     builder
-                            .withDate(Wwo.this.getDate(item))
-                            .withLow(Float.parseFloat(Wwo.this.getLow(item)))
-                            .withHigh(Float.parseFloat(Wwo.this.getHigh(item)))
-                            .withText(Wwo.this.getText(item))
-                            .withSrc(Wwo.this.getSrc(item));
+                            .withDate(getDate(item))
+                            .withLow(Float.parseFloat(getLow(item)))
+                            .withHigh(Float.parseFloat(getHigh(item)))
+                            .withText(getText(item))
+                            .withSrc(getSrc(item));
 
                     if (count == 0) {
                         builder
-                                .withCurrent(Float.parseFloat(Wwo.this.getCurrent(condition)))
-                                .withWind(Wwo.this.getWindSpeed(condition))
+                                .withCurrent(Float.parseFloat(getCurrent(condition)))
+                                .withWind(getWindSpeed(condition))
                                 .withHumidity(condition.getHumidity())
-                                .withTextExtra(Wwo.this.getTextExtra(condition))
-                                .withSrcExtra(Wwo.this.getSrcExtra(condition));
+                                .withTextExtra(getTextExtra(condition))
+                                .withSrcExtra(getSrcExtra(condition));
                     }
 
                     weatherDataList.add(builder.build());
@@ -67,8 +58,13 @@ public class Wwo extends AbstractProvider {
                 }
             }
 
-            return Wwo.this.compositeProviderData(weatherDataList);
+            return compositeProviderData(weatherDataList);
         });
+    }
+
+    @Override
+    public ProviderData getProviderData(double latitude, double longitude) {
+        return null;
     }
 
     private int getDate(WeatherItem item) {

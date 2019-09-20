@@ -6,18 +6,18 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = {"provider_id", "location_id", "date"}, unique = true)})
+@Entity(indices = {@Index(value = {"provider_id", "city_id", "date"}, unique = true)})
 public class Forecast {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long mId;
 
-    @ColumnInfo(name = "location_id")
-    private long mLocationId;
-
     @ColumnInfo(name = "provider_id")
     private long mProviderId;
+
+    @ColumnInfo(name = "city_id")
+    private long mCityId;
 
     @ColumnInfo(name = "date")
     private int mDate;
@@ -41,10 +41,10 @@ public class Forecast {
     public Forecast() {
     }
 
-    public Forecast(long locationId, long providerId,
+    public Forecast(long providerId, long cityId,
                     int date, float low, float high, String text, String src, String humidity) {
-        mLocationId = locationId;
         mProviderId = providerId;
+        mCityId = cityId;
 
         mDate = date;
         mLow = low;
@@ -62,12 +62,12 @@ public class Forecast {
         mId = id;
     }
 
-    public long getLocationId() {
-        return mLocationId;
+    public long getCityId() {
+        return mCityId;
     }
 
-    public void setLocationId(long locationId) {
-        mLocationId = locationId;
+    public void setCityId(long cityId) {
+        mCityId = cityId;
     }
 
     public long getProviderId() {

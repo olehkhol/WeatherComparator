@@ -8,15 +8,15 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = {"location_id", "name"}, unique = true)})
+@Entity(indices = {@Index(value = {"city_id", "name"}, unique = true)})
 public class Title {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long mId;
 
-    @ColumnInfo(name = "location_id")
-    private long mLocationId;
+    @ColumnInfo(name = "city_id")
+    private long mCityId;
 
     @ColumnInfo(name = "name")
     private String mName;
@@ -38,8 +38,8 @@ public class Title {
         mText = text;
     }
 
-    public Title(long locationId, String name, float current, String src, String text) {
-        mLocationId = locationId;
+    public Title(long cityId, String name, float current, String src, String text) {
+        mCityId = cityId;
         mName = name;
         mCurrent = current;
         mSrc = src;
@@ -47,9 +47,9 @@ public class Title {
     }
 
     @Ignore
-    public Title(long id, long locationId, String name, float current, String src, String text) {
+    public Title(long id, long cityId, String name, float current, String src, String text) {
         mId = id;
-        mLocationId = locationId;
+        mCityId = cityId;
         mName = name;
         mCurrent = current;
         mSrc = src;
@@ -64,12 +64,12 @@ public class Title {
         mId = id;
     }
 
-    public long getLocationId() {
-        return mLocationId;
+    public long getCityId() {
+        return mCityId;
     }
 
-    public void setLocationId(long locationId) {
-        mLocationId = locationId;
+    public void setCityId(long cityId) {
+        mCityId = cityId;
     }
 
     public String getName() {
@@ -112,7 +112,7 @@ public class Title {
         if (this == obj) return true;
 
         Title title = (Title) obj;
-        return title.getLocationId() == mLocationId && title.getName().equals(mName);
+        return title.getCityId() == mCityId && title.getName().equals(mName);
     }
 
     @Override

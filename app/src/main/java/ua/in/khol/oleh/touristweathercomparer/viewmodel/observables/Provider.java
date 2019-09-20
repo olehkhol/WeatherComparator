@@ -3,18 +3,19 @@ package ua.in.khol.oleh.touristweathercomparer.viewmodel.observables;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-@Entity
+@Entity(indices = {@Index(value = "title_id", unique = true)})
 public class Provider {
 
     @PrimaryKey
     @ColumnInfo(name = "id")
     private long mId;
 
-    @ColumnInfo(name = "titleId")
+    @ColumnInfo(name = "title_id")
     private long mTitleId;
 
     @ColumnInfo(name = "url")
@@ -23,6 +24,7 @@ public class Provider {
     @ColumnInfo(name = "path")
     private String mPath;
 
+    // TODO must be one to many
     @Ignore
     private List<Forecast> mForecasts;
 
@@ -77,4 +79,19 @@ public class Provider {
     public void setForecasts(List<Forecast> forecasts) {
         mForecasts = forecasts;
     }
+
+//    @Override
+//    public boolean equals(@Nullable Object obj) {
+//        if (obj == null || obj.getClass() != getClass()) return false;
+//
+//        if (this == obj) return true;
+//
+//        Provider title = (Provider) obj;
+//        return title.getTitleId() == mTitleId;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return super.hashCode();
+//    }
 }

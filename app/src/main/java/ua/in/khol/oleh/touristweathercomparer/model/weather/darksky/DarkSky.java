@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
@@ -23,16 +22,11 @@ public class DarkSky extends AbstractProvider {
 
 
     @Override
-    public Observable<ProviderData> getWeatherObservable(double latitude,
-                                                         double longitude) {
-        String unit = "us";
-        String exclude = "minutely,hourly,flags";
-        String language = getLanguage();
-
-        Observable<DarkSkyData> observable = mService
-                .getLocationWeather(DarkSkyAuth.getSecretKey(),
-                        String.valueOf(latitude), String.valueOf(longitude),
-                        exclude, language, unit);
+    public Observable<ProviderData> observeProviderData(double latitude,
+                                                        double longitude) {
+        Observable<DarkSkyData> observable = mService.getLocationWeather(DarkSkyAuth.getSecretKey(),
+                String.valueOf(latitude), String.valueOf(longitude), "minutely,hourly,flags",
+                "en", "us");
 
         return observable
                 .map(darkSkyData -> {
@@ -69,8 +63,13 @@ public class DarkSky extends AbstractProvider {
                         }
                     }
 
-                    return DarkSky.this.compositeProviderData(weatherDataList);
+                    return compositeProviderData(weatherDataList);
                 });
+    }
+
+    @Override
+    public ProviderData getProviderData(double latitude, double longitude) {
+        return null;
     }
 
 }

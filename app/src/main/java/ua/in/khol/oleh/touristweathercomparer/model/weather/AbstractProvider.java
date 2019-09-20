@@ -1,7 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -17,12 +16,18 @@ public abstract class AbstractProvider {
     protected String API;
     protected String PATH;
     protected final static int DAYS = 7;
+    private static int sId = 0;
 
     public AbstractProvider(String name, String site, String api) {
+        sId++;
         NAME = name;
         SITE = site;
         API = api;
         PATH = name.toLowerCase() + "/";
+    }
+
+    public static int getId() {
+        return sId;
     }
 
     protected Retrofit buildRetrofit() {
@@ -40,12 +45,9 @@ public abstract class AbstractProvider {
     }
 
 
-    public abstract Observable<ProviderData> getWeatherObservable(double latitude,
-                                                                  double longitude);
+    public abstract Observable<ProviderData> observeProviderData(double latitude, double longitude);
 
-    protected String getLanguage() {
-        return Locale.getDefault().getLanguage();
-    }
+    public abstract ProviderData getProviderData(double latitude, double longitude);
 
     protected ProviderData compositeProviderData(List<WeatherData> weatherDataList) {
         return new ProviderData(NAME,

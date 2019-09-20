@@ -11,14 +11,15 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -112,7 +113,7 @@ public class RxLocationHelper implements LocationHelper {
     }
 
     @Override
-    public Observable<String> getLocationName(double latitude, double longitude, String language) {
+    public Observable<String> getLocationName(Location location, String language) {
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
@@ -122,53 +123,105 @@ public class RxLocationHelper implements LocationHelper {
                 .build();
         LocationDataService service = retrofit.create(LocationDataService.class);
         Observable<LocationModel> observable = service
-                .getLocationData(latitude + "," + longitude, language,
-                        LocationCityKey.getApiKey());
+                .observeLocationModel(location.getLatitude() + "," + location.getLongitude(),
+                        language, LocationCityKey.getApiKey());
 
         return observable
-                .map(new Function<LocationModel, String>() {
-                    @Override
-                    public String apply(LocationModel locationData) throws Exception {
-                        String name = "...";
+                .map(locationData -> {
+                    String name = "...";
 
-                        if (locationData != null) {
-                            List<Result> results = locationData.getResults();
-                            boolean nameFound = false;
+                    if (locationData != null) {
+                        List<Result> results = locationData.getResults();
+                        boolean nameFound = false;
 
-                            search_locality_name:
-                            {
-                                for (Result result : results) {
-                                    for (String type : result.getTypes()) {
-                                        if ("locality".compareToIgnoreCase(type) == 0) {
-                                            nameFound = true;
-                                            name = result
-                                                    .getAddressComponents().get(0).getShortName();
-                                            break search_locality_name;
-                                        }
+                        search_locality_name:
+                        {
+                            for (Result result : results) {
+                                for (String type : result.getTypes()) {
+                                    if ("locality".compareToIgnoreCase(type) == 0) {
+                                        nameFound = true;
+                                        name = result
+                                                .getAddressComponents().get(0).getShortName();
+                                        break search_locality_name;
                                     }
                                 }
-                            }
-
-
-                            if (!nameFound) {
-                                for (Result result : results) {
-                                    for (String type : result.getTypes()) {
-                                        if ("administrative_area_level_2"
-                                                .compareToIgnoreCase(type) == 0) {
-                                            name = result.getFormattedAddress();
-                                            break;
-                                        }
-                                    }
-                                }
-
                             }
                         }
 
-                        return name;
+
+                        if (!nameFound) {
+                            for (Result result : results) {
+                                for (String type : result.getTypes()) {
+                                    if ("administrative_area_level_2"
+                                            .compareToIgnoreCase(type) == 0) {
+                                        name = result.getFormattedAddress();
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
                     }
+
+                    return name;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    // TODO refactor this
+    @Override
+    public String getLocationName(double latitude, double longitude, String language) {
+        Gson gson = new GsonBuilder().create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(new OkHttpClient.Builder().cache(null).build())
+                .build();
+        LocationDataService service = retrofit.create(LocationDataService.class);
+        Call<LocationModel> locationModelCall = service.getLocationModel(latitude + "," + longitude,
+                language, LocationCityKey.getApiKey());
+
+        String name = "...";
+        try {
+            LocationModel locationModel = locationModelCall.execute().body();
+
+            if (locationModel != null) {
+                List<Result> results = locationModel.getResults();
+                boolean nameFound = false;
+
+                search_locality_name:
+                {
+                    for (Result result : results) {
+                        for (String type : result.getTypes()) {
+                            if ("locality".compareToIgnoreCase(type) == 0) {
+                                nameFound = true;
+                                name = result
+                                        .getAddressComponents().get(0).getShortName();
+                                break search_locality_name;
+                            }
+                        }
+                    }
+                }
+
+
+                if (!nameFound) {
+                    for (Result result : results) {
+                        for (String type : result.getTypes()) {
+                            if ("administrative_area_level_2"
+                                    .compareToIgnoreCase(type) == 0) {
+                                name = result.getFormattedAddress();
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return name;
+    }
 }

@@ -6,27 +6,42 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = {"location_id", "name"}, unique = true)})
+@Entity(indices = {@Index(value = {"latitude", "longitude"}, unique = true)})
 public class City {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long mId;
 
-    @ColumnInfo(name = "location_id")
-    private long mLocationId;
-
     @ColumnInfo(name = "name")
     private String mName;
+
+    @ColumnInfo(name = "latitude")
+    private double mLatitude;
+
+    @ColumnInfo(name = "longitude")
+    private double mLongitude;
+
+    @Ignore
+    public City() {
+        mName = "";
+    }
 
     @Ignore
     public City(String name) {
         mName = name;
     }
 
-    public City(String name, long id) {
+    @Ignore
+    public City(double latitude, double longitude) {
+        mLatitude = latitude;
+        mLongitude = longitude;
+    }
+
+    public City(String name, double latitude, double longitude) {
         mName = name;
-        mLocationId = id;
+        mLatitude = latitude;
+        mLongitude = longitude;
     }
 
     public long getId() {
@@ -45,11 +60,19 @@ public class City {
         mName = name;
     }
 
-    public long getLocationId() {
-        return mLocationId;
+    public double getLatitude() {
+        return mLatitude;
     }
 
-    public void setLocationId(long locationId) {
-        mLocationId = locationId;
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
     }
 }
