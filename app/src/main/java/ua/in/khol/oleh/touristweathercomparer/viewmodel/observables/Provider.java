@@ -1,38 +1,29 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel.observables;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
+import androidx.databinding.library.baseAdapters.BR;
 
 import java.util.List;
 
-@Entity(indices = {@Index(value = "title_id", unique = true)})
-public class Provider {
+public class Provider extends BaseObservable {
 
-    @PrimaryKey
-    @ColumnInfo(name = "id")
+    @Bindable
     private long mId;
-
-    @ColumnInfo(name = "title_id")
-    private long mTitleId;
-
-    @ColumnInfo(name = "url")
+    @Bindable
     private String mUrl;
-
-    @ColumnInfo(name = "path")
+    @Bindable
     private String mPath;
+    @Bindable
+    private ObservableList<Forecast> mForecasts;
 
-    // TODO must be one to many
-    @Ignore
-    private List<Forecast> mForecasts;
-
-    @Ignore
     public Provider(long id, String url, String path) {
         mId = id;
         mUrl = url;
         mPath = path;
+        mForecasts = new ObservableArrayList<>();
     }
 
     public Provider(String url, String path) {
@@ -44,54 +35,46 @@ public class Provider {
         return mId;
     }
 
-    public void setId(long id) {
-        mId = id;
-    }
-
-    public long getTitleId() {
-        return mTitleId;
-    }
-
-    public void setTitleId(long titleId) {
-        mTitleId = titleId;
-    }
-
     public String getUrl() {
         return mUrl;
-    }
-
-    public void setUrl(String url) {
-        mUrl = url;
     }
 
     public String getPath() {
         return mPath;
     }
 
-    public void setPath(String path) {
-        mPath = path;
-    }
-
-    public List<Forecast> getForecasts() {
+    public ObservableList<Forecast> getForecasts() {
         return mForecasts;
     }
 
-    public void setForecasts(List<Forecast> forecasts) {
-        mForecasts = forecasts;
+    public void setId(long id) {
+        mId = id;
+        notifyPropertyChanged(BR.id);
     }
 
-//    @Override
-//    public boolean equals(@Nullable Object obj) {
-//        if (obj == null || obj.getClass() != getClass()) return false;
-//
-//        if (this == obj) return true;
-//
-//        Provider title = (Provider) obj;
-//        return title.getTitleId() == mTitleId;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return super.hashCode();
-//    }
+    public void setUrl(String url) {
+        mUrl = url;
+        notifyPropertyChanged(BR.url);
+    }
+
+    public void setPath(String path) {
+        mPath = path;
+        notifyPropertyChanged(BR.path);
+    }
+
+    public void setForecasts(List<Forecast> forecasts) {
+        mForecasts.clear();
+        mForecasts.addAll(forecasts);
+        notifyPropertyChanged(BR.forecasts);
+    }
+
+    public void putForecast(Forecast forecast) {
+        int index = mForecasts.indexOf(forecast);
+        if (index != -1)
+            mForecasts.set(index, forecast);
+        else
+            mForecasts.add(forecast);
+
+        notifyPropertyChanged(BR.forecasts);
+    }
 }

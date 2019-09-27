@@ -31,7 +31,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    bind:image="@{@string/asset_image(forecast.src)}"
+                    bind:image="@{@string/asset_image(forecast.image)}"
                     android:contentDescription="TODO" />
 
                 <LinearLayout

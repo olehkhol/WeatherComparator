@@ -12,4 +12,10 @@ public class Calculation {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+
+    public static int roundDateToDays(int date) {
+        int divided = date / 60 / 60 / 24;
+
+        return divided * 24 * 60 * 60;
+    }
 }

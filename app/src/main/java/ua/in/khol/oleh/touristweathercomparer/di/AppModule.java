@@ -5,8 +5,6 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import java.util.List;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -21,7 +19,6 @@ import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.RxPreferencesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.utils.Constants;

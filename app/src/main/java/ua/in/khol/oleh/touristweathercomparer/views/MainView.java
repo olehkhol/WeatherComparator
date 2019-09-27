@@ -34,9 +34,9 @@ import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
 import ua.in.khol.oleh.touristweathercomparer.utils.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class MainView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,6 +51,9 @@ public class MainView extends AppCompatActivity
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
+    private RecyclerView mUpperRecycler;
+    private RecyclerView mLowerRecycler;
+    private UpperAdapter mUpperAdapter;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
@@ -73,7 +76,7 @@ public class MainView extends AppCompatActivity
         });
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setViewModel(mViewModel);
-        initBinding(binding);
+        initBindings(binding);
         initUI();
         // Request permissions
         requestPermissions();
@@ -154,6 +157,14 @@ public class MainView extends AppCompatActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mUpperAdapter.setOnBannerClickListener(null);
+        mUpperRecycler.setAdapter(null);
+        mLowerRecycler.setAdapter(null);
+        super.onDestroy();
     }
 
     // ----------------[ACTIVITY CALLBACKS]----------------
@@ -252,29 +263,28 @@ public class MainView extends AppCompatActivity
         toggle.syncState();
     }
 
-    private void initBinding(ViewMainBinding binding) {
-        RecyclerView upperRecycler = binding.upperRecycler;
-        upperRecycler.setLayoutManager(new LinearLayoutManager(this,
+    private void initBindings(ViewMainBinding binding) {
+        mUpperRecycler = binding.upperRecycler;
+        mUpperRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        UpperAdapter upperAdapter = new UpperAdapter();
-        upperAdapter.setOnBannerClickListener(url -> {
+        mUpperAdapter = new UpperAdapter();
+        mUpperAdapter.setOnBannerClickListener(url -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
-            startActivity(intent);
+            MainView.this.startActivity(intent);
         });
-        upperRecycler.setAdapter(upperAdapter);
+        mUpperRecycler.setAdapter(mUpperAdapter);
 
-        RecyclerView lowerRecycler = binding.lowerRecycler;
-        lowerRecycler.setLayoutManager(new LinearLayoutManager(this,
+        mLowerRecycler = binding.lowerRecycler;
+        mLowerRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         RecyclerAdapter<Title> lowerAdapter
                 = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
         lowerAdapter.setOnItemClickListener((position, item)
-                -> upperRecycler.getLayoutManager().scrollToPosition(position));
-        lowerRecycler.setAdapter(lowerAdapter);
+                -> mUpperRecycler.getLayoutManager().scrollToPosition(position));
+        mLowerRecycler.setAdapter(lowerAdapter);
     }
-
     // ----------------[UI]----------------
 
 }

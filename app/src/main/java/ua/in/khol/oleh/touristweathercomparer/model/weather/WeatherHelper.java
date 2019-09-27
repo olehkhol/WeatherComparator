@@ -5,9 +5,7 @@ import java.util.List;
 import io.reactivex.Observable;
 
 public interface WeatherHelper {
-    List<AbstractProvider> getWeatherProviders();
+    List<WeatherProvider> getWeatherProviders();
 
-    Observable<ProviderData> observeProvidersData(double latitude, double longitude);
-
-    List<ProviderData> getProvidersData(double latitude, double longitude);
+    Observable<WeatherData> observeWeatherData(double latitude, double longitude);
 }

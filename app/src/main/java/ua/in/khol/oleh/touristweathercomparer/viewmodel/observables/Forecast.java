@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = {"provider_id", "city_id", "date"}, unique = true)})
+@Entity(indices = {@Index(value = {"provider_id", "place_id", "date"}, unique = true)})
 public class Forecast {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,10 +14,10 @@ public class Forecast {
     private long mId;
 
     @ColumnInfo(name = "provider_id")
-    private long mProviderId;
+    private int mProviderId;
 
-    @ColumnInfo(name = "city_id")
-    private long mCityId;
+    @ColumnInfo(name = "place_id")
+    private long mPlaceId;
 
     @ColumnInfo(name = "date")
     private int mDate;
@@ -31,26 +31,35 @@ public class Forecast {
     @ColumnInfo(name = "text")
     private String mText;
 
-    @ColumnInfo(name = "src")
-    private String mSrc;
+    @ColumnInfo(name = "image")
+    private String mImage;
 
     @ColumnInfo(name = "humidity")
     private String mHumidity;
+
+    @ColumnInfo(name = "is_current")
+    private boolean mIsCurrent;
+
+    @ColumnInfo(name = "current")
+    private float mCurrent;
+
+    @ColumnInfo(name = "current_text")
+    private String mCurrentText;
+
+    @ColumnInfo(name = "current_image")
+    private String mCurrentImage;
 
     @Ignore
     public Forecast() {
     }
 
-    public Forecast(long providerId, long cityId,
-                    int date, float low, float high, String text, String src, String humidity) {
+    public Forecast(int providerId, int date, float low, float high, String text, String image, String humidity) {
         mProviderId = providerId;
-        mCityId = cityId;
-
         mDate = date;
         mLow = low;
         mHigh = high;
         mText = text;
-        mSrc = src;
+        mImage = image;
         mHumidity = humidity;
     }
 
@@ -62,20 +71,20 @@ public class Forecast {
         mId = id;
     }
 
-    public long getCityId() {
-        return mCityId;
-    }
-
-    public void setCityId(long cityId) {
-        mCityId = cityId;
-    }
-
-    public long getProviderId() {
+    public int getProviderId() {
         return mProviderId;
     }
 
-    public void setProviderId(long providerId) {
+    public void setProviderId(int providerId) {
         mProviderId = providerId;
+    }
+
+    public long getPlaceId() {
+        return mPlaceId;
+    }
+
+    public void setPlaceId(long placeId) {
+        mPlaceId = placeId;
     }
 
     public int getDate() {
@@ -110,12 +119,12 @@ public class Forecast {
         mText = text;
     }
 
-    public String getSrc() {
-        return mSrc;
+    public String getImage() {
+        return mImage;
     }
 
-    public void setSrc(String src) {
-        mSrc = src;
+    public void setImage(String image) {
+        mImage = image;
     }
 
     public String getHumidity() {
@@ -124,5 +133,37 @@ public class Forecast {
 
     public void setHumidity(String humidity) {
         mHumidity = humidity;
+    }
+
+    public boolean isCurrent() {
+        return mIsCurrent;
+    }
+
+    public void setIsCurrent(boolean current) {
+        mIsCurrent = current;
+    }
+
+    public float getCurrent() {
+        return mCurrent;
+    }
+
+    public void setCurrent(float current) {
+        mCurrent = current;
+    }
+
+    public String getCurrentText() {
+        return mCurrentText;
+    }
+
+    public void setCurrentText(String currentText) {
+        mCurrentText = currentText;
+    }
+
+    public String getCurrentImage() {
+        return mCurrentImage;
+    }
+
+    public void setCurrentImage(String currentImage) {
+        mCurrentImage = currentImage;
     }
 }

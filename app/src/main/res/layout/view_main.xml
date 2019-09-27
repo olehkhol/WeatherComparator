@@ -72,7 +72,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="0dp"
@@ -80,14 +80,16 @@
                                 android:layout_weight="0.5"
                                 android:gravity="end"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, viewModel.city.latitude)}" />
+                                android:text="@{String.format(@string/location_format, viewModel.place.latitude)}"
+                                android:visibility="gone" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
-                                android:text="@{String.format(@string/location_format, viewModel.city.longitude)}" />
+                                android:text="@{String.format(@string/location_format, viewModel.place.longitude)}"
+                                android:visibility="gone" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -132,4 +134,4 @@
 </layout>
 
 
-<!--android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"-->
+    <!--android:visibility="@{viewModel.isRefreshing ? View.INVISIBLE : View.VISIBLE}"-->

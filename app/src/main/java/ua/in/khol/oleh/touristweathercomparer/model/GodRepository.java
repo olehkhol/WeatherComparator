@@ -16,8 +16,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -25,20 +23,21 @@ import io.reactivex.subjects.ReplaySubject;
 import ua.in.khol.oleh.touristweathercomparer.model.db.DatabaseHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
 import ua.in.khol.oleh.touristweathercomparer.utils.Calculation;
 import ua.in.khol.oleh.touristweathercomparer.utils.LocaleUnits;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class GodRepository implements Repository {
 
     private static final String TAG = GodRepository.class.getName();
-    public static final int DB_LOCATION_ACCURACY = 2; // TODO move this to mPreferencesHelper
+    public static final int DB_LOCATION_ACCURACY = 2; // TODO move this to PreferencesHelper
 
     public enum Status {
         OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR
@@ -54,9 +53,6 @@ public class GodRepository implements Repository {
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private PublishSubject<Status> mStatusPublicSubject = PublishSubject.create();
     private ReplaySubject<Location> mLocationSubject = ReplaySubject.create();
-    private PublishSubject<City> mCityPublishSubject = PublishSubject.create();
-    private PublishSubject<Title> mTitlePublishSubject = PublishSubject.create();
-    private PublishSubject<Provider> mProviderPublishSubject = PublishSubject.create();
 
     public GodRepository(Application application,
                          LocationHelper locationHelper, WeatherHelper weatherHelper,
@@ -68,23 +64,8 @@ public class GodRepository implements Repository {
         mDatabaseHelper = databaseHelper;
     }
 
-    public Observable<Status> getRefreshObservable() {
+    public Observable<Status> observeStatus() {
         return mStatusPublicSubject.serialize();
-    }
-
-    @Override
-    public Observable<City> getCity() {
-        return mCityPublishSubject;
-    }
-
-    @Override
-    public Observable<Title> getTitle() {
-        return mTitlePublishSubject;
-    }
-
-    @Override
-    public Observable<Provider> getProvider() {
-        return mProviderPublishSubject;
     }
 
     @Override
@@ -92,41 +73,41 @@ public class GodRepository implements Repository {
         updateMetricUnits();
         updateConfiguration();
 
-        // TODO find better place for this line below
-        mStatusPublicSubject.onNext(Status.REFRESHING);
         processLocation();
-        processCity();
-        processProviderData();
     }
 
-    @Override
-    public void cancel() {
-        mCompositeDisposable.dispose();
-    }
-
-    @SuppressLint("CheckResult")
     private void processLocation() {
         mCompositeDisposable.add(mLocationHelper.getSingleLocation(mAccuracy, mPower)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
+                .doOnSuccess(location -> {
+                    Place place = new Place(location.getLatitude(), location.getLongitude());
+                    long placeId = mDatabaseHelper.getPlaceId(place, DB_LOCATION_ACCURACY);
+                    if (placeId == 0)
+                        mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
+                })
                 .subscribe(location -> mLocationSubject.onNext(location),
                         Throwable::printStackTrace));
     }
 
-    @SuppressLint("CheckResult")
-    private void processCity() {
-        mCompositeDisposable.add(Observable.combineLatest(mLocationSubject,
+    public Observable<City> observeCity() {
+        return Observable.combineLatest(mLocationSubject,
                 ReactiveNetwork.observeInternetConnectivity(), (location, connected) -> {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
+                    long placeId = mDatabaseHelper
+                            .getPlaceId(latitude, longitude, DB_LOCATION_ACCURACY);
 
                     City city;
                     if (connected) {
                         String name = mLocationHelper.getLocationName(latitude, longitude,
                                 mPreferencesHelper.getLanguage());
-                        city = new City(name, latitude, longitude);
+                        city = new City(name, placeId);
+                        long cityId = mDatabaseHelper.getCityId(placeId);
+                        if (cityId == 0)
+                            mDatabaseHelper.putCity(city, DB_LOCATION_ACCURACY);
                     } else { // Get city from DB
-                        city = mDatabaseHelper.getCity(latitude, longitude, DB_LOCATION_ACCURACY);
+                        city = mDatabaseHelper.getCity(placeId);
                         if (city == null)
                             city = new City();
                     }
@@ -134,104 +115,79 @@ public class GodRepository implements Repository {
                     return city;
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .doOnNext(city -> { // Put city into DB
-                    long id = mDatabaseHelper.getCityId(city, DB_LOCATION_ACCURACY);
-                    if (id == 0)
-                        id = mDatabaseHelper.putCity(city, DB_LOCATION_ACCURACY);
-                })
-                .subscribe(city -> mCityPublishSubject.onNext(city), Throwable::printStackTrace));
+                .observeOn(Schedulers.io());
     }
 
-    private void processWeather() {
+    @Override
+    public Observable<Provider> observeProvider() {
+        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
+                .flatMap((Function<WeatherProvider, ObservableSource<Provider>>) wp -> Observable
+                        .just(new Provider(wp.getId(), wp.getSite(), wp.getBanner())));
+    }
+
+    @Override
+    public Observable<Title> observeTitle() {
+        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
+                .flatMap((Function<WeatherProvider, ObservableSource<Title>>) wp -> Observable
+                        .just(new Title(wp.getId(), wp.getName())));
 
     }
 
     @SuppressLint("CheckResult")
-    private void processProviderData() {
-        Observable.combineLatest(mLocationSubject,
+    public Observable<Forecast> observeForecast() {
+        return Observable.combineLatest(mLocationSubject,
                 ReactiveNetwork.observeInternetConnectivity(),
-                new BiFunction<Location, Boolean, Observable<ProviderData>>() {
-                    @Override
-                    public Observable<ProviderData> apply(Location location, Boolean connected) throws Exception {
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        double latitudeDb = Calculation.round(latitude, 2);
-                        double longitudeDb = Calculation.round(longitude, 2);
-                        String language = mPreferencesHelper.getLanguage();
+                (location, connected) -> {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    long placeId = mDatabaseHelper
+                            .getPlaceId(latitude, longitude, DB_LOCATION_ACCURACY);
+                    List<Forecast> forecastList = new ArrayList<>();
 
-                        if (connected)
-                            return mWeatherHelper.observeProvidersData(latitude, longitude);
-                        else
-                            return mDatabaseHelper.observeProvidersData(latitude, longitude);
+                    if (connected) {
+                        for (WeatherProvider provider : mWeatherHelper.getWeatherProviders()) {
+                            List<WeatherData> weatherDataList
+                                    = provider.getWeatherDataList(latitude, longitude);
+                            if (weatherDataList != null)
+                                for (WeatherData data : weatherDataList) {
+                                    Forecast forecast = convertWeatherDataToForecast(data);
+                                    forecast.setPlaceId(placeId);
+                                    forecastList.add(forecast);
+
+                                }
+                        }
+                        mDatabaseHelper.putForecastList(forecastList);
+                    } else {
+                        forecastList.addAll(mDatabaseHelper.getForecastList(placeId));
                     }
+
+                    return Observable.fromIterable(forecastList);
                 })
-                .switchMap(new Function<Observable<ProviderData>, ObservableSource<? extends ProviderData>>() {
-                    @Override
-                    public ObservableSource<? extends ProviderData> apply(Observable<ProviderData> providerDataObservable) throws Exception {
-                        return providerDataObservable;
-                    }
-                })
-                .doOnNext(new Consumer<ProviderData>() {
-                    @Override
-                    public void accept(ProviderData providerData) throws Exception {
-
-                    }
-                })
-                .subscribe(new Consumer<ProviderData>() {
-                    @Override
-                    public void accept(ProviderData providerData) throws Exception {
-                        // TITLE
-                        WeatherData weatherData = providerData.getWeatherDataList().get(0);
-                        long titleId = getIdByName(providerData.getName());
-                        Title title = new Title(providerData.getName(), weatherData.getCurrent(), weatherData.getTextExtra(), weatherData.getSrcExtra());
-                        // mDatabaseHelper.putTitle(title);
-                        mTitlePublishSubject.onNext(title);
-
-                        // PROVIDER
-                        Provider provider = new Provider(providerData.getUrl(), providerData.getBanner());
-                        // Put Provider into DB
-                        // long providerId = mDatabaseHelper.putProvider(provider);
-
-
-                        // FORECASTS
-                        List<Forecast> forecasts = providerDataToForecast(providerData, 0);
-
-                        // Put forecasts list to DB
-                        // mDatabaseHelper.putForecasts(forecasts).subscribe();
-
-                        provider.setForecasts(forecasts);
-                        mProviderPublishSubject.onNext(provider);
-                    }
-                }, Throwable::printStackTrace);
+                .flatMap((Function<Observable<Forecast>, ObservableSource<Forecast>>)
+                        forecastObservable -> forecastObservable);
     }
 
-    private long getIdByName(String name) {
-        for (int i = 0; i < mWeatherHelper.getWeatherProviders().size(); i++)
-            if (mWeatherHelper.getWeatherProviders().get(i).getName().equals(name))
-                return i;
-
-        throw new IllegalArgumentException("Wrong provider name!");
-    }
-
-    private List<Forecast> providerDataToForecast(ProviderData providerData, long providerId) {
-        List<Forecast> forecastList = new ArrayList<>();
-        List<WeatherData> weatherDataList = providerData.getWeatherDataList();
-
-        for (int i = 0; i < weatherDataList.size(); i++) {
-            WeatherData weatherData = weatherDataList.get(i);
-            Forecast forecast = new Forecast();
-            forecast.setProviderId(providerId);
-            forecast.setDate(weatherData.getDate());
-            forecast.setLow(weatherData.getLow());
-            forecast.setHigh(weatherData.getHigh());
-            forecast.setText(weatherData.getText());
-            forecast.setSrc(weatherData.getSrc());
-            forecast.setHumidity(weatherData.getHumidity());
-            forecastList.add(forecast);
+    private Forecast convertWeatherDataToForecast(WeatherData weatherData) {
+        Forecast forecast = new Forecast(weatherData.getProviderId(),
+                Calculation.roundDateToDays(weatherData.getDate()),
+                weatherData.getLow(),
+                weatherData.getHigh(),
+                weatherData.getText(),
+                weatherData.getSrc(),
+                weatherData.getHumidity());
+        if (weatherData.isCurrent()) {
+            forecast.setIsCurrent(true);
+            forecast.setCurrent(weatherData.getCurrent());
+            forecast.setCurrentText(weatherData.getTextExtra());
+            forecast.setCurrentImage(weatherData.getSrcExtra());
         }
 
-        return forecastList;
+        return forecast;
+    }
+
+    @Override
+    public void cancel() {
+        mCompositeDisposable.dispose();
     }
 
     @SuppressLint("ApplySharedPref")
@@ -261,5 +217,35 @@ public class GodRepository implements Repository {
         // Notify activity with "recreate" request
         mStatusPublicSubject.onNext(Status.NEED_RECREATE);
     }
-
 }
+
+//    @SuppressLint("CheckResult")
+//    public Observable<Forecast> observeForecast() {
+//        return Observable.combineLatest(mLocationSubject,
+//                ReactiveNetwork.observeInternetConnectivity(),
+//                (location, connected) -> {
+//                    double latitude = location.getLatitude();
+//                    double longitude = location.getLongitude();
+//
+//                    List<Observable<WeatherData>> observables = new ArrayList<>();
+//
+//                    for (WeatherProvider provider : mWeatherHelper.getWeatherProviders())
+//                        observables.add(provider.observeWeatherData(latitude, longitude));
+//
+//                    return Observable.concat(observables);
+//                })
+//                .flatMap((Function<Observable<WeatherData>, ObservableSource<WeatherData>>) weatherDataObservable -> weatherDataObservable)
+//                .map(weatherData -> {
+//                    Forecast forecast = convertWeatherDataToForecast(weatherData);
+//                    long cityId = mDatabaseHelper.getCityId(weatherData.getLatitude(),
+//                            weatherData.getLongitude(), DB_LOCATION_ACCURACY);
+//                    forecast.setCityId(cityId);
+//
+//                    return forecast;
+//                })
+//                .doOnNext(forecast -> {
+//                    long id = mDatabaseHelper.getForecastId(forecast, DB_LOCATION_ACCURACY);
+//                    if (id == 0)
+//                        id = mDatabaseHelper.putForecast(forecast, DB_LOCATION_ACCURACY);
+//                });
+//    }

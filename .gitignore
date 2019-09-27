@@ -34,8 +34,8 @@ google-services.json
 
 # Freeline
 # fastlane
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/location/LocationCityKey.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/YahooAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/Yahoo.json
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java
+/app/image/main/java/ua/in/khol/oleh/touristweathercomparer/model/location/LocationCityKey.java
+/app/image/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/YahooAuth.java
+/app/image/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/Yahoo.json
+/app/image/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyAuth.java
+/app/image/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java

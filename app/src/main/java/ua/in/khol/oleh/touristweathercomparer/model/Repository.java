@@ -2,18 +2,20 @@ package ua.in.khol.oleh.touristweathercomparer.model;
 
 import io.reactivex.Observable;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public interface Repository {
+    Observable<City> observeCity();
 
-    Observable<City> getCity();
+    Observable<Title> observeTitle();
 
-    Observable<Title> getTitle();
+    Observable<Provider> observeProvider();
 
-    Observable<Provider> getProvider();
+    Observable<Forecast> observeForecast();
 
-    Observable<GodRepository.Status> getRefreshObservable();
+    Observable<GodRepository.Status> observeStatus();
 
     void update();
 
@@ -22,4 +24,5 @@ public interface Repository {
     void onPreferencesUpdate();
 
     void updateConfiguration();
+
 }

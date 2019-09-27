@@ -1,18 +1,18 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.wwo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.AbstractProvider;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.wwo.pojo.CurrentConditionItem;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.wwo.pojo.WWOData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.wwo.pojo.WeatherItem;
 
-public class Wwo extends AbstractProvider {
+public class Wwo extends WeatherProvider {
     private WwoService mService;
 
     public Wwo() {
@@ -22,13 +22,60 @@ public class Wwo extends AbstractProvider {
     }
 
     @Override
-    public Observable<ProviderData> observeProviderData(double latitude,
-                                                        double longitude) {
-        Observable<WWOData> observable = mService.getLocationWeather(latitude + "," + longitude,
+    public List<WeatherData> getWeatherDataList(double latitude, double longitude) {
+        List<WeatherData> weatherDataList = new ArrayList<>();
+
+        WWOData wwoData;
+        try {
+            wwoData = mService.getLocationWeather(latitude + "," + longitude,
+                    WwoAuth.getPremiumKey(), "en", "7", "json", "12")
+                    .execute().body();
+
+            if (wwoData != null) {
+                List<WeatherItem> forecastList = wwoData.getData().getWeather();
+                CurrentConditionItem condition = wwoData.getData().getCurrentCondition().get(0);
+
+                int count = 0;
+                for (WeatherItem item : forecastList) {
+                    if (count < DAYS) {
+                        WeatherData.Builder builder = new WeatherData.Builder();
+                        builder
+                                .withProviderId(getId())
+                                .withDate(getDate(item))
+                                .withLow(Float.parseFloat(getLow(item)))
+                                .withHigh(Float.parseFloat(getHigh(item)))
+                                .withText(getText(item))
+                                .withSrc(getSrc(item));
+
+                        if (count == 0) {
+                            builder
+                                    .isCurrent(true)
+                                    .withCurrent(Float.parseFloat(getCurrent(condition)))
+                                    .withWind(getWindSpeed(condition))
+                                    .withHumidity(condition.getHumidity())
+                                    .withTextExtra(getTextExtra(condition))
+                                    .withSrcExtra(getSrcExtra(condition));
+                        }
+
+                        weatherDataList.add(builder.build());
+                        count++;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return weatherDataList;
+    }
+
+    @Override
+    public Observable<WeatherData> observeWeatherData(double latitude,
+                                                      double longitude) {
+        Observable<WWOData> observable = mService.observeLocationWeather(latitude + "," + longitude,
                 WwoAuth.getPremiumKey(), "en", "7", "json", "12");
 
 
-        return observable.map(WWOData -> {
+        return observable.flatMap(WWOData -> {
             List<WeatherData> weatherDataList = new ArrayList<>();
             List<WeatherItem> forecastList = WWOData.getData().getWeather();
             CurrentConditionItem condition = WWOData.getData().getCurrentCondition().get(0);
@@ -38,6 +85,7 @@ public class Wwo extends AbstractProvider {
                 if (count < DAYS) {
                     WeatherData.Builder builder = new WeatherData.Builder();
                     builder
+                            .withProviderId(getId())
                             .withDate(getDate(item))
                             .withLow(Float.parseFloat(getLow(item)))
                             .withHigh(Float.parseFloat(getHigh(item)))
@@ -46,6 +94,7 @@ public class Wwo extends AbstractProvider {
 
                     if (count == 0) {
                         builder
+                                .isCurrent(true)
                                 .withCurrent(Float.parseFloat(getCurrent(condition)))
                                 .withWind(getWindSpeed(condition))
                                 .withHumidity(condition.getHumidity())
@@ -58,13 +107,8 @@ public class Wwo extends AbstractProvider {
                 }
             }
 
-            return compositeProviderData(weatherDataList);
+            return Observable.fromIterable(weatherDataList);
         });
-    }
-
-    @Override
-    public ProviderData getProviderData(double latitude, double longitude) {
-        return null;
     }
 
     private int getDate(WeatherItem item) {

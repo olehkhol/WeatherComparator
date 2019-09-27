@@ -1,7 +1,5 @@
 package ua.in.khol.oleh.touristweathercomparer.model.db;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,12 +7,11 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.utils.Calculation;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 
 public class RxDatabaseHelper implements DatabaseHelper {
 
@@ -33,29 +30,25 @@ public class RxDatabaseHelper implements DatabaseHelper {
 
     @Override
     public long putCity(City city, int accuracy) {
-        double lat = Calculation.round(city.getLatitude(), accuracy);
-        double lon = Calculation.round(city.getLongitude(), accuracy);
 
-        return mAppDatabase.getCityDao().insertCity(new City(city.getName(), lat, lon));
+        return mAppDatabase.getCityDao().insertCity(city);
     }
 
     @Override
-    public Maybe<City> rxGetCity(double lat, double lon) {
+    public Maybe<City> rxGetCity(long placeId) {
         return Maybe.fromCallable(() -> mAppDatabase.getCityDao()
-                .findCityByLatLon(lat, lon));
+                .findCityByPlaceId(placeId));
     }
 
     @Override
-    public City getCity(double latitude, double longitude, int accuracy) {
-        double lat = Calculation.round(latitude, accuracy);
-        double lon = Calculation.round(longitude, accuracy);
+    public City getCity(long placeId) {
 
-        return mAppDatabase.getCityDao().findCityByLatLon(lat, lon);
+        return mAppDatabase.getCityDao().findCityByPlaceId(placeId);
     }
 
     @Override
-    public String getCityName(double lat, double lon) {
-        String name = mAppDatabase.getCityDao().findCityNameByLatLon(lat, lon);
+    public String getCityName(long placeId) {
+        String name = mAppDatabase.getCityDao().getCityNameByLatLon(placeId);
         if (name == null)
             name = "";
 
@@ -63,55 +56,72 @@ public class RxDatabaseHelper implements DatabaseHelper {
     }
 
     @Override
-    public long getCityId(City city, int accuracy) {
-        double lat = Calculation.round(city.getLatitude(), accuracy);
-        double lon = Calculation.round(city.getLongitude(), accuracy);
-
-        return mAppDatabase.getCityDao().findCityIdByLatLon(lat, lon);
+    public long getCityId(long placeId) {
+        return mAppDatabase.getCityDao().getCityIdByPlaceId(placeId);
     }
 
     @Override
     public Completable putForecasts(List<Forecast> forecasts) {
         return Completable.fromAction(() -> mAppDatabase.getForecastDao()
-                .insertAll(forecasts));
+                .insertList(forecasts));
     }
 
     @Override
-    public Single<Long> rxPutProvider(Provider provider) {
-
-        return Single.fromCallable(() -> mAppDatabase.getProviderDao()
-                .insertProvider(provider));
-    }
-
-    @Override
-    public long putProvider(Provider provider) {
-        long providerId = mAppDatabase.getProviderDao().insertProvider(provider);
-        Log.d(TAG, "Provider successfully inserted into DB with Id:" + providerId);
-
-        return providerId;
-    }
-
-    @Override
-    public long putTitle(Title title) {
-        long titleId = mAppDatabase.getTitleDao().insertTitle(title);
-        Log.d(TAG, "Title successfully inserted into DB with Id:" + titleId);
-
-        return titleId;
-    }
-
-    @Override
-    public Maybe<List<Title>> getAllTitles(long locationId) {
-        return Maybe.fromCallable(() -> mAppDatabase.getTitleDao().queryAll(locationId))
-                .doOnComplete(() -> Log.d(TAG, "Titles successfully queried from DB"));
-    }
-
-    @Override
-    public Observable<ProviderData> observeProvidersData(double latitude, double longitude) {
-        List<Observable<ProviderData>> observables = new ArrayList<>();
-
-        // TODO observeProvidersData
+    public Observable<WeatherData> observeWeatherData(double latitude, double longitude) {
+        List<Observable<WeatherData>> observables = new ArrayList<>();
 
         return Observable.concat(observables);
+    }
+
+    @Override
+    public long getForecastId(Forecast forecast, int accuracy) {
+        long forecastId = mAppDatabase.getForecastDao()
+                .findForecastId(forecast.getProviderId(), forecast.getPlaceId(),
+                        Calculation.roundDateToDays(forecast.getDate()));
+
+        return forecastId;
+    }
+
+    @Override
+    public long putForecast(Forecast forecast, int accuracy) {
+        long forecastId = mAppDatabase.getForecastDao()
+                .insertForecast(forecast);
+
+        return forecastId;
+    }
+
+    @Override
+    public long getPlaceId(Place place, int accuracy) {
+        double lat = Calculation.round(place.getLatitude(), accuracy);
+        double lon = Calculation.round(place.getLongitude(), accuracy);
+
+        return mAppDatabase.getPlaceDao().findPlaceIdByLatLon(lat, lon);
+    }
+
+    @Override
+    public long getPlaceId(double latitude, double longitude, int accuracy) {
+        double lat = Calculation.round(latitude, accuracy);
+        double lon = Calculation.round(longitude, accuracy);
+
+        return mAppDatabase.getPlaceDao().findPlaceIdByLatLon(lat, lon);
+    }
+
+    @Override
+    public long putPlace(Place place, int accuracy) {
+        double lat = Calculation.round(place.getLatitude(), accuracy);
+        double lon = Calculation.round(place.getLongitude(), accuracy);
+
+        return mAppDatabase.getPlaceDao().insertPlace(new Place(lat, lon));
+    }
+
+    @Override
+    public List<Forecast> getForecastList(long placeId) {
+        return mAppDatabase.getForecastDao().queryByPlaceId(placeId);
+    }
+
+    @Override
+    public void putForecastList(List<Forecast> forecastList) {
+        mAppDatabase.getForecastDao().insertList(forecastList);
     }
 
 }

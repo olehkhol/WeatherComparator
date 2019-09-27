@@ -82,6 +82,7 @@ public final class BindingAdapters {
         if (adapter != null) {
             adapter.clearItems();
             adapter.addItems(titles);
+//            adapter.notifyDataSetChanged();
         }
     }
 
@@ -91,6 +92,7 @@ public final class BindingAdapters {
         if (adapter != null) {
             adapter.clearItems();
             adapter.addItems(providers);
+//            adapter.notifyDataSetChanged();
         }
     }
 }

@@ -10,34 +10,24 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.Yahoo;
 
 public class RxWeatherHelper implements WeatherHelper {
 
-    private List<AbstractProvider> mWeatherProviders = new ArrayList<AbstractProvider>() {{
+    private List<WeatherProvider> mWeatherProviders = new ArrayList<WeatherProvider>() {{
         add(new Yahoo());
         add(new DarkSky());
         add(new Wwo());
     }};
 
     @Override
-    public List<AbstractProvider> getWeatherProviders() {
+    public List<WeatherProvider> getWeatherProviders() {
         return mWeatherProviders;
     }
 
     @Override
-    public Observable<ProviderData> observeProvidersData(double latitude, double longitude) {
-        List<Observable<ProviderData>> observables = new ArrayList<>();
+    public Observable<WeatherData> observeWeatherData(double latitude, double longitude) {
+        List<Observable<WeatherData>> observables = new ArrayList<>();
 
-        for (AbstractProvider provider : getWeatherProviders())
-            observables.add(provider.observeProviderData(latitude, longitude));
+        for (WeatherProvider provider : getWeatherProviders())
+            observables.add(provider.observeWeatherData(latitude, longitude));
 
         return Observable.concat(observables);
-    }
-
-    @Override
-    public List<ProviderData> getProvidersData(double latitude, double longitude) {
-        List<ProviderData> providerDataList = new ArrayList<>();
-
-        for (AbstractProvider provider : getWeatherProviders())
-            providerDataList.add(provider.getProviderData(latitude, longitude));
-
-        return providerDataList;
     }
 }

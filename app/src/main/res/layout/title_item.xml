@@ -36,7 +36,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
-                    bind:image="@{@string/asset_image(title.src)}"
+                    bind:image="@{@string/asset_image(title.image)}"
                     android:contentDescription="TODO" />
 
                 <TextView

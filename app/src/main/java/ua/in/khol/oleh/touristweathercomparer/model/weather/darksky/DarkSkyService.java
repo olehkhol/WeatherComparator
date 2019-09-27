@@ -2,6 +2,7 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather.darksky;
 
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -10,10 +11,19 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.DarkSky
 public interface DarkSkyService {
 
     @GET("/forecast/{key}/{latitude},{longitude}")
-    Observable<DarkSkyData> getLocationWeather(@Path("key") String key,
-                                               @Path("latitude") String latitude,
-                                               @Path("longitude") String longitude,
-                                               @Query("exclude") String exclude,
-                                               @Query("lang") String lang,
-                                               @Query("units") String units);
+    Observable<DarkSkyData> observeLocationWeather(@Path("key") String key,
+                                                   @Path("latitude") String latitude,
+                                                   @Path("longitude") String longitude,
+                                                   @Query("exclude") String exclude,
+                                                   @Query("lang") String lang,
+                                                   @Query("units") String units);
+
+    @GET("/forecast/{key}/{latitude},{longitude}")
+    Call<DarkSkyData> getLocationWeather(@Path("key") String key,
+                                         @Path("latitude") String latitude,
+                                         @Path("longitude") String longitude,
+                                         @Query("exclude") String exclude,
+                                         @Query("lang") String lang,
+                                         @Query("units") String units);
+
 }

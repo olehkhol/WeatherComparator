@@ -90,7 +90,8 @@ public final class Dictionary {
             "light freezing rain", "легкий морозний дощ", "легкий морозный дождь",
             "moderate or heavy rain shower", "помірний або сильний дощ", "умеренный или сильный ливневый дождь",
             "patchy light rain with thunder", "місцями невеликий дощ з грозою", "местами легкий дождь с грозой",
-            "shower in vicinity", "дощ поблизу", "дождь рядом"
+            "shower in vicinity", "дощ поблизу", "дождь рядом",
+            "light rain shower", "легкий дощ", "легкий дождь"
     );
 
     public static String translate(String text, String language) {

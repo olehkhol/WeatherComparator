@@ -6,19 +6,40 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
 
 public class WeatherData {
 
+    private boolean mIsCurrent;
+    private int mProviderId;
+    private double mLatitude;
+    private double mLongitude;
     private int mDate;
     private float mLow;
     private float mHigh;
     private String mText;
     private String mSrc;
-    private float mCurrent;
     private String mWind;
     private String mHumidity;
+
+    private float mCurrent;
     private String mTextExtra;
     private String mSrcExtra;
 
     private WeatherData() {
 
+    }
+
+    public boolean isCurrent() {
+        return mIsCurrent;
+    }
+
+    public int getProviderId() {
+        return mProviderId;
+    }
+
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
     }
 
     public int getDate() {
@@ -67,6 +88,26 @@ public class WeatherData {
 
         public Builder() {
             weatherData = new WeatherData();
+        }
+
+        public Builder isCurrent(boolean isCurrent) {
+            weatherData.mIsCurrent = isCurrent;
+            return this;
+        }
+
+        public Builder withProviderId(int id) {
+            weatherData.mProviderId = id;
+            return this;
+        }
+
+        public Builder withLatitude(double latitude) {
+            weatherData.mLatitude = latitude;
+            return this;
+        }
+
+        public Builder withLongitude(double longitude) {
+            weatherData.mLongitude = longitude;
+            return this;
         }
 
         public Builder withDate(int date) {

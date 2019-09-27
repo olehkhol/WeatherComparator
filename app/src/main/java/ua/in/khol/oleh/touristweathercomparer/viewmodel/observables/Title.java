@@ -2,106 +2,81 @@ package ua.in.khol.oleh.touristweathercomparer.viewmodel.observables;
 
 
 import androidx.annotation.Nullable;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
-@Entity(indices = {@Index(value = {"city_id", "name"}, unique = true)})
-public class Title {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private long mId;
-
-    @ColumnInfo(name = "city_id")
-    private long mCityId;
-
-    @ColumnInfo(name = "name")
+public class Title extends BaseObservable {
+    @Bindable
+    private int mId;
+    @Bindable
     private String mName;
-
-    @ColumnInfo(name = "current")
+    @Bindable
     private float mCurrent;
-
-    @ColumnInfo(name = "src")
-    private String mSrc;
-
-    @ColumnInfo(name = "text")
+    @Bindable
+    private String mImage;
+    @Bindable
     private String mText;
 
-    @Ignore
-    public Title(String name, float current, String text, String src) {
+    public Title(String name) {
+        mName = name;
+    }
+
+    public Title(String name, float current, String text, String image) {
         mName = name;
         mCurrent = current;
-        mSrc = src;
+        mImage = image;
         mText = text;
     }
 
-    public Title(long cityId, String name, float current, String src, String text) {
-        mCityId = cityId;
-        mName = name;
-        mCurrent = current;
-        mSrc = src;
-        mText = text;
-    }
-
-    @Ignore
-    public Title(long id, long cityId, String name, float current, String src, String text) {
+    public Title(int id, String name) {
         mId = id;
-        mCityId = cityId;
         mName = name;
-        mCurrent = current;
-        mSrc = src;
-        mText = text;
     }
 
-    public long getId() {
+    public int getId() {
         return mId;
-    }
-
-    public void setId(long id) {
-        mId = id;
-    }
-
-    public long getCityId() {
-        return mCityId;
-    }
-
-    public void setCityId(long cityId) {
-        mCityId = cityId;
     }
 
     public String getName() {
         return mName;
     }
 
-    public void setName(String name) {
-        mName = name;
-    }
-
     public float getCurrent() {
         return mCurrent;
     }
 
-    public void setCurrent(float current) {
-        mCurrent = current;
-    }
-
-    public String getSrc() {
-        return mSrc;
-    }
-
-    public void setSrc(String src) {
-        mSrc = src;
+    public String getImage() {
+        return mImage;
     }
 
     public String getText() {
         return mText;
     }
 
+    public void setId(int id) {
+        mId = id;
+        notifyPropertyChanged(BR.id);
+    }
+
+    public void setName(String name) {
+        mName = name;
+        notifyPropertyChanged(BR.name);
+    }
+
+    public void setCurrent(float current) {
+        mCurrent = current;
+        notifyPropertyChanged(BR.current);
+    }
+
+    public void setImage(String image) {
+        mImage = image;
+        notifyPropertyChanged(BR.image);
+    }
+
     public void setText(String text) {
         mText = text;
+        notifyPropertyChanged(BR.text);
     }
 
     @Override
@@ -112,7 +87,7 @@ public class Title {
         if (this == obj) return true;
 
         Title title = (Title) obj;
-        return title.getCityId() == mCityId && title.getName().equals(mName);
+        return title.getName().equals(mName);
     }
 
     @Override

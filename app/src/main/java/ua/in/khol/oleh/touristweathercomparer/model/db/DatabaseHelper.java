@@ -6,11 +6,10 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.ProviderData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 
 public interface DatabaseHelper {
 
@@ -18,24 +17,29 @@ public interface DatabaseHelper {
 
     long putCity(City city, int accuracy);
 
-    Maybe<City> rxGetCity(double lat, double lon);
+    Maybe<City> rxGetCity(long placeId);
 
-    City getCity(double lat, double lon, int accuracy);
+    City getCity(long placeId);
 
-    String getCityName(double lat, double lon);
+    String getCityName(long placeId);
 
-    long getCityId(City city, int accuracy);
+    long getCityId(long placeId);
 
     Completable putForecasts(List<Forecast> forecasts);
 
-    Single<Long> rxPutProvider(Provider provider);
+    Observable<WeatherData> observeWeatherData(double latitude, double longitude);
 
-    long putProvider(Provider provider);
+    long getForecastId(Forecast forecast, int accuracy);
 
-    long putTitle(Title title);
+    long putForecast(Forecast forecast, int accuracy);
 
-    Maybe<List<Title>> getAllTitles(long locationId);
+    long getPlaceId(Place place, int accuracy);
 
-    Observable<ProviderData> observeProvidersData(double latitude, double longitude);
+    long getPlaceId(double latitude, double longitude, int accuracy);
 
+    long putPlace(Place place, int accuracy);
+
+    List<Forecast> getForecastList(long placeId);
+
+    void putForecastList(List<Forecast> forecastList);
 }

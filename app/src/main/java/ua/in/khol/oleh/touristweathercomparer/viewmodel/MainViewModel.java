@@ -1,22 +1,21 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
-import android.location.Location;
-
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.MutableLiveData;
 
-import io.reactivex.functions.Consumer;
-import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class MainViewModel extends BaseViewModel {
+    private final ObservableField<Place> mPlace = new ObservableField<>();
     private final ObservableField<City> mCity = new ObservableField<>();
-    private final ObservableField<Location> mLocation = new ObservableField<>();
     private final ObservableList<Title> mTitles = new ObservableArrayList<>();
     private final ObservableList<Provider> mProviders = new ObservableArrayList<>();
     private final MutableLiveData<Boolean> mIsRecreate = new MutableLiveData<>();
@@ -28,6 +27,7 @@ public class MainViewModel extends BaseViewModel {
         subscribeCity();
         subscribeTitle();
         subscribeProvider();
+        subscribeForecast();
     }
 
     @Override
@@ -43,38 +43,39 @@ public class MainViewModel extends BaseViewModel {
 
     private void subscribeRecreate() {
         getCompositeDisposable()
-                .add(getRepository().getRefreshObservable().subscribe(new Consumer<GodRepository.Status>() {
-                    @Override
-                    public void accept(GodRepository.Status value) throws Exception {
-                        switch (value) {
-                            case OFFLINE:
-                                break;
-                            case ONLINE:
-                                break;
-                            case ERROR:
-                            case REFRESHING:
-                                setIsRefreshing(true);
-                                setRefreshed(false);
-                                break;
-                            case REFRESHED:
-                                setIsRefreshing(false);
-                                setRefreshed(true);
-                                break;
-                            case NEED_RECREATE:
-                            default:
-                                mIsRecreate.setValue(true);
-                                break;
-                        }
+                .add(getRepository().observeStatus().subscribe(value -> {
+                    switch (value) {
+                        case OFFLINE:
+                        case ONLINE:
+                            break;
+                        case ERROR:
+                        case REFRESHING:
+                            setIsRefreshing(true);
+                            setRefreshed(false);
+                            break;
+                        case REFRESHED:
+                            setIsRefreshing(false);
+                            setRefreshed(true);
+                            break;
+                        case NEED_RECREATE:
+                        default:
+                            mIsRecreate.setValue(true);
+                            break;
                     }
                 }));
     }
 
     private void subscribeCity() {
-        getCompositeDisposable().add(getRepository().getCity().subscribe(mCity::set));
+        getCompositeDisposable().add(getRepository().observeCity()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mCity::set));
     }
 
     private void subscribeTitle() {
-        getCompositeDisposable().add(getRepository().getTitle()
+        getCompositeDisposable().add(getRepository().observeTitle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(title -> {
                     int index = mTitles.indexOf(title);
                     if (index != -1)
@@ -85,20 +86,35 @@ public class MainViewModel extends BaseViewModel {
     }
 
     private void subscribeProvider() {
-        getCompositeDisposable().add(getRepository().getProvider().subscribe(new Consumer<Provider>() {
-            @Override
-            public void accept(Provider provider) throws Exception {
-                int index = mProviders.indexOf(provider);
-                if (index != -1)
-                    mProviders.set(index, provider);
-                else
-                    mProviders.add(provider);
-            }
-        }));
+        getCompositeDisposable().add(getRepository().observeProvider()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(provider -> {
+                    int index = mProviders.indexOf(provider);
+                    if (index != -1)
+                        mProviders.set(index, provider);
+                    else
+                        mProviders.add(provider);
+                }));
     }
 
-    public ObservableField<Location> getLocation() {
-        return mLocation;
+    private void subscribeForecast() {
+        getCompositeDisposable().add(getRepository().observeForecast()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(forecast -> {
+                    int providerId = forecast.getProviderId();
+                    if (forecast.isCurrent()) {
+                        mTitles.get(providerId).setCurrent(forecast.getCurrent());
+                        mTitles.get(providerId).setText(forecast.getCurrentText());
+                        mTitles.get(providerId).setImage(forecast.getCurrentImage());
+                    }
+                    mProviders.get(providerId).putForecast(forecast);
+                }));
+    }
+
+    public ObservableField<Place> getPlace() {
+        return mPlace;
     }
 
     public ObservableField<City> getCity() {

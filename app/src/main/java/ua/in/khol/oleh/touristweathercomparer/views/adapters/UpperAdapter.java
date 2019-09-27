@@ -4,21 +4,25 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.in.khol.oleh.touristweathercomparer.BR;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ProviderItemBinding;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 
 // UPPER ADAPTER
 public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder> {
 
-    private List<Provider> mProviders = new ArrayList<>();
+    private ObservableList<Provider> mProviders = new ObservableArrayList<>();
+    private ForecastListChangedCallback mForecastListChangedCallback
+            = new ForecastListChangedCallback();
     private OnBannerClickListener mBannerClickListener;
 
     @NonNull
@@ -43,23 +47,22 @@ public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder>
         holder.mBinding.innerRecycler
                 .setAdapter(new RecyclerAdapter<>(R.layout.forecast_item, BR.forecast,
                         provider.getForecasts()));
+
+        provider.getForecasts().addOnListChangedCallback(mForecastListChangedCallback);
+
     }
 
     @Override
     public int getItemCount() {
-        if (mProviders != null)
-            return mProviders.size();
-        return 0;
+        return mProviders.size();
     }
 
     public void setOnBannerClickListener(OnBannerClickListener bannerClickListener) {
         mBannerClickListener = bannerClickListener;
     }
 
-
     public void addItems(List<Provider> providers) {
-        if (providers != null)
-            mProviders.addAll(providers);
+        mProviders.addAll(providers);
         notifyDataSetChanged();
     }
 
@@ -81,5 +84,30 @@ public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder>
 
     public interface OnBannerClickListener {
         void onBannerClick(String url);
+    }
+
+    private class ForecastListChangedCallback
+            extends ObservableList.OnListChangedCallback<ObservableList<Forecast>> {
+        @Override
+        public void onChanged(ObservableList sender) {
+        }
+
+        @Override
+        public void onItemRangeChanged(ObservableList sender, int positionStart, int itemCount) {
+        }
+
+        @Override
+        public void onItemRangeInserted(ObservableList sender, int positionStart, int itemCount) {
+            notifyItemRangeChanged(positionStart, itemCount);
+        }
+
+        @Override
+        public void onItemRangeMoved(ObservableList sender, int fromPosition, int toPosition,
+                                     int itemCount) {
+        }
+
+        @Override
+        public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
+        }
     }
 }
