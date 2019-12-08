@@ -17,6 +17,8 @@ public class Title extends BaseObservable {
     private String mImage;
     @Bindable
     private String mText;
+    @Bindable
+    private boolean mVisible;
 
     public Title(String name) {
         mName = name;
@@ -54,6 +56,10 @@ public class Title extends BaseObservable {
         return mText;
     }
 
+    public boolean isVisible() {
+        return mVisible;
+    }
+
     public void setId(int id) {
         mId = id;
         notifyPropertyChanged(BR.id);
@@ -77,6 +83,11 @@ public class Title extends BaseObservable {
     public void setText(String text) {
         mText = text;
         notifyPropertyChanged(BR.text);
+    }
+
+    public void setVisible(boolean visible) {
+        mVisible = visible;
+        notifyPropertyChanged(BR.visible);
     }
 
     @Override

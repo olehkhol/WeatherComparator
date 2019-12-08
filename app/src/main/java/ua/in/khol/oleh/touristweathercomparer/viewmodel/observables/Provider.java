@@ -18,6 +18,8 @@ public class Provider extends BaseObservable {
     private String mPath;
     @Bindable
     private ObservableList<Forecast> mForecasts;
+    @Bindable
+    private boolean mVisible;
 
     public Provider(long id, String url, String path) {
         mId = id;
@@ -41,6 +43,10 @@ public class Provider extends BaseObservable {
 
     public String getPath() {
         return mPath;
+    }
+
+    public boolean isVisible() {
+        return mVisible;
     }
 
     public ObservableList<Forecast> getForecasts() {
@@ -76,5 +82,10 @@ public class Provider extends BaseObservable {
             mForecasts.add(forecast);
 
         notifyPropertyChanged(BR.forecasts);
+    }
+
+    public void setVisible(boolean visible) {
+        mVisible = visible;
+        notifyPropertyChanged(BR.visible);
     }
 }

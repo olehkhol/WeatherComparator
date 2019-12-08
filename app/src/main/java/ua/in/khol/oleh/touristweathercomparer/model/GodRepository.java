@@ -35,12 +35,10 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class GodRepository implements Repository {
-
-    private static final String TAG = GodRepository.class.getName();
-    public static final int DB_LOCATION_ACCURACY = 2; // TODO move this to PreferencesHelper
+    private static final int DB_LOCATION_ACCURACY = 2; // TODO move this to PreferencesHelper
 
     public enum Status {
-        OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR
+        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR
     }
 
     private Context mAppContext;
@@ -92,7 +90,8 @@ public class GodRepository implements Repository {
 
     public Observable<City> observeCity() {
         return Observable.combineLatest(mLocationSubject,
-                ReactiveNetwork.observeInternetConnectivity(), (location, connected) -> {
+                ReactiveNetwork.observeInternetConnectivity(),
+                (location, connected) -> {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
                     long placeId = mDatabaseHelper
@@ -108,29 +107,17 @@ public class GodRepository implements Repository {
                             mDatabaseHelper.putCity(city, DB_LOCATION_ACCURACY);
                     } else { // Get city from DB
                         city = mDatabaseHelper.getCity(placeId);
-                        if (city == null)
+                        if (city == null) {
+                            mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
                             city = new City();
+                        } else
+                            mStatusPublicSubject.onNext(Status.OFFLINE);
                     }
 
                     return city;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io());
-    }
-
-    @Override
-    public Observable<Provider> observeProvider() {
-        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
-                .flatMap((Function<WeatherProvider, ObservableSource<Provider>>) wp -> Observable
-                        .just(new Provider(wp.getId(), wp.getSite(), wp.getBanner())));
-    }
-
-    @Override
-    public Observable<Title> observeTitle() {
-        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
-                .flatMap((Function<WeatherProvider, ObservableSource<Title>>) wp -> Observable
-                        .just(new Title(wp.getId(), wp.getName())));
-
     }
 
     @SuppressLint("CheckResult")
@@ -153,7 +140,6 @@ public class GodRepository implements Repository {
                                     Forecast forecast = convertWeatherDataToForecast(data);
                                     forecast.setPlaceId(placeId);
                                     forecastList.add(forecast);
-
                                 }
                         }
                         mDatabaseHelper.putForecastList(forecastList);
@@ -165,6 +151,21 @@ public class GodRepository implements Repository {
                 })
                 .flatMap((Function<Observable<Forecast>, ObservableSource<Forecast>>)
                         forecastObservable -> forecastObservable);
+    }
+
+    @Override
+    public Observable<Provider> observeProvider() {
+        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
+                .flatMap((Function<WeatherProvider, ObservableSource<Provider>>) wp -> Observable
+                        .just(new Provider(wp.getId(), wp.getSite(), wp.getBanner())));
+    }
+
+    @Override
+    public Observable<Title> observeTitle() {
+        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
+                .flatMap((Function<WeatherProvider, ObservableSource<Title>>) wp -> Observable
+                        .just(new Title(wp.getId(), wp.getName())));
+
     }
 
     private Forecast convertWeatherDataToForecast(WeatherData weatherData) {
@@ -227,7 +228,7 @@ public class GodRepository implements Repository {
 //                    double latitude = location.getLatitude();
 //                    double longitude = location.getLongitude();
 //
-//                    List<Observable<WeatherData>> observables = new ArrayList<>();
+//                    Hourly<Observable<WeatherData>> observables = new ArrayList<>();
 //
 //                    for (WeatherProvider provider : mWeatherHelper.getWeatherProviders())
 //                        observables.add(provider.observeWeatherData(latitude, longitude));

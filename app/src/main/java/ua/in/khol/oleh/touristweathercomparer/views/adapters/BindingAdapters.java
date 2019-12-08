@@ -1,6 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.views.adapters;
 
 import android.annotation.SuppressLint;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +23,11 @@ public final class BindingAdapters {
 
     private BindingAdapters() {
 
+    }
+
+    @BindingAdapter("visibility")
+    public static void setVisibility(View view, boolean visible) {
+        view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @BindingAdapter("image")
@@ -51,11 +57,11 @@ public final class BindingAdapters {
     public static void temLowHigh(TextView textView, float tempLow, float tempHigh) {
 
         boolean celsius = LocaleUnits.getInstance().isCelsius();
-        String firstSign = (tempLow > 0) ? "+" : "";
-        String secondSign = (tempHigh > 0) ? "+" : "";
-        String thirdSign = celsius ? "\u2103" : "\u2109";
         float low = celsius ? (tempLow - 32) * 5 / 9 : tempLow;
         float high = celsius ? (tempHigh - 32) * 5 / 9 : tempHigh;
+        String firstSign = (low > 0) ? "+" : "";
+        String secondSign = (high > 0) ? "+" : "";
+        String thirdSign = celsius ? "\u2103" : "\u2109";
 
         @SuppressLint("DefaultLocale")
         String formatted
@@ -67,9 +73,9 @@ public final class BindingAdapters {
     public static void tempCurrent(TextView textView, float currentTemp) {
 
         boolean celsius = LocaleUnits.getInstance().isCelsius();
-        String firstSign = (currentTemp > 0) ? "+" : "";
-        String secondSign = celsius ? "\u2103" : "\u2109";
         float current = celsius ? (currentTemp - 32) * 5 / 9 : currentTemp;
+        String firstSign = (current > 0) ? "+" : "";
+        String secondSign = celsius ? "\u2103" : "\u2109";
 
         @SuppressLint("DefaultLocale")
         String formatted = String.format("%s%.1f%s", firstSign, current, secondSign);

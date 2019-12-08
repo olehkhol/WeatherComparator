@@ -16,5 +16,6 @@
     <string name="error">Помилка</string>
     <string name="permission">Програма вимагає дозволу на місцезнаходження!</string>
     <string name="finish">Завершити</string>
+    <string name="ask_for_intenet">Gemme internet</string>
 
 </resources>

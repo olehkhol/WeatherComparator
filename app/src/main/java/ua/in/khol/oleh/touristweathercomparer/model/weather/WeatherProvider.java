@@ -15,8 +15,8 @@ public abstract class WeatherProvider {
     private String SITE;
     protected String API;
     protected String PATH;
-    protected String BANNER;
-    protected final static int DAYS = 7;
+    private String BANNER;
+    protected final static int DAYS = 5;
     private static int sId = 0;
     private int mId;
 

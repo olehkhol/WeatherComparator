@@ -5,15 +5,18 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.DarkSky;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.owm.Owm;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.wwo.Wwo;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.Yahoo;
 
 public class RxWeatherHelper implements WeatherHelper {
 
     private List<WeatherProvider> mWeatherProviders = new ArrayList<WeatherProvider>() {{
-        add(new Yahoo());
         add(new DarkSky());
-        add(new Wwo());
+        add(new Yahoo());
+        add(new Owm());
+        add(new Wwo()); // I got bored to refresh an api key.
+        // add(new Accu()); // Up to 50 calls per day - seriously ?!
     }};
 
     @Override

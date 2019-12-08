@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
@@ -66,18 +67,24 @@ public class MainView extends AppCompatActivity
         mViewModel.wakeUp();
         super.onCreate(savedInstanceState);
         // Init UI and Binding
-        mViewModel.getIsRecreate().observe(this, aBoolean -> {
+        ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
+        binding.setViewModel(mViewModel);
+        initBindings(binding);
+        initUI();
+        // Observe live data
+        mViewModel.getDoRecreate().observe(this, aBoolean -> {
             if (aBoolean) {
-                mViewModel.setIsRecreate(false);
+                mViewModel.setDoRecreate(false);
                 MainView.this.overridePendingTransition(0, 0);
                 MainView.this.recreate();
                 MainView.this.overridePendingTransition(0, 0);
             }
         });
-        ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
-        binding.setViewModel(mViewModel);
-        initBindings(binding);
-        initUI();
+        mViewModel.getAskForInternetSoftly().observe(this, asked -> {
+            if (asked)
+                Snackbar.make(binding.content, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
+                        .show();
+        });
         // Request permissions
         requestPermissions();
     }
@@ -87,7 +94,7 @@ public class MainView extends AppCompatActivity
 
     /**
      * This method asks for location permissions and
-     * starts presenter if the permissions are granted.
+     * starts ipresenter if the permissions are granted.
      */
     private void requestPermissions() {
         if (ContextCompat

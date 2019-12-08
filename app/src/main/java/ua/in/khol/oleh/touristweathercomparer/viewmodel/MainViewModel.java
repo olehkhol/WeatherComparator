@@ -18,12 +18,14 @@ public class MainViewModel extends BaseViewModel {
     private final ObservableField<City> mCity = new ObservableField<>();
     private final ObservableList<Title> mTitles = new ObservableArrayList<>();
     private final ObservableList<Provider> mProviders = new ObservableArrayList<>();
-    private final MutableLiveData<Boolean> mIsRecreate = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mDoRecreate = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mAskForInternetSoftly = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mAskForInternet = new MutableLiveData<>();
 
-    public MainViewModel(Repository repository) {
+    MainViewModel(Repository repository) {
         super(repository);
 
-        subscribeRecreate();
+        subscribeOnStatus();
         subscribeCity();
         subscribeTitle();
         subscribeProvider();
@@ -41,11 +43,16 @@ public class MainViewModel extends BaseViewModel {
                 getRepository().update();
     }
 
-    private void subscribeRecreate() {
+    private void subscribeOnStatus() {
         getCompositeDisposable()
-                .add(getRepository().observeStatus().subscribe(value -> {
-                    switch (value) {
+                .add(getRepository().observeStatus().subscribe(status -> {
+                    switch (status) {
                         case OFFLINE:
+                            mAskForInternetSoftly.postValue(true);
+                            break;
+                        case CRITICAL_OFFLINE:
+                            mAskForInternet.postValue(true);
+                            break;
                         case ONLINE:
                             break;
                         case ERROR:
@@ -59,7 +66,7 @@ public class MainViewModel extends BaseViewModel {
                             break;
                         case NEED_RECREATE:
                         default:
-                            mIsRecreate.setValue(true);
+                            mDoRecreate.setValue(true);
                             break;
                     }
                 }));
@@ -108,8 +115,10 @@ public class MainViewModel extends BaseViewModel {
                         mTitles.get(providerId).setCurrent(forecast.getCurrent());
                         mTitles.get(providerId).setText(forecast.getCurrentText());
                         mTitles.get(providerId).setImage(forecast.getCurrentImage());
+                        mTitles.get(providerId).setVisible(true);
                     }
                     mProviders.get(providerId).putForecast(forecast);
+                    mProviders.get(providerId).setVisible(true);
                 }));
     }
 
@@ -129,11 +138,28 @@ public class MainViewModel extends BaseViewModel {
         return mProviders;
     }
 
-    public MutableLiveData<Boolean> getIsRecreate() {
-        return mIsRecreate;
+    public MutableLiveData<Boolean> getDoRecreate() {
+        return mDoRecreate;
     }
 
-    public void setIsRecreate(Boolean isRecreate) {
-        mIsRecreate.setValue(isRecreate);
+    public void setDoRecreate(Boolean doRecreate) {
+        mDoRecreate.setValue(doRecreate);
     }
+
+    public MutableLiveData<Boolean> getAskForInternetSoftly() {
+        return mAskForInternetSoftly;
+    }
+
+    public void setAskForInternetSoftly(boolean ask) {
+        mAskForInternetSoftly.setValue(ask);
+    }
+
+    public MutableLiveData<Boolean> getAskForInternet() {
+        return mAskForInternet;
+    }
+
+    public void setAskForInternet(boolean ask) {
+        mAskForInternet.setValue(ask);
+    }
+
 }

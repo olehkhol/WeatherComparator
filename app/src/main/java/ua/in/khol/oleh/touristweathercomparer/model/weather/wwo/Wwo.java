@@ -33,32 +33,35 @@ public class Wwo extends WeatherProvider {
 
             if (wwoData != null) {
                 List<WeatherItem> forecastList = wwoData.getData().getWeather();
-                CurrentConditionItem condition = wwoData.getData().getCurrentCondition().get(0);
-
-                int count = 0;
-                for (WeatherItem item : forecastList) {
-                    if (count < DAYS) {
-                        WeatherData.Builder builder = new WeatherData.Builder();
-                        builder
-                                .withProviderId(getId())
-                                .withDate(getDate(item))
-                                .withLow(Float.parseFloat(getLow(item)))
-                                .withHigh(Float.parseFloat(getHigh(item)))
-                                .withText(getText(item))
-                                .withSrc(getSrc(item));
-
-                        if (count == 0) {
+                List<CurrentConditionItem> currentConditionList
+                        = wwoData.getData().getCurrentCondition();
+                if (currentConditionList != null) { // TODO check how did this happen
+                    CurrentConditionItem condition = currentConditionList.get(0);
+                    int count = 0;
+                    for (WeatherItem item : forecastList) {
+                        if (count < DAYS) {
+                            WeatherData.Builder builder = new WeatherData.Builder();
                             builder
-                                    .isCurrent(true)
-                                    .withCurrent(Float.parseFloat(getCurrent(condition)))
-                                    .withWind(getWindSpeed(condition))
-                                    .withHumidity(condition.getHumidity())
-                                    .withTextExtra(getTextExtra(condition))
-                                    .withSrcExtra(getSrcExtra(condition));
-                        }
+                                    .withProviderId(getId())
+                                    .withDate(getDate(item))
+                                    .withLow(Float.parseFloat(getLow(item)))
+                                    .withHigh(Float.parseFloat(getHigh(item)))
+                                    .withText(getText(item))
+                                    .withSrc(getSrc(item));
 
-                        weatherDataList.add(builder.build());
-                        count++;
+                            if (count == 0) {
+                                builder
+                                        .isCurrent(true)
+                                        .withCurrent(Float.parseFloat(getCurrent(condition)))
+                                        .withWind(getWindSpeed(condition))
+                                        .withHumidity(condition.getHumidity())
+                                        .withTextExtra(getTextExtra(condition))
+                                        .withSrcExtra(getSrcExtra(condition));
+                            }
+
+                            weatherDataList.add(builder.build());
+                            count++;
+                        }
                     }
                 }
             }

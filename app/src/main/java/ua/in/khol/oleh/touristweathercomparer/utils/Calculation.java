@@ -14,8 +14,7 @@ public class Calculation {
     }
 
     public static int roundDateToDays(int date) {
-        int divided = date / 60 / 60 / 24;
-
-        return divided * 24 * 60 * 60;
+        // TODO roundDateToDays : do i really need this ?
+        return date;
     }
 }

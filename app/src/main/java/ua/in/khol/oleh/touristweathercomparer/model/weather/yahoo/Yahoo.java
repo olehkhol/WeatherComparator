@@ -2,6 +2,7 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,10 +23,12 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo.pojo.YahooMode
 
 public class Yahoo extends WeatherProvider {
     private YahooService mService;
+    public static final String FORMATTED_ICON_PATH = "http://l.yimg.com/a/i/us/we/52/%d.gif";
 
     public Yahoo() {
         super("Yahoo", "http://weather.yahoo.com/",
                 "https://weather-ydn-yql.media.yahoo.com");
+
         mService = createService(YahooService.class);
     }
 
@@ -75,6 +78,7 @@ public class Yahoo extends WeatherProvider {
                                 .withHigh(forecast.getHigh())
                                 .withText(forecast.getText())
                                 .withSrc(PATH + forecast.getCode());
+                        Date raw = new Date((long) (forecast.getDate()) * 1000L);
 
                         if (count == 0) {
                             CurrentObservation currentObservation

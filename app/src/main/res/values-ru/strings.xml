@@ -16,5 +16,6 @@
     <string name="error">Ошибка</string>
     <string name="permission">Приложение требует разрешения на местоположение!</string>
     <string name="finish">Завершить</string>
+    <string name="ask_for_intenet">Gemme internet</string>
 
 </resources>

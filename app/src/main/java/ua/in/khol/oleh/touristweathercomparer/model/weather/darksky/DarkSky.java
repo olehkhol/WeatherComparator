@@ -25,9 +25,8 @@ public class DarkSky extends WeatherProvider {
     public List<WeatherData> getWeatherDataList(double latitude, double longitude) {
         List<WeatherData> weatherDataList = new ArrayList<>();
 
-        DarkSkyData darkSkyData;
         try {
-            darkSkyData = mService.getLocationWeather(DarkSkyAuth.getSecretKey(),
+            DarkSkyData darkSkyData = mService.getLocationWeather(DarkSkyAuth.getSecretKey(),
                     String.valueOf(latitude), String.valueOf(longitude), "minutely,hourly,flags",
                     "en", "us").execute().body();
 
@@ -38,7 +37,7 @@ public class DarkSky extends WeatherProvider {
                 currently = darkSkyData.getCurrently();
 
                 int count = 0;
-                for (Datum datum : datumList) {
+                for (Datum datum : datumList)
                     if (count < DAYS) {
                         WeatherData.Builder builder = new WeatherData.Builder();
                         builder
@@ -63,7 +62,6 @@ public class DarkSky extends WeatherProvider {
                         weatherDataList.add(builder.build());
                         count++;
                     }
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();

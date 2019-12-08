@@ -33,4 +33,5 @@
     <string name="finish">Finish</string>
 
     <string name="location_format" translatable="false">"%.06f"</string>
+    <string name="ask_for_intenet">Gemme an internet</string>
 </resources>

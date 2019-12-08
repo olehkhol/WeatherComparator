@@ -19,7 +19,8 @@
         android:longClickable="true"
         card_view:cardCornerRadius="3dp"
         card_view:cardMaxElevation="1px"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardUseCompatPadding="true"
+        bind:visibility="@{title.visible}" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,8 +37,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
-                    bind:image="@{@string/asset_image(title.image)}"
-                    android:contentDescription="TODO" />
+                    bind:image="@{@string/asset_image(title.image)}" />
 
                 <TextView
                     android:layout_width="0dp"
