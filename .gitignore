@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Android template
 # Built application files
-*.apk
+#*.apk
 # Files for the ART/Dalvik VM
 # Java class files
 # Generated files
@@ -41,3 +41,13 @@ google-services.json
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/accu/AccuAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmAuth.java
+/gradle/wrapper/gradle-wrapper.jar
+/gradlew
+/gradlew.bat
+/.idea/encodings.xml
+/.idea/misc.xml
+/.idea/render.experimental.xml
+/.idea/runConfigurations.xml
+/_docs/
+/_key/
+/_res/
