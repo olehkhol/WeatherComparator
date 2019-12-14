@@ -43,12 +43,15 @@ public class Owm extends WeatherProvider {
                 Map<String, Integer> textMap = new HashMap<>();
                 Map<String, Integer> srcMap = new HashMap<>();
                 do {
-                    Hourly forecast
-                            = forecastHourly.get(i);
-                    DateTime hourlyDateTime = new DateTime(forecast.getDt().longValue() * 1000);
-                    if (date.withTimeAtStartOfDay()
-                            .equals(hourlyDateTime.withTimeAtStartOfDay())) {
+                    if (i < forecastHourly.size()
+                            && date.withTimeAtStartOfDay()
+                            .equals(new DateTime(forecastHourly.get(i).getDt().longValue() * 1000)
+                                    .withTimeAtStartOfDay())) {
                         // Accumulate the whole hourly data
+                        Hourly forecast
+                                = forecastHourly.get(i);
+                        DateTime hourlyDateTime
+                                = new DateTime(forecast.getDt().longValue() * 1000);
                         // Get min|max temp
                         Main main = forecast.getMain();
                         low = Math.min(low, main.getTempMin());
@@ -68,9 +71,10 @@ public class Owm extends WeatherProvider {
                         else
                             srcMap.put(src, 0);
                         i++;
-                    } else if(i == 0) {
+                    } else if (i == 0) {
                         // System clock is wrong
-                        date = hourlyDateTime;
+                        date = new DateTime(forecastHourly.get(0).getDt().longValue() * 1000)
+                                .withTimeAtStartOfDay();
                     } else {
                         // Build WeatherData
                         WeatherData.Builder weatherDataBuilder = new WeatherData.Builder();
@@ -105,9 +109,10 @@ public class Owm extends WeatherProvider {
                         date = date.plusDays(1);
                         count++;
                     }
-                } while (i < forecastHourly.size() && count < 5);
+                } while (count < DAYS);
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
 

@@ -49,6 +49,7 @@ public class MainView extends AppCompatActivity
     private boolean mHasPermissions = false;
     // UI variables
     private MainViewModel mViewModel;
+    private int mOrientation;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
@@ -67,6 +68,7 @@ public class MainView extends AppCompatActivity
         mViewModel.wakeUp();
         super.onCreate(savedInstanceState);
         // Init UI and Binding
+        mOrientation = getResources().getConfiguration().orientation;
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setViewModel(mViewModel);
         initBindings(binding);
@@ -82,7 +84,7 @@ public class MainView extends AppCompatActivity
         });
         mViewModel.getAskForInternetSoftly().observe(this, asked -> {
             if (asked)
-                Snackbar.make(binding.content, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.drawerLayout, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
                         .show();
         });
         // Request permissions
@@ -271,7 +273,7 @@ public class MainView extends AppCompatActivity
     }
 
     private void initBindings(ViewMainBinding binding) {
-        mUpperRecycler = binding.upperRecycler;
+        mUpperRecycler = binding.content.upperRecycler;
         mUpperRecycler.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         mUpperAdapter = new UpperAdapter();
@@ -283,15 +285,18 @@ public class MainView extends AppCompatActivity
         });
         mUpperRecycler.setAdapter(mUpperAdapter);
 
-        mLowerRecycler = binding.lowerRecycler;
+        mLowerRecycler = binding.content.lowerRecycler;
         mLowerRecycler.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
+                mOrientation == Configuration.ORIENTATION_PORTRAIT
+                        ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL, false));
         RecyclerAdapter<Title> lowerAdapter
                 = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
         lowerAdapter.setOnItemClickListener((position, item)
                 -> mUpperRecycler.getLayoutManager().scrollToPosition(position));
         mLowerRecycler.setAdapter(lowerAdapter);
     }
+
+
     // ----------------[UI]----------------
 
 }
