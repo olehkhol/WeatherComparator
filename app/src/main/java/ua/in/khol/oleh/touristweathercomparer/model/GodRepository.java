@@ -14,8 +14,10 @@ import java.util.Locale;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -38,7 +40,8 @@ public class GodRepository implements Repository {
     private static final int DB_LOCATION_ACCURACY = 2; // TODO move this to PreferencesHelper
 
     public enum Status {
-        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR
+        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR,
+        LOCATION_UNAVAILABLE, CLEAR
     }
 
     private Context mAppContext;
@@ -67,6 +70,11 @@ public class GodRepository implements Repository {
     }
 
     @Override
+    public void clearStatus() {
+        mStatusPublicSubject.onNext(Status.CLEAR);
+    }
+
+    @Override
     public void update() {
         updateMetricUnits();
         updateConfiguration();
@@ -75,7 +83,17 @@ public class GodRepository implements Repository {
     }
 
     private void processLocation() {
-        mCompositeDisposable.add(mLocationHelper.getSingleLocation(mAccuracy, mPower)
+        mCompositeDisposable.add(mLocationHelper.observeLocationUsable()
+                .filter(locationUsable -> {
+                    if (!locationUsable)
+                        mStatusPublicSubject.onNext(Status.LOCATION_UNAVAILABLE);
+                    return locationUsable;
+                })
+                .flatMapSingle((Function<Boolean, SingleSource<Location>>) aBoolean -> {
+                    mStatusPublicSubject.onNext(Status.REFRESHING);
+                    return mLocationHelper.observeLocation(mAccuracy, mPower);
+
+                })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .doOnSuccess(location -> {
@@ -84,8 +102,12 @@ public class GodRepository implements Repository {
                     if (placeId == 0)
                         mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
                 })
-                .subscribe(location -> mLocationSubject.onNext(location),
-                        Throwable::printStackTrace));
+                .subscribe(location -> {
+                    mStatusPublicSubject.onNext(Status.REFRESHED);
+                    mLocationSubject.onNext(location);
+                },
+                        Throwable::printStackTrace)
+        );
     }
 
     public Observable<City> observeCity() {

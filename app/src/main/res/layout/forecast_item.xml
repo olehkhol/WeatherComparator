@@ -19,60 +19,59 @@
         card_view:cardPreventCornerOverlap="true"
         card_view:cardUseCompatPadding="true">
 
-            <RelativeLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/weather_data_item_image"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                bind:image="@{@string/asset_image(forecast.image)}" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/weather_data_item_image"
+                android:layout_toRightOf="@id/weather_data_item_image"
+                android:orientation="vertical"
+                android:weightSum="10">
 
-                <ImageView
-                    android:id="@+id/weather_data_item_image"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    bind:image="@{@string/asset_image(forecast.image)}"
-                    />
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/weather_data_item_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/weather_data_item_image"
-                    android:layout_toRightOf="@id/weather_data_item_image"
-                    android:orientation="vertical"
-                    android:weightSum="10" >
+                    android:layout_height="20dp"
+                    android:gravity="start|center"
+                    android:textSize="12sp"
+                    bind:date="@{forecast.date}" />
 
+                <TextView
+                    android:id="@+id/weather_data_item_temp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="start|center"
+                    android:textSize="15sp"
+                    bind:tempHigh="@{forecast.high}"
+                    bind:tempLow="@{forecast.low}" />
 
-                    <TextView
-                        android:id="@+id/weather_data_item_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:gravity="center"
-                        android:textSize="12sp"
-                        bind:date="@{forecast.date}" />
+                <TextView
+                    android:id="@+id/weather_data_item_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:ellipsize="marquee"
+                    android:freezesText="true"
+                    android:gravity="start|center"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textSize="12sp"
+                    bind:translate="@{forecast.text}" />
 
-                    <TextView
-                        android:id="@+id/weather_data_item_temp"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:gravity="center"
-                        android:textSize="15sp"
-                        bind:tempHigh="@{forecast.high}"
-                        bind:tempLow="@{forecast.low}" />
-
-                    <TextView
-                        android:id="@+id/weather_data_item_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:ellipsize="marquee"
-                        android:freezesText="true"
-                        android:gravity="center"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        bind:translate="@{forecast.text}" />
-
-                </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </layout>

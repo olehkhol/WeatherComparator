@@ -9,10 +9,11 @@ public class SettingsViewModel extends BaseViewModel {
     }
 
     @Override
-    public void wakeUp() {
+    public void update() {
         getRepository().updateConfiguration();
     }
 
+    // TODO describe this method in an interface
     public void onValuesChanged() {
         getRepository().onPreferencesUpdate();
     }

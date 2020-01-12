@@ -7,9 +7,11 @@ import io.reactivex.Single;
 
 public interface LocationHelper {
 
-    Single<Location> getSingleLocation(int accuracy, int power);
+    Single<Location> observeLocation(int accuracy, int power);
 
-    Observable<String> getLocationName(Location location, String language);
+    Observable<String> observeLocationName(Location location, String language);
 
     String getLocationName(double latitude, double longitude, String language);
+
+    Single<Boolean> observeLocationUsable();
 }

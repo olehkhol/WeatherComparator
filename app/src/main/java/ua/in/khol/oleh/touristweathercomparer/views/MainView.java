@@ -32,9 +32,9 @@ import dagger.android.AndroidInjection;
 import ua.in.khol.oleh.touristweathercomparer.BR;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
+import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.utils.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
@@ -44,12 +44,13 @@ public class MainView extends AppCompatActivity
 
     private static final String SETTINGS_FRAGMENT_TAG = "SettingsFragment";
     private static final String SETTINGS_FRAGMENT_NAME = "Settings";
+    private static final String ALERT_LOCATION_TAG = "AlertLocationView";
+    private static final String ALERT_LOCATION_NAME = "Location";
     private static final int LOCATION_PERMISSION_ID = 11;
 
     private boolean mHasPermissions = false;
     // UI variables
     private MainViewModel mViewModel;
-    private int mOrientation;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
@@ -65,10 +66,9 @@ public class MainView extends AppCompatActivity
         // TODO Dagger this peace of code
         mViewModel = ViewModelProviders.of(this, mViewModelProviderFactory)
                 .get(MainViewModel.class);
-        mViewModel.wakeUp();
+        mViewModel.update();
         super.onCreate(savedInstanceState);
         // Init UI and Binding
-        mOrientation = getResources().getConfiguration().orientation;
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setViewModel(mViewModel);
         initBindings(binding);
@@ -77,9 +77,9 @@ public class MainView extends AppCompatActivity
         mViewModel.getDoRecreate().observe(this, aBoolean -> {
             if (aBoolean) {
                 mViewModel.setDoRecreate(false);
-                MainView.this.overridePendingTransition(0, 0);
-                MainView.this.recreate();
-                MainView.this.overridePendingTransition(0, 0);
+                overridePendingTransition(0, 0);
+                recreate();
+                overridePendingTransition(0, 0);
             }
         });
         mViewModel.getAskForInternetSoftly().observe(this, asked -> {
@@ -87,9 +87,27 @@ public class MainView extends AppCompatActivity
                 Snackbar.make(binding.drawerLayout, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
                         .show();
         });
+        mViewModel.getAskForLocation().observe(this, asked -> {
+            if (asked) {
+                mViewModel.setAskForLocation(false);
+                showAskForLocationDialogFragment();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         // Request permissions
         requestPermissions();
     }
+
     // ----------------[LIFECYCLE CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
@@ -175,7 +193,6 @@ public class MainView extends AppCompatActivity
         mLowerRecycler.setAdapter(null);
         super.onDestroy();
     }
-
     // ----------------[ACTIVITY CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[MENU CALLBACKS]=-=-=-=-=-=-=-=-
@@ -194,22 +211,7 @@ public class MainView extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.menu_item_settings) {
-            SettingsView settingsFragment = (SettingsView) getSupportFragmentManager()
-                    .findFragmentByTag(SETTINGS_FRAGMENT_TAG);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            if (settingsFragment == null) {
-                settingsFragment = new SettingsView();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content, settingsFragment, SETTINGS_FRAGMENT_TAG)
-                        .addToBackStack(SETTINGS_FRAGMENT_NAME)
-                        .commit();
-            } else {
-                fragmentManager.beginTransaction()
-                        .remove(settingsFragment)
-                        .commit();
-                fragmentManager.popBackStack();
-            }
-
+            showSettingsFragment();
             return true;
         }
 
@@ -254,6 +256,36 @@ public class MainView extends AppCompatActivity
     private void runEntireFunctionality() {
         mViewModel.processData();
     }
+
+    private void showSettingsFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SettingsView settingsFragment = (SettingsView) fragmentManager
+                .findFragmentByTag(SETTINGS_FRAGMENT_TAG);
+        if (settingsFragment == null) {
+            settingsFragment = new SettingsView();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content, settingsFragment, SETTINGS_FRAGMENT_TAG)
+                    .addToBackStack(SETTINGS_FRAGMENT_NAME)
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .remove(settingsFragment)
+                    .commit();
+            fragmentManager.popBackStack();
+        }
+    }
+
+    private void showAskForLocationDialogFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AlertLocationView alertLocationView = (AlertLocationView) fragmentManager
+                .findFragmentByTag(ALERT_LOCATION_TAG);
+        SettingsView settingsFragment = (SettingsView) fragmentManager
+                .findFragmentByTag(SETTINGS_FRAGMENT_TAG);
+        if (alertLocationView == null && settingsFragment == null) {
+            alertLocationView = AlertLocationView.newInstance();
+            alertLocationView.show(fragmentManager, ALERT_LOCATION_TAG);
+        }
+    }
     // ----------------[REGULAR METHODS]----------------
 
     // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
@@ -287,16 +319,12 @@ public class MainView extends AppCompatActivity
 
         mLowerRecycler = binding.content.lowerRecycler;
         mLowerRecycler.setLayoutManager(new LinearLayoutManager(this,
-                mOrientation == Configuration.ORIENTATION_PORTRAIT
-                        ? RecyclerView.HORIZONTAL : RecyclerView.VERTICAL, false));
+                RecyclerView.HORIZONTAL, false));
         RecyclerAdapter<Title> lowerAdapter
                 = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
         lowerAdapter.setOnItemClickListener((position, item)
                 -> mUpperRecycler.getLayoutManager().scrollToPosition(position));
         mLowerRecycler.setAdapter(lowerAdapter);
     }
-
-
     // ----------------[UI]----------------
-
 }

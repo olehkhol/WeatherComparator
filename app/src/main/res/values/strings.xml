@@ -23,15 +23,20 @@
     <string name="localization">LOCALIZATION</string>
     <string name="location">LOCATION</string>
     <string name="units">UNITS</string>
-    <string name="use_celsius">Use Celsius instead of Fahrenheit</string>
-    <string name="use_gps">Use Gps instead of Network</string>
+    <string name="use_celsius">Display in Celsius</string>
     <string name="power_consumption">Power consumption</string>
     <string name="refresh_time">Refresh time</string>
     <string name="pref_language">Language</string>
     <string name="error">Error</string>
-    <string name="permission">Application requires location permission!</string>
+    <string name="permission">The app needs location permissions !</string>
     <string name="finish">Finish</string>
 
     <string name="location_format" translatable="false">"%.06f"</string>
     <string name="ask_for_intenet">Gemme an internet</string>
+    <string name="refresh">Refresh</string>
+    <string name="search">Search</string>
+    <string name="dialog_location_required">Location required</string>
+    <string name="dialog_location_enable">Turn on Location Services ?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

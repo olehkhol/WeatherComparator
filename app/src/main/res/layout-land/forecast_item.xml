@@ -53,7 +53,7 @@
                             android:id="@+id/weather_data_item_date"
                             android:layout_width="match_parent"
                             android:layout_height="20dp"
-                            android:gravity="center"
+                            android:gravity="start|center"
                             android:textSize="12sp"
                             bind:date="@{forecast.date}" />
 

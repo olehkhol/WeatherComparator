@@ -21,8 +21,9 @@ public class MainViewModel extends BaseViewModel {
     private final MutableLiveData<Boolean> mDoRecreate = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mAskForInternetSoftly = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mAskForInternet = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mAskForLocation = new MutableLiveData<>();
 
-    MainViewModel(Repository repository) {
+    public MainViewModel(Repository repository) {
         super(repository);
 
         subscribeOnStatus();
@@ -33,7 +34,7 @@ public class MainViewModel extends BaseViewModel {
     }
 
     @Override
-    public void wakeUp() {
+    public void update() {
         getRepository().updateConfiguration();
     }
 
@@ -47,15 +48,24 @@ public class MainViewModel extends BaseViewModel {
         getCompositeDisposable()
                 .add(getRepository().observeStatus().subscribe(status -> {
                     switch (status) {
+                        case CLEAR:
+                            mAskForInternetSoftly.postValue(false);
+                            mAskForInternet.postValue(false);
+                            mAskForLocation.postValue(false);
+                            break;
                         case OFFLINE:
                             mAskForInternetSoftly.postValue(true);
                             break;
                         case CRITICAL_OFFLINE:
                             mAskForInternet.postValue(true);
                             break;
+                        case LOCATION_UNAVAILABLE:
+                            mAskForLocation.postValue(true);
+                            break;
                         case ONLINE:
                             break;
                         case ERROR:
+                            break;
                         case REFRESHING:
                             setIsRefreshing(true);
                             setRefreshed(false);
@@ -162,4 +172,11 @@ public class MainViewModel extends BaseViewModel {
         mAskForInternet.setValue(ask);
     }
 
+    public MutableLiveData<Boolean> getAskForLocation() {
+        return mAskForLocation;
+    }
+
+    public void setAskForLocation(boolean ask) {
+        mAskForLocation.setValue(ask);
+    }
 }

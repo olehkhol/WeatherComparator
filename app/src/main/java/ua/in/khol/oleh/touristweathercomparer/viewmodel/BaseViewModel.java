@@ -17,7 +17,7 @@ public abstract class BaseViewModel extends ViewModel {
         mCompositeDisposable = new CompositeDisposable();
     }
 
-    public abstract void wakeUp();
+    public abstract void update();
 
     @Override
     protected void onCleared() {

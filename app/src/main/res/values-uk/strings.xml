@@ -5,8 +5,7 @@
     <string name="preferences">Переваги</string>
     <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="units">ОДИНИЦІ</string>
-    <string name="use_celsius">Використовувати за Цельсієм</string>
-    <string name="use_gps">Використовувати Gps</string>
+    <string name="use_celsius">Відображати за шкалою Цельсія</string>
     <string name="power_consumption">Споживання енергії</string>
     <string name="refresh_time">Час оновлення</string>
     <string name="pref_language">Мова</string>
@@ -14,8 +13,14 @@
     <string name="other_apps">Інші застосунки</string>
     <string name="rate_and_review">Оцінка і відгук</string>
     <string name="error">Помилка</string>
-    <string name="permission">Програма вимагає дозволу на місцезнаходження!</string>
+    <string name="permission">Додаток потребує дозволу на визначення місцезнаходження !</string>
     <string name="finish">Завершити</string>
     <string name="ask_for_intenet">Gemme internet</string>
+    <string name="refresh">Оновити</string>
+    <string name="search">Пошук</string>
+    <string name="dialog_location_required">Необхідне місцезнаходження</string>
+    <string name="dialog_location_enable">Увімкнути служби локації ?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Відміна</string>
 
 </resources>

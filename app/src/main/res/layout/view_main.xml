@@ -36,11 +36,12 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorAccent"
+                    android:background="?attr/colorPrimary"
+                    android:elevation="@dimen/elevation"
+                    app:subtitle="@{viewModel.city.name}"
                     app:popupTheme="@style/AppTheme.PopupOverlay"
                     app:titleTextAppearance="@style/ToolbarTitleText" />
             </com.google.android.material.appbar.AppBarLayout>
-
 
             <!--Include MAIN CONTENT here-->
             <include

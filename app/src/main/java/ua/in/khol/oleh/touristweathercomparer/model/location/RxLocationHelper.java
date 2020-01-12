@@ -1,13 +1,21 @@
 package ua.in.khol.oleh.touristweathercomparer.model.location;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -27,93 +35,37 @@ import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.LocationModel;
 import ua.in.khol.oleh.touristweathercomparer.model.location.pojo.Result;
 
 public class RxLocationHelper implements LocationHelper {
-    private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private SettingsClient mClient;
 
     public RxLocationHelper(Context context) {
-        mLocationManager = (LocationManager) context.getApplicationContext()
-                .getSystemService(Context.LOCATION_SERVICE);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+        mClient = LocationServices.getSettingsClient(context);
     }
 
+    public Single<Location> observeLocation(int accuracy, int power) {
 
-    public Single<Location> getSingleLocation(int accuracy, int power) {
+        LocationRequest locationRequest = LocationRequest.create();
 
         return Single.create(emitter -> {
-            if (mLocationListener == null) {
-                mLocationListener = new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        emitter.onSuccess(location);
-                    }
 
-                    @Override
-                    public void onStatusChanged(String s, int i, Bundle bundle) {
-                    }
+            locationRequest.setNumUpdates(1);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-                    @Override
-                    public void onProviderEnabled(String s) {
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String s) {
-                    }
-                };
-            }
-
-            update(accuracy, power);
+            mFusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                    new LocationCallback() {
+                        @Override
+                        public void onLocationResult(LocationResult locationResult) {
+                            emitter.onSuccess(locationResult.getLastLocation());
+                            mFusedLocationProviderClient.removeLocationUpdates(this);
+                        }
+                    }, null);
         });
     }
 
-    @SuppressLint("MissingPermission")
-    private void update(int accuracy, int power) {
-        if (mLocationListener != null) {
-            mLocationManager.removeUpdates(mLocationListener);
-            Criteria criteria = getCriteria(accuracy, power);
-            mLocationManager.requestSingleUpdate(criteria, mLocationListener, null);
-        }
-    }
-
-    private void cancel() {
-        if (mLocationListener != null) {
-            mLocationManager.removeUpdates(mLocationListener);
-            mLocationListener = null;
-        }
-    }
-
-    private Criteria getCriteria(int accuracy, int power) {
-        Criteria criteria = new Criteria();
-        int accuracyCriteria;
-        switch (accuracy) {
-            case 1:
-                accuracyCriteria = Criteria.ACCURACY_FINE;
-                break;
-            case 2:
-            default:
-                accuracyCriteria = Criteria.ACCURACY_COARSE;
-                break;
-        }
-        criteria.setAccuracy(accuracyCriteria);
-        int powerCriteria;
-        switch (power) {
-            case 1:
-            default:
-                powerCriteria = Criteria.POWER_LOW;
-                break;
-            case 2:
-                powerCriteria = Criteria.POWER_MEDIUM;
-                break;
-            case 3:
-                powerCriteria = Criteria.POWER_HIGH;
-                break;
-
-        }
-        criteria.setPowerRequirement(powerCriteria);
-
-        return criteria;
-    }
-
     @Override
-    public Observable<String> getLocationName(Location location, String language) {
+    public Observable<String> observeLocationName(Location location, String language) {
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
@@ -223,5 +175,27 @@ public class RxLocationHelper implements LocationHelper {
         }
 
         return name;
+    }
+
+    @Override
+    public Single<Boolean> observeLocationUsable() {
+        return Single.create(emitter -> {
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+            Task<LocationSettingsResponse> task = mClient.checkLocationSettings(builder.build());
+            task.addOnSuccessListener(locationSettingsResponse -> {
+                if (locationSettingsResponse != null) {
+                    LocationSettingsStates states
+                            = locationSettingsResponse.getLocationSettingsStates();
+                    if (states != null)
+                        emitter.onSuccess(states.isLocationUsable());
+                }
+            });
+            task.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (e != null);
+                }
+            });
+        });
     }
 }

@@ -22,7 +22,6 @@ import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelpe
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.utils.Constants;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 @Module
 public class AppModule {
@@ -106,5 +105,4 @@ public class AppModule {
     ViewModelProviderFactory provideViewModelProviderFactory(Repository repository) {
         return new ViewModelProviderFactory(repository);
     }
-
 }

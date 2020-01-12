@@ -17,6 +17,8 @@ public interface Repository {
 
     Observable<GodRepository.Status> observeStatus();
 
+    void clearStatus();
+
     void update();
 
     void cancel();

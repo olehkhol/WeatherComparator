@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
+import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 
 public class SettingsView extends PreferenceFragmentCompat
         implements View.OnKeyListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -59,29 +59,6 @@ public class SettingsView extends PreferenceFragmentCompat
             mCriticalChanges = true;
             return true;
         });
-
-        SwitchPreferenceCompat useGps
-                = (SwitchPreferenceCompat) findPreference(getString(R.string.gps_check));
-        useGps.setOnPreferenceChangeListener((preference, newValue) -> {
-            mCriticalChanges = true;
-            return true;
-        });
-
-        ListPreference powerPref
-                = (ListPreference) findPreference(getString(R.string.power));
-        powerPref.setOnPreferenceChangeListener((preference, newValue) -> {
-            mCriticalChanges = true;
-            return true;
-        });
-
-        ListPreference timePref
-                = (ListPreference) findPreference(getString(R.string.time));
-        timePref.setOnPreferenceChangeListener((preference, newValue) -> {
-            mCriticalChanges = true;
-            return true;
-        });
-        // TODO unhide this preference
-        timePref.setVisible(false);
 
         ListPreference langPref
                 = (ListPreference) findPreference(getString(R.string.language));
@@ -120,7 +97,7 @@ public class SettingsView extends PreferenceFragmentCompat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         mViewModel = ViewModelProviders.of(this, mViewModelProviderFactory)
                 .get(SettingsViewModel.class);
-        mViewModel.wakeUp();
+        mViewModel.update();
 
         super.onActivityCreated(savedInstanceState);
 
