@@ -34,9 +34,9 @@ public class Yahoo extends WeatherProvider {
 
     @Override
     protected Retrofit buildRetrofit() {
-        String appId = YahooAuth.getAppId();
-        String consumerKey = YahooAuth.getConsumerKey();
-        String consumerSecret = YahooAuth.getConsumerSecret();
+        String appId = YahooOAuth.getAppId();
+        String consumerKey = YahooOAuth.getConsumerKey();
+        String consumerSecret = YahooOAuth.getConsumerSecret();
         YahooInterceptor interceptor = new YahooInterceptor.Builder()
                 .appId(appId)
                 .consumerKey(consumerKey)

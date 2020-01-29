@@ -13,18 +13,20 @@ import dagger.Provides;
 import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.model.db.AppDatabase;
-import ua.in.khol.oleh.touristweathercomparer.model.db.RxDatabaseHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.db.DatabaseHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.db.RxDatabaseHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.preferences.RxPreferencesHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.preferences.RxPreferencesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
-import ua.in.khol.oleh.touristweathercomparer.utils.Constants;
 
 @Module
 public class AppModule {
+    private static final String DB_FILE_NAME = "wc.db";
+    private static final String PREFERENCES_FILE_NAME = "wc.pref";
+
     private Application mApplication;
 
     public AppModule(Application application) {
@@ -47,7 +49,7 @@ public class AppModule {
     @Singleton
     @Named("db")
     String provideDatabaseName() {
-        return Constants.DB_FILE_NAME;
+        return DB_FILE_NAME;
     }
 
     @Provides
@@ -68,7 +70,7 @@ public class AppModule {
     @Singleton
     @Named("pref")
     String providePreferencesFileName() {
-        return Constants.PREFERENCES_FILE_NAME;
+        return PREFERENCES_FILE_NAME;
     }
 
 
@@ -80,9 +82,10 @@ public class AppModule {
 
     @Provides
     @Singleton
-    WeatherHelper provideWeatherHelper(){
+    WeatherHelper provideWeatherHelper() {
         return new RxWeatherHelper();
-    };
+    }
+
     @Provides
     @Singleton
     PreferencesHelper providePreferencesHelper(Context context,
@@ -97,7 +100,8 @@ public class AppModule {
                                     WeatherHelper weatherHelper,
                                     PreferencesHelper preferencesHelper,
                                     DatabaseHelper databaseHelper) {
-        return new GodRepository(application, locationHelper, weatherHelper, preferencesHelper, databaseHelper);
+        return new GodRepository(application,
+                locationHelper, weatherHelper, preferencesHelper, databaseHelper);
     }
 
     @Provides

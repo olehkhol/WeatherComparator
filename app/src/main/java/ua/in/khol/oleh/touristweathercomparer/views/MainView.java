@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,7 +20,7 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,15 +43,13 @@ import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
 public class MainView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String SETTINGS_FRAGMENT_TAG = "SettingsFragment";
-    private static final String SETTINGS_FRAGMENT_NAME = "Settings";
-    private static final String ALERT_LOCATION_TAG = "AlertLocationView";
-    private static final String ALERT_LOCATION_NAME = "Location";
+    private static final String SETTINGS_TAG = SettingsView.class.getName();
+    private static final String ALERT_TAG = AlertView.class.getName();
     private static final int LOCATION_PERMISSION_ID = 11;
 
     private boolean mHasPermissions = false;
     // UI variables
-    private MainViewModel mViewModel;
+    private MainViewModel mMainViewModel;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
@@ -64,40 +63,42 @@ public class MainView extends AppCompatActivity
         // Dagger injection
         AndroidInjection.inject(this);
         // TODO Dagger this peace of code
-        mViewModel = ViewModelProviders.of(this, mViewModelProviderFactory)
+        mMainViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
                 .get(MainViewModel.class);
-        mViewModel.update();
+        mMainViewModel.start();
         super.onCreate(savedInstanceState);
         // Init UI and Binding
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
-        binding.setViewModel(mViewModel);
+        binding.setMainViewModel(mMainViewModel);
         initBindings(binding);
         initUI();
         // Observe live data
-        mViewModel.getDoRecreate().observe(this, aBoolean -> {
+        mMainViewModel.getDoRecreate().observe(this, aBoolean -> {
             if (aBoolean) {
-                mViewModel.setDoRecreate(false);
+                mMainViewModel.setDoRecreate(false);
                 overridePendingTransition(0, 0);
                 recreate();
-                overridePendingTransition(0, 0);
             }
         });
-        mViewModel.getAskForInternetSoftly().observe(this, asked -> {
-            if (asked)
+        mMainViewModel.getAskForInternetSoftly().observe(this, asked -> {
+            if (asked) {
+                mMainViewModel.setAskForInternetSoftly(false);
                 Snackbar.make(binding.drawerLayout, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
                         .show();
-        });
-        mViewModel.getAskForLocation().observe(this, asked -> {
-            if (asked) {
-                mViewModel.setAskForLocation(false);
-                showAskForLocationDialogFragment();
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        mMainViewModel.getAskForInternet().observe(this, asked -> {
+            if (asked) {
+                mMainViewModel.setAskForInternet(false);
+                showInternetAlertDialog();
+            }
+        });
+        mMainViewModel.getAskForLocation().observe(this, asked -> {
+            if (asked) {
+                mMainViewModel.setAskForLocation(false);
+                showLocationAlertDialog();
+            }
+        });
     }
 
     @Override
@@ -145,25 +146,13 @@ public class MainView extends AppCompatActivity
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_ID) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        if (!shouldShowRequestPermissionRationale(permissions[i])) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                            builder.setTitle(getString(R.string.error));
-                            builder.setMessage(getString(R.string.permission));
-                            builder.setPositiveButton(getString(R.string.finish),
-                                    (dialog, which) -> finish());
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                            mHasPermissions = true;
-                        }
-                    }
-                }
-            }
-        } else {
+            for (int i = 0; i < permissions.length; i++)
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+                        if (!shouldShowRequestPermissionRationale(permissions[i]))
+                            showFinishAlertDialog();
+        } else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
 
         if (!mHasPermissions) {
             // Start request again because we really need this permissions to work
@@ -225,24 +214,22 @@ public class MainView extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_rate:
-                MarketView.open(this,
-                        "ua.in.khol.oleh.touristweathercomparer");
+                MarketView.open(this, "ua.in.khol.oleh.touristweathercomparer");
+                break;
+            case R.id.nav_share:
+                shareApplicationName();
                 break;
             case R.id.nav_seo:
-                MarketView.open(this,
-                        "com.humanneeds.stackexchangeoffline");
+                MarketView.open(this, "com.humanneeds.stackexchangeoffline");
                 break;
             case R.id.nav_ujt:
-                MarketView.open(this,
-                        "com.humanneeds.upworkjavatest");
+                MarketView.open(this, "com.humanneeds.upworkjavatest");
                 break;
             case R.id.nav_b64:
-                MarketView.open(this,
-                        "com.humanneeds.base64fileencoderdecoder");
+                MarketView.open(this, "com.humanneeds.base64fileencoderdecoder");
                 break;
             case R.id.nav_afc:
-                MarketView.open(this,
-                        "com.humanneeds.aliensflashlight");
+                MarketView.open(this, "com.humanneeds.aliensflashlight");
                 break;
         }
 
@@ -254,18 +241,28 @@ public class MainView extends AppCompatActivity
 
     // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
     private void runEntireFunctionality() {
-        mViewModel.processData();
+        mMainViewModel.processData();
+    }
+
+    private void showFinishAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.error));
+        builder.setMessage(getString(R.string.permission));
+        builder.setPositiveButton(getString(R.string.finish),
+                (dialog, which) -> finish());
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void showSettingsFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         SettingsView settingsFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(SETTINGS_FRAGMENT_TAG);
+                .findFragmentByTag(SETTINGS_TAG);
         if (settingsFragment == null) {
             settingsFragment = new SettingsView();
             fragmentManager.beginTransaction()
-                    .replace(R.id.content, settingsFragment, SETTINGS_FRAGMENT_TAG)
-                    .addToBackStack(SETTINGS_FRAGMENT_NAME)
+                    .replace(R.id.content, settingsFragment, SETTINGS_TAG)
+                    .addToBackStack(null)
                     .commit();
         } else {
             fragmentManager.beginTransaction()
@@ -275,16 +272,43 @@ public class MainView extends AppCompatActivity
         }
     }
 
-    private void showAskForLocationDialogFragment() {
+    private void showLocationAlertDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AlertLocationView alertLocationView = (AlertLocationView) fragmentManager
-                .findFragmentByTag(ALERT_LOCATION_TAG);
+        AlertView alertView = (AlertView) fragmentManager
+                .findFragmentByTag(ALERT_TAG);
         SettingsView settingsFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(SETTINGS_FRAGMENT_TAG);
-        if (alertLocationView == null && settingsFragment == null) {
-            alertLocationView = AlertLocationView.newInstance();
-            alertLocationView.show(fragmentManager, ALERT_LOCATION_TAG);
+                .findFragmentByTag(SETTINGS_TAG);
+        if (alertView == null && settingsFragment == null) {
+            alertView = AlertView.newInstance(getString(R.string.alert_location_title),
+                    getString(R.string.alert_location_message),
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            alertView.show(fragmentManager, ALERT_TAG);
         }
+    }
+
+    private void showInternetAlertDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AlertView alertView = (AlertView) fragmentManager
+                .findFragmentByTag(ALERT_TAG);
+        SettingsView settingsFragment = (SettingsView) fragmentManager
+                .findFragmentByTag(SETTINGS_TAG);
+        if (alertView == null && settingsFragment == null) {
+            alertView = AlertView.newInstance(getString(R.string.alert_wireless_title),
+                    getString(R.string.alert_wireless_message),
+                    Settings.ACTION_WIRELESS_SETTINGS);
+            alertView.show(fragmentManager, ALERT_TAG);
+        }
+    }
+
+    private void shareApplicationName() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details"
+                + "?id=ua.in.khol.oleh.touristweathercomparer");
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent,
+                getResources().getString(R.string.share));
+        startActivity(shareIntent);
     }
     // ----------------[REGULAR METHODS]----------------
 

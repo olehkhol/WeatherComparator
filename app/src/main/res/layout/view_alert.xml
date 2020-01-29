@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="alertLocatioinViewModel"
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/alert_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@{alertLocatioinViewModel.title}"
+            android:textColor="@color/text_alert"
+            tools:text="@string/alert_location_title" />
+
+        <TextView
+            android:id="@+id/alert_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="8dp"
+            android:text="@{alertLocatioinViewModel.message}"
+            tools:text="@string/alert_location_message" />
+
+    </LinearLayout>
+
+</layout>

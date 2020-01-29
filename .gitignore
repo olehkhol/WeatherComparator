@@ -32,12 +32,10 @@ local.properties
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/location/LocationCityKey.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/YahooAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/Yahoo.json
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/location/GeocodingAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/YahooOAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/accu/AccuAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmAuth.java
 /gradle/wrapper/gradle-wrapper.jar
 /gradlew
@@ -49,3 +47,4 @@ google-services.json
 /_docs/
 /_key/
 /_res/
+/captures/

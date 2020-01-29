@@ -3,10 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item
-        android:id="@+id/nav_rate"
-        android:icon="@mipmap/ic_rate"
-        android:title="@string/rate_and_review" />
+    <item android:title="@string/communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@mipmap/ic_rate"
+                android:title="@string/rate_and_review" />
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@mipmap/ic_share"
+                android:title="@string/share" />
+        </menu>
+    </item>
 
     <item android:title="@string/other_apps">
         <menu>

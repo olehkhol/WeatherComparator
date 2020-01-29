@@ -17,7 +17,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -39,18 +38,11 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 public class GodRepository implements Repository {
     private static final int DB_LOCATION_ACCURACY = 2; // TODO move this to PreferencesHelper
 
-    public enum Status {
-        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR,
-        LOCATION_UNAVAILABLE, CLEAR
-    }
-
     private Context mAppContext;
     private final LocationHelper mLocationHelper;
     private final WeatherHelper mWeatherHelper;
     private final PreferencesHelper mPreferencesHelper;
     private final DatabaseHelper mDatabaseHelper;
-    private int mAccuracy;
-    private int mPower;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private PublishSubject<Status> mStatusPublicSubject = PublishSubject.create();
     private ReplaySubject<Location> mLocationSubject = ReplaySubject.create();
@@ -76,7 +68,7 @@ public class GodRepository implements Repository {
 
     @Override
     public void update() {
-        updateMetricUnits();
+        loadPreferences();
         updateConfiguration();
 
         processLocation();
@@ -91,7 +83,7 @@ public class GodRepository implements Repository {
                 })
                 .flatMapSingle((Function<Boolean, SingleSource<Location>>) aBoolean -> {
                     mStatusPublicSubject.onNext(Status.REFRESHING);
-                    return mLocationHelper.observeLocation(mAccuracy, mPower);
+                    return mLocationHelper.observeLocation();
 
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -103,9 +95,9 @@ public class GodRepository implements Repository {
                         mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
                 })
                 .subscribe(location -> {
-                    mStatusPublicSubject.onNext(Status.REFRESHED);
-                    mLocationSubject.onNext(location);
-                },
+                            mStatusPublicSubject.onNext(Status.REFRESHED);
+                            mLocationSubject.onNext(location);
+                        },
                         Throwable::printStackTrace)
         );
     }
@@ -167,6 +159,10 @@ public class GodRepository implements Repository {
                         mDatabaseHelper.putForecastList(forecastList);
                     } else {
                         forecastList.addAll(mDatabaseHelper.getForecastList(placeId));
+                        if (forecastList.size() == 0)
+                            mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
+                        else
+                            mStatusPublicSubject.onNext(Status.OFFLINE);
                     }
 
                     return Observable.fromIterable(forecastList);
@@ -192,7 +188,7 @@ public class GodRepository implements Repository {
 
     private Forecast convertWeatherDataToForecast(WeatherData weatherData) {
         Forecast forecast = new Forecast(weatherData.getProviderId(),
-                Calculation.roundDateToDays(weatherData.getDate()),
+                weatherData.getDate(),
                 weatherData.getLow(),
                 weatherData.getHigh(),
                 weatherData.getText(),
@@ -214,11 +210,9 @@ public class GodRepository implements Repository {
     }
 
     @SuppressLint("ApplySharedPref")
-    private void updateMetricUnits() {
+    private void loadPreferences() {
         LocaleUnits.getInstance().setCelsius(mPreferencesHelper.getCelsius());
         LocaleUnits.getInstance().setLanguage(mPreferencesHelper.getLanguage());
-        mAccuracy = mPreferencesHelper.getAccuracy();
-        mPower = mPreferencesHelper.getPower();
     }
 
     @Override
@@ -233,8 +227,29 @@ public class GodRepository implements Repository {
     }
 
     @Override
-    public void onPreferencesUpdate() {
-        updateMetricUnits();
+    public boolean getPrefCelsius() {
+        return mPreferencesHelper.getCelsius();
+    }
+
+    @Override
+    public int getPrefLanguageIndex() {
+        return mPreferencesHelper.getLanguageIndex();
+    }
+
+    @Override
+    public void putPrefCelsius(boolean celsius) {
+        mPreferencesHelper.putCelsius(celsius);
+    }
+
+    @Override
+    public void putPrefLanguageIndex(int index) {
+        mPreferencesHelper.putLanguageIndex(index);
+    }
+
+
+    @Override
+    public void updatePreferences() {
+        loadPreferences();
         updateConfiguration();
 
         // Notify activity with "recreate" request

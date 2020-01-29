@@ -14,10 +14,12 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public class MainViewModel extends BaseViewModel {
+    // Fields for Data Binding
     private final ObservableField<Place> mPlace = new ObservableField<>();
     private final ObservableField<City> mCity = new ObservableField<>();
     private final ObservableList<Title> mTitles = new ObservableArrayList<>();
     private final ObservableList<Provider> mProviders = new ObservableArrayList<>();
+    // Fields to be observed in View
     private final MutableLiveData<Boolean> mDoRecreate = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mAskForInternetSoftly = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mAskForInternet = new MutableLiveData<>();
@@ -34,8 +36,13 @@ public class MainViewModel extends BaseViewModel {
     }
 
     @Override
-    public void update() {
+    public void start() {
         getRepository().updateConfiguration();
+    }
+
+    @Override
+    public void stop() {
+
     }
 
     public void processData() {

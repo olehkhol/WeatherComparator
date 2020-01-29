@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import ua.in.khol.oleh.touristweathercomparer.MainApplication;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertLocationViewModel;
 
 @Singleton
 @Component(modules = {AppModule.class,

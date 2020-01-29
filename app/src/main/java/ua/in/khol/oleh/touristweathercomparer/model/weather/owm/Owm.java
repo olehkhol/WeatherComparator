@@ -32,7 +32,7 @@ public class Owm extends WeatherProvider {
 
         try {
             OwmHourlyData owmHourlyData = mService.getLocationWeather(String.valueOf(latitude),
-                    String.valueOf(longitude), "imperial", OwmAuth.getSecretKey())
+                    String.valueOf(longitude), "imperial", OwmAuth.getApiKey())
                     .execute().body();
             if (owmHourlyData != null) {
                 DateTime date = new DateTime();
@@ -89,7 +89,7 @@ public class Owm extends WeatherProvider {
                             OwmCurrentData owmCurrentData = mService
                                     .getCurrentWeather(String.valueOf(latitude),
                                             String.valueOf(longitude), "imperial",
-                                            OwmAuth.getSecretKey()).execute().body();
+                                            OwmAuth.getApiKey()).execute().body();
                             if (owmCurrentData != null) {
                                 weatherDataBuilder
                                         .isCurrent(true)

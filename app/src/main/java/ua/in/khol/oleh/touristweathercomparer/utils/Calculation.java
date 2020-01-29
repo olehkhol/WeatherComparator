@@ -12,9 +12,4 @@ public class Calculation {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-
-    public static int roundDateToDays(int date) {
-        // TODO roundDateToDays : do i really need this ?
-        return date;
-    }
 }

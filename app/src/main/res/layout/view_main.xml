@@ -10,7 +10,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewModel"
+            name="mainViewModel"
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel" />
     </data>
 
@@ -38,8 +38,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
                     android:elevation="@dimen/elevation"
-                    app:subtitle="@{viewModel.city.name}"
                     app:popupTheme="@style/AppTheme.PopupOverlay"
+                    app:subtitle="@{mainViewModel.city.name}"
                     app:titleTextAppearance="@style/ToolbarTitleText" />
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -47,13 +47,13 @@
             <include
                 android:id="@+id/content"
                 layout="@layout/content"
-                bind:viewModel="@{viewModel}" />
+                bind:viewModel="@{mainViewModel}" />
 
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
         <!--Action bar [END] -->
 
-
+        <!--Navigation view [START] -->
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
@@ -62,6 +62,7 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header_layout"
             app:menu="@menu/menu_drawer" />
+        <!--Navigation view [END] -->
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

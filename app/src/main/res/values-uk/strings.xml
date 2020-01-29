@@ -5,7 +5,7 @@
     <string name="preferences">Переваги</string>
     <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="units">ОДИНИЦІ</string>
-    <string name="use_celsius">Відображати за шкалою Цельсія</string>
+    <string name="use_celsius">Відображати за Цельсія</string>
     <string name="power_consumption">Споживання енергії</string>
     <string name="refresh_time">Час оновлення</string>
     <string name="pref_language">Мова</string>
@@ -18,9 +18,13 @@
     <string name="ask_for_intenet">Gemme internet</string>
     <string name="refresh">Оновити</string>
     <string name="search">Пошук</string>
-    <string name="dialog_location_required">Необхідне місцезнаходження</string>
-    <string name="dialog_location_enable">Увімкнути служби локації ?</string>
+    <string name="alert_location_title">Необхідне місцезнаходження</string>
+    <string name="alert_location_message">Увімкнути служби локації ?</string>
+    <string name="alert_wireless_title">Необхідний бездротовий зв’язок</string>
+    <string name="alert_wireless_message">Увімкнути бездротові служби?</string>
     <string name="ok">OK</string>
     <string name="cancel">Відміна</string>
+    <string name="communicate">Комунікація</string>
+    <string name="share">Поділитись</string>
 
 </resources>

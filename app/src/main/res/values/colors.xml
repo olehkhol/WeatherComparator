@@ -6,4 +6,5 @@
 
     <color name="toolbar_background">#FFFFFF</color>
     <color name="light_background">#FFFFFFFF</color>
+    <color name="text_alert">#FFFFFF</color>
 </resources>

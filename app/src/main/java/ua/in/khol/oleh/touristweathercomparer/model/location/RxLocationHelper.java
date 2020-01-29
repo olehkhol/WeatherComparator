@@ -6,6 +6,7 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -44,7 +45,7 @@ public class RxLocationHelper implements LocationHelper {
         mClient = LocationServices.getSettingsClient(context);
     }
 
-    public Single<Location> observeLocation(int accuracy, int power) {
+    public Single<Location> observeLocation() {
 
         LocationRequest locationRequest = LocationRequest.create();
 
@@ -59,6 +60,11 @@ public class RxLocationHelper implements LocationHelper {
                         public void onLocationResult(LocationResult locationResult) {
                             emitter.onSuccess(locationResult.getLastLocation());
                             mFusedLocationProviderClient.removeLocationUpdates(this);
+                        }
+
+                        @Override
+                        public void onLocationAvailability(LocationAvailability locationAvailability) {
+                            super.onLocationAvailability(locationAvailability);
                         }
                     }, null);
         });
@@ -76,7 +82,7 @@ public class RxLocationHelper implements LocationHelper {
         LocationDataService service = retrofit.create(LocationDataService.class);
         Observable<LocationModel> observable = service
                 .observeLocationModel(location.getLatitude() + "," + location.getLongitude(),
-                        language, LocationCityKey.getApiKey());
+                        language, GeocodingAuth.getApiKey());
 
         return observable
                 .map(locationData -> {
@@ -132,7 +138,7 @@ public class RxLocationHelper implements LocationHelper {
                 .build();
         LocationDataService service = retrofit.create(LocationDataService.class);
         Call<LocationModel> locationModelCall = service.getLocationModel(latitude + "," + longitude,
-                language, LocationCityKey.getApiKey());
+                language, GeocodingAuth.getApiKey());
 
         String name = "...";
         try {

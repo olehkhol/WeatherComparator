@@ -4,10 +4,88 @@ The source code of an application
 [Weather Comparator](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
 
 ## Contents
+* [Demo](#demo)
+* [Build](#build)
 * [Architecture](#architecture)
 * [Services](#services)
 * [Dependencies](#dependencies)
 * [License](#license)
+
+## Demo
+
+## Build
+#### Add five classes containing private API keys to the correspond packages
+
+##### `GeocodingAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.location;
+public class GeocodingAuth {
+    // https://developers.google.com/maps/documentation/geocoding/get-api-key
+    private static final String API_KEY = "API_KEY";
+    
+    public static String getApiKey() {
+        return API_KEY;
+    }
+}
+```
+##### `DarkSkyAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.weather.darksky;
+public class DarkSkyAuth {
+    // https://darksky.net/dev/account
+    private static final String SECRET_KEY = "SECRET_KEY";
+    
+    public static String getSecretKey() {
+        return SECRET_KEY;
+    }
+}
+```
+##### `YahooOAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.weather.yahoo;
+public class YahooOAuth {
+    // https://developer.yahoo.com/apps
+    private static final String CONSUMER_KEY = "CONSUMER_KEY";
+    private static final String CONSUMER_SECRET = "CONSUMER_SECRET";
+    private static final String APP_ID = "APP_ID";
+    
+    public static String getConsumerKey() {
+        return CONSUMER_KEY;
+    }
+
+    public static String getConsumerSecret() {
+        return CONSUMER_SECRET;
+    }
+
+    public static String getAppId() {
+        return APP_ID;
+    }
+}
+```
+##### `OwmAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.weather.owm;
+public class OwmAuth {
+    // https://home.openweathermap.org/api_keys
+    private static final String API_KEY = "API_KEY";
+
+    public static String getApiKey() {
+        return API_KEY;
+    }
+}
+```
+##### `WwoAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.weather.wwo;
+public class WwoAuth {
+    // https://www.worldweatheronline.com/developer/my
+    private static final String PREMIUM_KEY = "PREMIUM_KEY";
+
+    public static String getPremiumKey() {
+        return PREMIUM_KEY;
+    }
+}
+```
 
 ## Architecture
 

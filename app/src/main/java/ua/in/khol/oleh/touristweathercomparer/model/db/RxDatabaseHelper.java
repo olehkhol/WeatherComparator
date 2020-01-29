@@ -76,8 +76,7 @@ public class RxDatabaseHelper implements DatabaseHelper {
     @Override
     public long getForecastId(Forecast forecast, int accuracy) {
         long forecastId = mAppDatabase.getForecastDao()
-                .findForecastId(forecast.getProviderId(), forecast.getPlaceId(),
-                        Calculation.roundDateToDays(forecast.getDate()));
+                .findForecastId(forecast.getProviderId(), forecast.getPlaceId(),forecast.getDate());
 
         return forecastId;
     }

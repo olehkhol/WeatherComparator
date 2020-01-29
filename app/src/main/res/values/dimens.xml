@@ -6,4 +6,11 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="elevation">4dp</dimen>
     <dimen name="nav_header_text_size">26sp</dimen>
+    <dimen name="settings_margin">16dp</dimen>
+    <dimen name="category_padding">8dp</dimen>
+    <dimen name="category_item_padding">16dp</dimen>
+    <dimen name="nav_item_padding">1dp</dimen>
+    <dimen name="nav_item_margin">16dp</dimen>
+    <dimen name="settings_padding">16dp</dimen>
+    <dimen name="alert_view_corner_radius">8dp</dimen>
 </resources>

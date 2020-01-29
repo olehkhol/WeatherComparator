@@ -15,9 +15,6 @@
     <string name="aliens_flashlight_compass" translatable="false">Aliens Flashlight Compass</string>
 
     <string name="celsius" translatable="false">PREF_KEY_CELSIUS</string>
-    <string name="gps_check" translatable="false">PREF_KEY_ACCURACY</string>
-    <string name="power" translatable="false">PREF_KEY_POWER</string>
-    <string name="time" translatable="false">PREF_KEY_TIME</string>
     <string name="language" translatable="false">PREF_KEY_LANGUAGE</string>
 
     <string name="localization">LOCALIZATION</string>
@@ -35,8 +32,12 @@
     <string name="ask_for_intenet">Gemme an internet</string>
     <string name="refresh">Refresh</string>
     <string name="search">Search</string>
-    <string name="dialog_location_required">Location required</string>
-    <string name="dialog_location_enable">Turn on Location Services ?</string>
+    <string name="alert_location_title">Location required</string>
+    <string name="alert_location_message">Turn on Location Services ?</string>
+    <string name="alert_wireless_title">Wireless required</string>
+    <string name="alert_wireless_message">Turn on Wireless Services ?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="communicate">Communicate</string>
+    <string name="share">Share</string>
 </resources>
