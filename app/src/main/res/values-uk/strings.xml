@@ -15,7 +15,7 @@
     <string name="error">Помилка</string>
     <string name="permission">Додаток потребує дозволу на визначення місцезнаходження !</string>
     <string name="finish">Завершити</string>
-    <string name="ask_for_intenet">Gemme internet</string>
+    <string name="ask_for_intenet">Немає підключення до Інтернету!\nЗавантаження прогнозів із бази даних.</string>
     <string name="refresh">Оновити</string>
     <string name="search">Пошук</string>
     <string name="alert_location_title">Необхідне місцезнаходження</string>

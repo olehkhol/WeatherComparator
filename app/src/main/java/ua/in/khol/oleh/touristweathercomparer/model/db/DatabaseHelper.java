@@ -41,5 +41,7 @@ public interface DatabaseHelper {
 
     List<Forecast> getForecastList(long placeId);
 
+    List<Forecast> getForecastList(int providerId, long placeId, int date);
+
     void putForecastList(List<Forecast> forecastList);
 }

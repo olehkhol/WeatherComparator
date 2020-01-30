@@ -76,7 +76,7 @@ public class RxDatabaseHelper implements DatabaseHelper {
     @Override
     public long getForecastId(Forecast forecast, int accuracy) {
         long forecastId = mAppDatabase.getForecastDao()
-                .findForecastId(forecast.getProviderId(), forecast.getPlaceId(),forecast.getDate());
+                .findForecastId(forecast.getProviderId(), forecast.getPlaceId(), forecast.getDate());
 
         return forecastId;
     }
@@ -116,6 +116,11 @@ public class RxDatabaseHelper implements DatabaseHelper {
     @Override
     public List<Forecast> getForecastList(long placeId) {
         return mAppDatabase.getForecastDao().queryByPlaceId(placeId);
+    }
+
+    @Override
+    public List<Forecast> getForecastList(int providerId, long placeId, int date) {
+        return mAppDatabase.getForecastDao().queryFromDate(providerId, placeId, date);
     }
 
     @Override

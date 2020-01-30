@@ -19,6 +19,7 @@ public abstract class WeatherProvider {
     protected final static int DAYS = 5;
     private static int sId = 0;
     private int mId;
+    private boolean mCached;
 
     public WeatherProvider(String name, String site, String api) {
         mId = sId++;
@@ -70,5 +71,13 @@ public abstract class WeatherProvider {
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .cache(null)
                 .build();
+    }
+
+    public void setCached(boolean cached) {
+        mCached = cached;
+    }
+
+    public boolean isCached() {
+        return mCached;
     }
 }

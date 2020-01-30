@@ -1,5 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.wwo;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -125,7 +127,9 @@ public class Wwo extends WeatherProvider {
         cal.set(Calendar.MONTH, month - 1);
         cal.set(Calendar.DAY_OF_MONTH, day);
 
-        return (int) (cal.getTimeInMillis() / 1000L);
+        DateTime date = new DateTime(cal.getTimeInMillis());
+
+        return (int) (date.withTimeAtStartOfDay().getMillis() / 1000L);
     }
 
     private String getCurrent(CurrentConditionItem condition) {

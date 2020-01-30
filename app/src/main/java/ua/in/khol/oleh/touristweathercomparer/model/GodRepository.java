@@ -1,12 +1,13 @@
 package ua.in.khol.oleh.touristweathercomparer.model;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.location.Location;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,6 @@ import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelpe
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
-import ua.in.khol.oleh.touristweathercomparer.utils.Calculation;
 import ua.in.khol.oleh.touristweathercomparer.utils.LocaleUnits;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
@@ -95,10 +95,9 @@ public class GodRepository implements Repository {
                         mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
                 })
                 .subscribe(location -> {
-                            mStatusPublicSubject.onNext(Status.REFRESHED);
-                            mLocationSubject.onNext(location);
-                        },
-                        Throwable::printStackTrace)
+                    mStatusPublicSubject.onNext(Status.REFRESHED);
+                    mLocationSubject.onNext(location);
+                }, Throwable::printStackTrace)
         );
     }
 
@@ -134,7 +133,6 @@ public class GodRepository implements Repository {
                 .observeOn(Schedulers.io());
     }
 
-    @SuppressLint("CheckResult")
     public Observable<Forecast> observeForecast() {
         return Observable.combineLatest(mLocationSubject,
                 ReactiveNetwork.observeInternetConnectivity(),
@@ -145,24 +143,32 @@ public class GodRepository implements Repository {
                             .getPlaceId(latitude, longitude, DB_LOCATION_ACCURACY);
                     List<Forecast> forecastList = new ArrayList<>();
 
-                    if (connected) {
-                        for (WeatherProvider provider : mWeatherHelper.getWeatherProviders()) {
+                    for (WeatherProvider provider : mWeatherHelper.getWeatherProviders()) {
+                        if (connected) {
                             List<WeatherData> weatherDataList
                                     = provider.getWeatherDataList(latitude, longitude);
-                            if (weatherDataList != null)
+                            if (weatherDataList != null) {
                                 for (WeatherData data : weatherDataList) {
                                     Forecast forecast = convertWeatherDataToForecast(data);
                                     forecast.setPlaceId(placeId);
                                     forecastList.add(forecast);
                                 }
+                                provider.setCached(true);
+                            }
+                            mDatabaseHelper.putForecastList(forecastList);
+                        } else {
+                            if (!provider.isCached()) {
+                                DateTime dateTime = new DateTime().withTimeAtStartOfDay();
+                                int date = (int) (dateTime.getMillis() / 1000);
+                                forecastList
+                                        .addAll(mDatabaseHelper.getForecastList(provider.getId(),
+                                                placeId, date));
+                                if (forecastList.size() == 0)
+                                    mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
+                                else
+                                    mStatusPublicSubject.onNext(Status.OFFLINE);
+                            }
                         }
-                        mDatabaseHelper.putForecastList(forecastList);
-                    } else {
-                        forecastList.addAll(mDatabaseHelper.getForecastList(placeId));
-                        if (forecastList.size() == 0)
-                            mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
-                        else
-                            mStatusPublicSubject.onNext(Status.OFFLINE);
                     }
 
                     return Observable.fromIterable(forecastList);
@@ -209,7 +215,6 @@ public class GodRepository implements Repository {
         mCompositeDisposable.dispose();
     }
 
-    @SuppressLint("ApplySharedPref")
     private void loadPreferences() {
         LocaleUnits.getInstance().setCelsius(mPreferencesHelper.getCelsius());
         LocaleUnits.getInstance().setLanguage(mPreferencesHelper.getLanguage());
@@ -218,6 +223,8 @@ public class GodRepository implements Repository {
     @Override
     public void updateConfiguration() {
         String language = mPreferencesHelper.getLanguage();
+
+        // TODO refactor
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Configuration config = mAppContext.getResources().getConfiguration();

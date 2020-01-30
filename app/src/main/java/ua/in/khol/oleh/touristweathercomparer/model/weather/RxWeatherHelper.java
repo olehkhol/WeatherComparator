@@ -15,8 +15,7 @@ public class RxWeatherHelper implements WeatherHelper {
         add(new DarkSky());
         add(new Yahoo());
         add(new Owm());
-        add(new Wwo()); // I got bored to refresh an api key.
-        // add(new Accu()); // Up to 50 calls per day - seriously ?!
+        add(new Wwo());
     }};
 
     @Override

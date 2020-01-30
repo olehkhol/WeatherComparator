@@ -20,6 +20,9 @@ public interface ForecastDao {
     @Query("SELECT * FROM Forecast WHERE place_id = :placeId")
     List<Forecast> queryByPlaceId(long placeId);
 
+    @Query("SELECT * FROM Forecast WHERE provider_id = :providerId AND place_id = :placeId AND date >= :date")
+    List<Forecast> queryFromDate(int providerId, long placeId, int date);
+
     @Query("SELECT id FROM Forecast WHERE provider_id = :providerId AND place_id = :placeId AND date = :date")
     long findForecastId(int providerId, long placeId, int date);
 }

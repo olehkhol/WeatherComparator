@@ -29,29 +29,48 @@ public class Owm extends WeatherProvider {
     @Override
     public List<WeatherData> getWeatherDataList(double latitude, double longitude) {
         List<WeatherData> weatherDataList = new ArrayList<>();
+        int count = 0;
 
         try {
-            OwmHourlyData owmHourlyData = mService.getLocationWeather(String.valueOf(latitude),
+            // Generate a first item from "Current weather data"
+            OwmCurrentData current = mService.getCurrentWeather(String.valueOf(latitude),
                     String.valueOf(longitude), "imperial", OwmAuth.getApiKey())
                     .execute().body();
-            if (owmHourlyData != null) {
-                DateTime date = new DateTime();
-                List<Hourly> forecastHourly = owmHourlyData.getHourly();
-                // Iterate through all hourly list ~ 40
-                int i = 0, count = 0;
+            DateTime date = new DateTime(current.getDt().longValue() * 1000)
+                    .withTimeAtStartOfDay();
+            WeatherData.Builder builder = new WeatherData.Builder();
+            builder
+                    .withProviderId(getId())
+                    .withDate((int) (date.getMillis() / 1000))
+                    .withLow(current.getMain().getTempMin())
+                    .withHigh(current.getMain().getTempMax())
+                    .withText(current.getWeather().get(0).getMain())
+                    .withSrc(PATH + current.getWeather().get(0).getIcon() + "@2x");
+            builder
+                    .isCurrent(true)
+                    .withCurrent(current.getMain().getTemp())
+                    .withTextExtra(current.getWeather().get(0).getMain())
+                    .withSrcExtra(PATH + current.getWeather().get(0).getIcon() + "@2x");
+            weatherDataList.add(builder.build());
+
+            // Generate a list from "5 day weather forecast"
+            OwmHourlyData hourly = mService.getLocationWeather(String.valueOf(latitude),
+                    String.valueOf(longitude), "imperial", OwmAuth.getApiKey())
+                    .execute().body();
+            if (hourly != null) {
+                List<Hourly> forecastHourly = hourly.getHourly();
+                // Iterate through list ~ 40
+                int i = 0;
                 float low = Float.MAX_VALUE, high = Float.MIN_VALUE;
                 Map<String, Integer> textMap = new HashMap<>();
                 Map<String, Integer> srcMap = new HashMap<>();
+                // Move through all array
                 do {
-                    if (i < forecastHourly.size()
-                            && date.withTimeAtStartOfDay()
-                            .equals(new DateTime(forecastHourly.get(i).getDt().longValue() * 1000)
-                                    .withTimeAtStartOfDay())) {
+                    DateTime hourlyDate = new DateTime(forecastHourly.get(i).getDt().longValue() * 1000)
+                            .withTimeAtStartOfDay();
+                    if (i < forecastHourly.size() && date.equals(hourlyDate)) {
                         // Accumulate the whole hourly data
-                        Hourly forecast
-                                = forecastHourly.get(i);
-                        DateTime hourlyDateTime
-                                = new DateTime(forecast.getDt().longValue() * 1000);
+                        Hourly forecast = forecastHourly.get(i);
                         // Get min|max temp
                         Main main = forecast.getMain();
                         low = Math.min(low, main.getTempMin());
@@ -70,37 +89,22 @@ public class Owm extends WeatherProvider {
                             srcMap.put(src, srcKey + 1);
                         else
                             srcMap.put(src, 0);
+
                         i++;
                     } else if (i == 0) {
-                        // System clock is wrong
-                        date = new DateTime(forecastHourly.get(0).getDt().longValue() * 1000)
-                                .withTimeAtStartOfDay();
+                        date = hourlyDate;
                     } else {
                         // Build WeatherData
-                        WeatherData.Builder weatherDataBuilder = new WeatherData.Builder();
-                        weatherDataBuilder
+                        builder = new WeatherData.Builder();
+                        builder
                                 .withProviderId(getId())
-                                .withDate((int) (date.getMillis() / 1000))
+                                .withDate((int) (date.withTimeAtStartOfDay().getMillis() / 1000))
                                 .withLow(low)
                                 .withHigh(high)
                                 .withText(getMostRepeatedString(textMap))
                                 .withSrc(PATH + getMostRepeatedString(srcMap) + "@2x");
-                        if (count == 0) {
-                            OwmCurrentData owmCurrentData = mService
-                                    .getCurrentWeather(String.valueOf(latitude),
-                                            String.valueOf(longitude), "imperial",
-                                            OwmAuth.getApiKey()).execute().body();
-                            if (owmCurrentData != null) {
-                                weatherDataBuilder
-                                        .isCurrent(true)
-                                        .withCurrent(owmCurrentData.getMain().getTemp())
-                                        .withTextExtra(owmCurrentData.getWeather()
-                                                .get(0).getMain())
-                                        .withSrcExtra(PATH + owmCurrentData.getWeather()
-                                                .get(0).getIcon() + "@2x");
-                            }
-                        }
-                        weatherDataList.add(weatherDataBuilder.build());
+
+                        weatherDataList.add(builder.build());
                         // Iterate next
                         low = Float.MAX_VALUE;
                         high = Float.MIN_VALUE;
@@ -111,12 +115,15 @@ public class Owm extends WeatherProvider {
                     }
                 } while (count < DAYS);
             }
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return weatherDataList;
+        // Remove a duplicate item
+        if (weatherDataList.get(0).getDate() == weatherDataList.get(1).getDate())
+            weatherDataList.remove(1);
+
+        return weatherDataList.subList(0, DAYS);
     }
 
     private String getMostRepeatedString(Map<String, Integer> srcMap) {
@@ -130,6 +137,7 @@ public class Owm extends WeatherProvider {
         return mostRepeated.getKey();
     }
 
+    // Stub
     @Override
     public Observable<WeatherData> observeWeatherData(double latitude, double longitude) {
         return null;

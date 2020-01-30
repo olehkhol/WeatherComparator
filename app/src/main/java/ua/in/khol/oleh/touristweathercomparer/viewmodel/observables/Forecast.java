@@ -1,5 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel.observables;
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -165,5 +166,32 @@ public class Forecast {
 
     public void setCurrentImage(String currentImage) {
         mCurrentImage = currentImage;
+    }
+
+    // TODO write tests for equals and hashCode
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+
+        if (obj instanceof Forecast) {
+            Forecast forecast = (Forecast) obj;
+
+            return this.mProviderId == forecast.mProviderId
+                    && this.mPlaceId == forecast.mPlaceId
+                    && this.mDate == forecast.mDate;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Integer.valueOf(mProviderId).hashCode();
+        result = 31 * result + Long.valueOf(mPlaceId).hashCode();
+        result = 31 * result + Integer.valueOf(mDate).hashCode();
+
+        return result;
     }
 }

@@ -29,7 +29,7 @@
     <string name="finish">Finish</string>
 
     <string name="location_format" translatable="false">"%.06f"</string>
-    <string name="ask_for_intenet">Gemme an internet</string>
+    <string name="ask_for_intenet">No internet connection!\nLoading forecasts from a database.</string>
     <string name="refresh">Refresh</string>
     <string name="search">Search</string>
     <string name="alert_location_title">Location required</string>

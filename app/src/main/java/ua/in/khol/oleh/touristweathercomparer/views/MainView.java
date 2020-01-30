@@ -102,8 +102,8 @@ public class MainView extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         // Request permissions
         requestPermissions();
@@ -154,7 +154,7 @@ public class MainView extends AppCompatActivity
         } else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (!mHasPermissions) {
+        if (permissions.length > 0 && !mHasPermissions) {
             // Start request again because we really need this permissions to work
             requestPermissions();
         }
