@@ -13,4 +13,8 @@
     <dimen name="nav_item_margin">16dp</dimen>
     <dimen name="settings_padding">16dp</dimen>
     <dimen name="alert_view_corner_radius">8dp</dimen>
+    <dimen name="nav_header_padding_top">32dp</dimen>
+    <dimen name="nav_header_padding_horizontal">16dp</dimen>
+    <dimen name="nav_header_padding_bottom">16dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
 </resources>

@@ -9,6 +9,7 @@ import ua.in.khol.oleh.touristweathercomparer.MainApplication;
 @Component(modules = {AppModule.class,
         MainViewModule.class,
         SettingsViewModule.class,
+        HomeViewModule.class,
         AlertLocationViewModule.class})
 
 public interface AppComponent {

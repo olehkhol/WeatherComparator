@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.HomeViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
 
@@ -28,6 +29,9 @@ public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFacto
         } else if (modelClass.isAssignableFrom(AlertViewModel.class)) {
             //noinspection unchecked
             return (T) new AlertViewModel(mRepository);
+        } else if (modelClass.isAssignableFrom(HomeViewModel.class)) {
+            //noinspection unchecked
+            return (T) new HomeViewModel(mRepository);
         }
 
         throw new RuntimeException("Wrong ViewModel " + modelClass.getName());

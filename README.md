@@ -1,7 +1,7 @@
-# Weather Comparator 
+# Weather Forecasts Comparator 
 
 The source code of an application
-[Weather Comparator](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
+[Weather Forecasts Comparator](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
 
 ## Contents
 * [Demo](#demo)

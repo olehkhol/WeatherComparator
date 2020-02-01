@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Weather Comparator</string>
+    <string name="app_name">Сравнитель погодных прогнозов</string>
     <string name="preferences">Предпочтения</string>
     <string name="localization">ЛОКАЛИЗАЦИЯ</string>
     <string name="location">ЛОКАЦИЯ</string>
@@ -26,5 +26,8 @@
     <string name="cancel">Отмена</string>
     <string name="communicate">Коммуникация</string>
     <string name="share">Поделиться</string>
+    <string name="title_home">Домашняя</string>
+    <string name="title_map">Карта</string>
+    <string name="title_history">История</string>
 
 </resources>

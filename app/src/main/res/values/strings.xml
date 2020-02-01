@@ -3,7 +3,7 @@
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
 
-    <string name="app_name">Weather Comparator</string>
+    <string name="app_name">Weather Forecasts Comparator</string>
     <string name="preferences">Preferences</string>
     <string name="asset_image" translatable="false">file:///android_asset/%s.png</string>
 
@@ -40,4 +40,7 @@
     <string name="cancel">Cancel</string>
     <string name="communicate">Communicate</string>
     <string name="share">Share</string>
+    <string name="title_home">Home</string>
+    <string name="title_map">Map</string>
+    <string name="title_history">History</string>
 </resources>

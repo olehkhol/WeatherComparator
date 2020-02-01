@@ -3,7 +3,6 @@ package ua.in.khol.oleh.touristweathercomparer.views;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Menu;
@@ -21,24 +20,23 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import ua.in.khol.oleh.touristweathercomparer.BR;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
 import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.utils.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
-import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
-import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
 
 public class MainView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,9 +51,6 @@ public class MainView extends AppCompatActivity
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
-    private RecyclerView mUpperRecycler;
-    private RecyclerView mLowerRecycler;
-    private UpperAdapter mUpperAdapter;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
@@ -70,7 +65,6 @@ public class MainView extends AppCompatActivity
         // Init UI and Binding
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         binding.setMainViewModel(mMainViewModel);
-        initBindings(binding);
         initUI();
         // Observe live data
         mMainViewModel.getDoRecreate().observe(this, aBoolean -> {
@@ -177,9 +171,6 @@ public class MainView extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        mUpperAdapter.setOnBannerClickListener(null);
-        mUpperRecycler.setAdapter(null);
-        mLowerRecycler.setAdapter(null);
         super.onDestroy();
     }
     // ----------------[ACTIVITY CALLBACKS]----------------
@@ -326,29 +317,16 @@ public class MainView extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-    }
 
-    private void initBindings(ViewMainBinding binding) {
-        mUpperRecycler = binding.content.upperRecycler;
-        mUpperRecycler.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-        mUpperAdapter = new UpperAdapter();
-        mUpperAdapter.setOnBannerClickListener(url -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            MainView.this.startActivity(intent);
-        });
-        mUpperRecycler.setAdapter(mUpperAdapter);
-
-        mLowerRecycler = binding.content.lowerRecycler;
-        mLowerRecycler.setLayoutManager(new LinearLayoutManager(this,
-                RecyclerView.HORIZONTAL, false));
-        RecyclerAdapter<Title> lowerAdapter
-                = new RecyclerAdapter<>(R.layout.title_item, BR.title, null);
-        lowerAdapter.setOnItemClickListener((position, item)
-                -> mUpperRecycler.getLayoutManager().scrollToPosition(position));
-        mLowerRecycler.setAdapter(lowerAdapter);
+        BottomNavigationView bottomNavView = findViewById(R.id.bottom_nav_view);
+        bottomNavView.setItemIconTintList(null);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_map, R.id.navigation_history)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        // TODO those are temporary commented lines for one commit only
+        // NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // NavigationUI.setupWithNavController(bottomNavView, navController);
     }
     // ----------------[UI]----------------
 }

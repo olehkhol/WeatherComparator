@@ -66,9 +66,8 @@ public class Owm extends WeatherProvider {
                 Map<String, Integer> srcMap = new HashMap<>();
                 // Move through all array
                 do {
-                    DateTime hourlyDate = new DateTime(forecastHourly.get(i).getDt().longValue() * 1000)
-                            .withTimeAtStartOfDay();
-                    if (i < forecastHourly.size() && date.equals(hourlyDate)) {
+                    if (i < forecastHourly.size() && date.equals(new DateTime(forecastHourly
+                            .get(i).getDt().longValue() * 1000).withTimeAtStartOfDay())) {
                         // Accumulate the whole hourly data
                         Hourly forecast = forecastHourly.get(i);
                         // Get min|max temp
@@ -91,27 +90,31 @@ public class Owm extends WeatherProvider {
                             srcMap.put(src, 0);
 
                         i++;
-                    } else if (i == 0) {
-                        date = hourlyDate;
                     } else {
-                        // Build WeatherData
-                        builder = new WeatherData.Builder();
-                        builder
-                                .withProviderId(getId())
-                                .withDate((int) (date.withTimeAtStartOfDay().getMillis() / 1000))
-                                .withLow(low)
-                                .withHigh(high)
-                                .withText(getMostRepeatedString(textMap))
-                                .withSrc(PATH + getMostRepeatedString(srcMap) + "@2x");
+                        if (i == 0) {
+                            date = new DateTime(forecastHourly
+                                    .get(i).getDt().longValue() * 1000).withTimeAtStartOfDay();
+                            count++;
+                        } else {
+                            // Build WeatherData
+                            builder = new WeatherData.Builder();
+                            builder
+                                    .withProviderId(getId())
+                                    .withDate((int) (date.withTimeAtStartOfDay().getMillis() / 1000))
+                                    .withLow(low)
+                                    .withHigh(high)
+                                    .withText(getMostRepeatedString(textMap))
+                                    .withSrc(PATH + getMostRepeatedString(srcMap) + "@2x");
 
-                        weatherDataList.add(builder.build());
-                        // Iterate next
-                        low = Float.MAX_VALUE;
-                        high = Float.MIN_VALUE;
-                        textMap.clear();
-                        srcMap.clear();
-                        date = date.plusDays(1);
-                        count++;
+                            weatherDataList.add(builder.build());
+                            // Iterate next
+                            low = Float.MAX_VALUE;
+                            high = Float.MIN_VALUE;
+                            textMap.clear();
+                            srcMap.clear();
+                            date = date.plusDays(1);
+                            count++;
+                        }
                     }
                 } while (count < DAYS);
             }
