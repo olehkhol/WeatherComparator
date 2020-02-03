@@ -1,8 +1,11 @@
 package ua.in.khol.oleh.touristweathercomparer.model;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
@@ -12,11 +15,13 @@ public interface Repository {
         LOCATION_UNAVAILABLE, CLEAR
     }
 
+    List<Title> getTitleList();
+
+    List<Provider> getProviderList();
+
+    Observable<Place> observePlace();
+
     Observable<City> observeCity();
-
-    Observable<Title> observeTitle();
-
-    Observable<Provider> observeProvider();
 
     Observable<Forecast> observeForecast();
 

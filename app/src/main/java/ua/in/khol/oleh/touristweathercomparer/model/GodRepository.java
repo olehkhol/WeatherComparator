@@ -22,6 +22,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.ReplaySubject;
+import ua.in.khol.oleh.touristweathercomparer.model.cache.RxCache;
 import ua.in.khol.oleh.touristweathercomparer.model.db.DatabaseHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
@@ -43,9 +44,10 @@ public class GodRepository implements Repository {
     private final WeatherHelper mWeatherHelper;
     private final PreferencesHelper mPreferencesHelper;
     private final DatabaseHelper mDatabaseHelper;
+    private final RxCache mRxCache;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private PublishSubject<Status> mStatusPublicSubject = PublishSubject.create();
-    private ReplaySubject<Location> mLocationSubject = ReplaySubject.create();
+    private ReplaySubject<Place> mPlaceSubject = ReplaySubject.create();
 
     public GodRepository(Application application,
                          LocationHelper locationHelper, WeatherHelper weatherHelper,
@@ -55,6 +57,7 @@ public class GodRepository implements Repository {
         mWeatherHelper = weatherHelper;
         mPreferencesHelper = preferencesHelper;
         mDatabaseHelper = databaseHelper;
+        mRxCache = new RxCache();
     }
 
     public Observable<Status> observeStatus() {
@@ -71,10 +74,10 @@ public class GodRepository implements Repository {
         loadPreferences();
         updateConfiguration();
 
-        processLocation();
+        refresh();
     }
 
-    private void processLocation() {
+    private void refresh() {
         mCompositeDisposable.add(mLocationHelper.observeLocationUsable()
                 .filter(locationUsable -> {
                     if (!locationUsable)
@@ -84,112 +87,123 @@ public class GodRepository implements Repository {
                 .flatMapSingle((Function<Boolean, SingleSource<Location>>) aBoolean -> {
                     mStatusPublicSubject.onNext(Status.REFRESHING);
                     return mLocationHelper.observeLocation();
-
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .doOnSuccess(location -> {
+                .subscribe(location -> {
+                    // Put place into DB
                     Place place = new Place(location.getLatitude(), location.getLongitude());
                     long placeId = mDatabaseHelper.getPlaceId(place, DB_LOCATION_ACCURACY);
                     if (placeId == 0)
-                        mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
-                })
-                .subscribe(location -> {
+                        placeId = mDatabaseHelper.putPlace(place, DB_LOCATION_ACCURACY);
+                    place.setId(placeId);
+                    // Emit place with ID
+                    mPlaceSubject.onNext(place);
+                    // Emit status REFRESHED
                     mStatusPublicSubject.onNext(Status.REFRESHED);
-                    mLocationSubject.onNext(location);
                 }, Throwable::printStackTrace)
         );
     }
 
-    public Observable<City> observeCity() {
-        return Observable.combineLatest(mLocationSubject,
-                ReactiveNetwork.observeInternetConnectivity(),
-                (location, connected) -> {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    long placeId = mDatabaseHelper
-                            .getPlaceId(latitude, longitude, DB_LOCATION_ACCURACY);
-
-                    City city;
-                    if (connected) {
-                        String name = mLocationHelper.getLocationName(latitude, longitude,
-                                mPreferencesHelper.getLanguage());
-                        city = new City(name, placeId);
-                        long cityId = mDatabaseHelper.getCityId(placeId);
-                        if (cityId == 0)
-                            mDatabaseHelper.putCity(city, DB_LOCATION_ACCURACY);
-                    } else { // Get city from DB
-                        city = mDatabaseHelper.getCity(placeId);
-                        if (city == null) {
-                            mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
-                            city = new City();
-                        } else
-                            mStatusPublicSubject.onNext(Status.OFFLINE);
-                    }
-
-                    return city;
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io());
+    @Override
+    public Observable<Place> observePlace() {
+        return mPlaceSubject;
     }
 
-    public Observable<Forecast> observeForecast() {
-        return Observable.combineLatest(mLocationSubject,
-                ReactiveNetwork.observeInternetConnectivity(),
-                (location, connected) -> {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    long placeId = mDatabaseHelper
-                            .getPlaceId(latitude, longitude, DB_LOCATION_ACCURACY);
-                    List<Forecast> forecastList = new ArrayList<>();
+    @Override
+    public Observable<City> observeCity() {
+        if (mRxCache.getCity() != null)
+            return Observable.just(mRxCache.getCity());
+        else
+            return Observable.combineLatest(observePlace(),
+                    ReactiveNetwork.observeInternetConnectivity(),
+                    (place, connected) -> {
+                        double latitude = place.getLatitude();
+                        double longitude = place.getLongitude();
+                        long placeId = place.getId();
 
-                    for (WeatherProvider provider : mWeatherHelper.getWeatherProviders()) {
+                        City city;
                         if (connected) {
-                            List<WeatherData> weatherDataList
-                                    = provider.getWeatherDataList(latitude, longitude);
-                            if (weatherDataList != null) {
-                                for (WeatherData data : weatherDataList) {
-                                    Forecast forecast = convertWeatherDataToForecast(data);
-                                    forecast.setPlaceId(placeId);
-                                    forecastList.add(forecast);
+                            String name = mLocationHelper.getLocationName(latitude, longitude,
+                                    mPreferencesHelper.getLanguage());
+                            city = new City(name, placeId);
+                            long cityId = mDatabaseHelper.getCityId(placeId);
+                            if (cityId == 0)
+                                mDatabaseHelper.putCity(city, DB_LOCATION_ACCURACY);
+                        } else { // Get city from DB
+                            city = mDatabaseHelper.getCity(placeId);
+                            if (city == null) {
+                                mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
+                                city = new City();
+                            } else
+                                mStatusPublicSubject.onNext(Status.OFFLINE);
+                        }
+
+                        mRxCache.setCity(city);
+
+                        return city;
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<Forecast> observeForecast() {
+        if (mRxCache.getForecastList() != null)
+            return Observable.fromIterable(mRxCache.getForecastList());
+        else
+            return Observable.combineLatest(observePlace(),
+                    ReactiveNetwork.observeInternetConnectivity(),
+                    (place, connected) -> {
+                        double latitude = place.getLatitude();
+                        double longitude = place.getLongitude();
+                        long placeId = place.getId();
+                        List<Forecast> forecastList = new ArrayList<>();
+
+                        for (WeatherProvider provider : mWeatherHelper.getWeatherProviders()) {
+                            if (connected) {
+                                List<WeatherData> weatherDataList
+                                        = provider.getWeatherDataList(latitude, longitude);
+                                if (weatherDataList != null) {
+                                    for (WeatherData data : weatherDataList) {
+                                        Forecast forecast = convertWeatherDataToForecast(data);
+                                        forecast.setPlaceId(placeId);
+                                        forecastList.add(forecast);
+                                    }
+                                    provider.setCached(true);
                                 }
-                                provider.setCached(true);
-                            }
-                            mDatabaseHelper.putForecastList(forecastList);
-                        } else {
-                            if (!provider.isCached()) {
-                                DateTime dateTime = new DateTime().withTimeAtStartOfDay();
-                                int date = (int) (dateTime.getMillis() / 1000);
-                                forecastList
-                                        .addAll(mDatabaseHelper.getForecastList(provider.getId(),
-                                                placeId, date));
-                                if (forecastList.size() == 0)
-                                    mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
-                                else
-                                    mStatusPublicSubject.onNext(Status.OFFLINE);
+                                mDatabaseHelper.putForecastList(forecastList);
+                            } else {
+                                if (!provider.isCached()) {
+                                    DateTime dateTime = new DateTime().withTimeAtStartOfDay();
+                                    int date = (int) (dateTime.getMillis() / 1000);
+                                    forecastList
+                                            .addAll(mDatabaseHelper.getForecastList(provider.getId(),
+                                                    placeId, date));
+                                    if (forecastList.size() == 0)
+                                        mStatusPublicSubject.onNext(Status.CRITICAL_OFFLINE);
+                                    else
+                                        mStatusPublicSubject.onNext(Status.OFFLINE);
+                                }
                             }
                         }
-                    }
 
-                    return Observable.fromIterable(forecastList);
-                })
-                .flatMap((Function<Observable<Forecast>, ObservableSource<Forecast>>)
-                        forecastObservable -> forecastObservable);
+                        mRxCache.setForecastList(forecastList);
+
+                        return Observable.fromIterable(forecastList);
+                    })
+                    .flatMap((Function<Observable<Forecast>, ObservableSource<Forecast>>)
+                            forecastObservable -> forecastObservable);
     }
 
     @Override
-    public Observable<Provider> observeProvider() {
-        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
-                .flatMap((Function<WeatherProvider, ObservableSource<Provider>>) wp -> Observable
-                        .just(new Provider(wp.getId(), wp.getSite(), wp.getBanner())));
+    public List<Title> getTitleList() {
+        return mWeatherHelper.getTitleList();
     }
 
     @Override
-    public Observable<Title> observeTitle() {
-        return Observable.fromIterable(mWeatherHelper.getWeatherProviders())
-                .flatMap((Function<WeatherProvider, ObservableSource<Title>>) wp -> Observable
-                        .just(new Title(wp.getId(), wp.getName())));
-
+    public List<Provider> getProviderList() {
+        return mWeatherHelper.getProviderList();
     }
 
     private Forecast convertWeatherDataToForecast(WeatherData weatherData) {

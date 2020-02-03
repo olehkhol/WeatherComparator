@@ -18,7 +18,7 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
 
 // UPPER ADAPTER
-public class UpperAdapter extends RecyclerView.Adapter<UpperAdapter.UpperHolder> {
+public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.UpperHolder> {
 
     private ObservableList<Provider> mProviders = new ObservableArrayList<>();
     private ForecastListChangedCallback mForecastListChangedCallback

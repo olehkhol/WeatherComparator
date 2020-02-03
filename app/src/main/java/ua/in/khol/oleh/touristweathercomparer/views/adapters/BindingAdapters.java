@@ -2,14 +2,10 @@ package ua.in.khol.oleh.touristweathercomparer.views.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
-import androidx.databinding.InverseBindingAdapter;
-import androidx.databinding.InverseBindingListener;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -92,17 +88,15 @@ public final class BindingAdapters {
         if (adapter != null) {
             adapter.clearItems();
             adapter.addItems(titles);
-//            adapter.notifyDataSetChanged();
         }
     }
 
     @BindingAdapter("adapter")
     public static void providersAdapter(RecyclerView recyclerView, List<Provider> providers) {
-        UpperAdapter adapter = (UpperAdapter) recyclerView.getAdapter();
+        ProviderAdapter adapter = (ProviderAdapter) recyclerView.getAdapter();
         if (adapter != null) {
             adapter.clearItems();
             adapter.addItems(providers);
-//            adapter.notifyDataSetChanged();
         }
     }
 }

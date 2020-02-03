@@ -42,6 +42,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/com_google_android_geo_api_key"/>
     </application>
 
 </manifest>

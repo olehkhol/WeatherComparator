@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,8 +24,8 @@ import ua.in.khol.oleh.touristweathercomparer.databinding.ViewHomeBinding;
 import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.HomeViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.views.adapters.ProviderAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.RecyclerAdapter;
-import ua.in.khol.oleh.touristweathercomparer.views.adapters.UpperAdapter;
 
 public class HomeView extends Fragment {
     private HomeViewModel mHomeViewModel;
@@ -34,7 +35,7 @@ public class HomeView extends Fragment {
 
     private RecyclerView mUpperRecycler;
     private RecyclerView mLowerRecycler;
-    private UpperAdapter mUpperAdapter;
+    private ProviderAdapter mProviderAdapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -57,17 +58,36 @@ public class HomeView extends Fragment {
         initBindings(viewHomeBinding);
 
         View view = viewHomeBinding.getRoot();
-//        view.setBackgroundColor(ContextCompat
-//                .getColor(requireContext(), R.color.toolbar_background));
+        view.setBackgroundColor(ContextCompat
+                .getColor(requireContext(), R.color.toolbar_background));
         return view;
 
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        mHomeViewModel.start();
+    }
+
+    @Override
+    public void onStop() {
+        mHomeViewModel.stop();
+
+        super.onStop();
+    }
+
+    @Override
     public void onDestroyView() {
-        mUpperAdapter.setOnBannerClickListener(null);
+        mProviderAdapter.setOnBannerClickListener(null);
+        mUpperRecycler.setLayoutManager(null);
         mUpperRecycler.setAdapter(null);
+        mUpperRecycler = null;
+
+        mLowerRecycler.setLayoutManager(null);
         mLowerRecycler.setAdapter(null);
+        mLowerRecycler = null;
 
         super.onDestroyView();
     }
@@ -76,14 +96,14 @@ public class HomeView extends Fragment {
         mUpperRecycler = binding.upperRecycler;
         mUpperRecycler.setLayoutManager(new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.HORIZONTAL, false));
-        mUpperAdapter = new UpperAdapter();
-        mUpperAdapter.setOnBannerClickListener(url -> {
+        mProviderAdapter = new ProviderAdapter();
+        mProviderAdapter.setOnBannerClickListener(url -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
         });
-        mUpperRecycler.setAdapter(mUpperAdapter);
+        mUpperRecycler.setAdapter(mProviderAdapter);
 
         mLowerRecycler = binding.lowerRecycler;
         mLowerRecycler.setLayoutManager(new LinearLayoutManager(requireContext(),
@@ -94,5 +114,4 @@ public class HomeView extends Fragment {
                 -> mUpperRecycler.getLayoutManager().scrollToPosition(position));
         mLowerRecycler.setAdapter(lowerAdapter);
     }
-
 }

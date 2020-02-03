@@ -16,15 +16,13 @@ public class HomeViewModel extends BaseViewModel {
 
     public HomeViewModel(Repository repository) {
         super(repository);
-
-        subscribeTitle();
-        subscribeProvider();
-        subscribeForecast();
+        initTitles();
+        initProviders();
     }
 
     @Override
     public void start() {
-
+        subscribeForecast();
     }
 
     @Override
@@ -32,30 +30,12 @@ public class HomeViewModel extends BaseViewModel {
 
     }
 
-    private void subscribeTitle() {
-        getCompositeDisposable().add(getRepository().observeTitle()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(title -> {
-                    int index = mTitles.indexOf(title);
-                    if (index != -1)
-                        mTitles.set(index, title);
-                    else
-                        mTitles.add(title);
-                }));
+    private void initTitles() {
+        mTitles.addAll(getRepository().getTitleList());
     }
 
-    private void subscribeProvider() {
-        getCompositeDisposable().add(getRepository().observeProvider()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(provider -> {
-                    int index = mProviders.indexOf(provider);
-                    if (index != -1)
-                        mProviders.set(index, provider);
-                    else
-                        mProviders.add(provider);
-                }));
+    private void initProviders() {
+        mProviders.addAll(getRepository().getProviderList());
     }
 
     private void subscribeForecast() {

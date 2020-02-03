@@ -37,6 +37,7 @@ google-services.json
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmAuth.java
+/app/src/main/res/values/google_maps_api.xml
 /gradle/wrapper/gradle-wrapper.jar
 /gradlew
 /gradlew.bat

@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="ua.in.khol.oleh.touristweathercomparer.views.MapView"
+        android:name="ua.in.khol.oleh.touristweathercomparer.views.MapaView"
         android:label="@string/title_map"
-        tools:layout="@layout/view_map" />
+        tools:layout="@layout/view_mapa" />
 
     <fragment
         android:id="@+id/navigation_history"
