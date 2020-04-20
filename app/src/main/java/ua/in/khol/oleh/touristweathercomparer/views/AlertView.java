@@ -44,7 +44,6 @@ public class AlertView extends DialogFragment {
 
     @Override
     public void onAttach(@NonNull Context context) {
-        // Dagger injection
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }

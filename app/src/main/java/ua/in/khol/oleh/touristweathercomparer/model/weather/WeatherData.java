@@ -6,40 +6,23 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
 
 public class WeatherData {
 
-    private boolean mIsCurrent;
-    private int mProviderId;
-    private double mLatitude;
-    private double mLongitude;
     private int mDate;
     private float mLow;
     private float mHigh;
     private String mText;
     private String mSrc;
-    private String mWind;
-    private String mHumidity;
-
-    private float mCurrent;
-    private String mTextExtra;
-    private String mSrcExtra;
+    private float mPressure;
+    private float mSpeed;
+    private int mDegree;
+    private int mHumidity;
+    private boolean mIsCurrent;
 
     private WeatherData() {
 
     }
 
-    public boolean isCurrent() {
+    public boolean getTemp() {
         return mIsCurrent;
-    }
-
-    public int getProviderId() {
-        return mProviderId;
-    }
-
-    public double getLatitude() {
-        return mLatitude;
-    }
-
-    public double getLongitude() {
-        return mLongitude;
     }
 
     public int getDate() {
@@ -62,29 +45,29 @@ public class WeatherData {
         return mSrc;
     }
 
-    public float getCurrent() {
-        return mCurrent;
+    public int getHumidity() {
+        return mHumidity;
     }
 
-    public String getTextExtra() {
-        return mTextExtra;
+    public float getPressure() {
+        return mPressure;
     }
 
-    public String getSrcExtra() {
-        return mSrcExtra;
+    public float getSpeed() {
+        return mSpeed;
     }
 
-    public String getWind() {
-        return mWind;
+    public int getDegree() {
+        return mDegree;
     }
 
-    public String getHumidity() {
-        return mHumidity + " %";
+    public boolean isCurrent() {
+        return mIsCurrent;
     }
 
     public static class Builder {
 
-        private WeatherData weatherData;
+        private final WeatherData weatherData;
 
         public Builder() {
             weatherData = new WeatherData();
@@ -92,21 +75,6 @@ public class WeatherData {
 
         public Builder isCurrent(boolean isCurrent) {
             weatherData.mIsCurrent = isCurrent;
-            return this;
-        }
-
-        public Builder withProviderId(int id) {
-            weatherData.mProviderId = id;
-            return this;
-        }
-
-        public Builder withLatitude(double latitude) {
-            weatherData.mLatitude = latitude;
-            return this;
-        }
-
-        public Builder withLongitude(double longitude) {
-            weatherData.mLongitude = longitude;
             return this;
         }
 
@@ -135,34 +103,33 @@ public class WeatherData {
             return this;
         }
 
-        public Builder withCurrent(float current) {
-            weatherData.mCurrent = current;
-            return this;
-        }
-
-        public Builder withWind(String wind) {
-            weatherData.mWind = wind;
-            return this;
-        }
-
-        public Builder withHumidity(String humidity) {
-            weatherData.mHumidity = humidity;
-            return this;
-        }
-
-        public Builder withTextExtra(String textExtra) {
-            weatherData.mTextExtra = textExtra;
-            return this;
-        }
-
-        public Builder withSrcExtra(String srcExtra) {
-            weatherData.mSrcExtra = srcExtra;
-            return this;
-        }
-
         public WeatherData build() {
             return weatherData;
         }
 
+        public Builder withPressure(float pressure) {
+            weatherData.mPressure = pressure;
+            return this;
+        }
+
+        public Builder withSpeed(float speed) {
+            weatherData.mSpeed = speed;
+            return this;
+        }
+
+        public Builder withDegree(int degree) {
+            weatherData.mDegree = degree;
+            return this;
+        }
+
+        public Builder withHumidity(int humidity) {
+            weatherData.mHumidity = humidity;
+            return this;
+        }
+
+        public Builder withCurrent(boolean isCurrent) {
+            weatherData.mIsCurrent = isCurrent;
+            return this;
+        }
     }
 }

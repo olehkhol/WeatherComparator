@@ -1,123 +1,96 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.darksky;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.Currently;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.DarkSkyData;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.Datum;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.currently.Currently;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.currently.DarkSkyCurrently;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.daily.DarkSkyDaily;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.daily.Datum;
 
 public class DarkSky extends WeatherProvider {
     private DarkSkyService mService;
 
-    public DarkSky() {
-        super("DarkSky", "https://darksky.net/poweredby/",
+    public DarkSky(int id) {
+        super(id, "DarkSky", "https://darksky.net/poweredby/",
                 "https://api.darksky.net");
         mService = createService(DarkSkyService.class);
     }
 
     @Override
-    public List<WeatherData> getWeatherDataList(double latitude, double longitude) {
-        List<WeatherData> weatherDataList = new ArrayList<>();
-
+    public WeatherData getCurrent(double latitude, double longitude, String lang) {
         try {
-            DarkSkyData darkSkyData = mService.getLocationWeather(DarkSkyAuth.getSecretKey(),
-                    String.valueOf(latitude), String.valueOf(longitude), "minutely,hourly,flags",
-                    "en", "us").execute().body();
+            DarkSkyCurrently darkSkyCurrently = mService.getCurrently(DarkSkyAuth.getSecretKey(),
+                    String.valueOf(latitude), String.valueOf(longitude), lang, "us")
+                    .execute().body();
+            if (darkSkyCurrently != null) {
 
-            if (darkSkyData != null) {
-                List<Datum> datumList;
-                Currently currently;
-                datumList = darkSkyData.getDaily().getData();
-                currently = darkSkyData.getCurrently();
+                Currently currently = darkSkyCurrently.getCurrently();
+                WeatherData.Builder builder = new WeatherData.Builder();
+                builder
+                        .withDate(currently.getTime())
+                        .withLow(currently.getTemperature())
+                        .withHigh(currently.getTemperature())
+                        .withText(currently.getSummary())
+                        .withSrc(PATH + currently.getIcon())
+                        .withPressure(currently.getPressure())
+                        .withSpeed(currently.getWindSpeed())
+                        .withDegree(currently.getWindBearing())
+                        .withHumidity((int) (currently.getHumidity() * 100))
+                        .withCurrent(true);
 
-                int count = 0;
-                for (Datum datum : datumList)
-                    if (count < DAYS) {
-                        WeatherData.Builder builder = new WeatherData.Builder();
-                        builder
-                                .withProviderId(getId())
-                                .withDate(datum.getTime())
-                                .withLow(datum.getTemperatureMin())
-                                .withHigh(datum.getTemperatureMax())
-                                .withText(datum.getIcon())
-                                .withSrc(PATH + datum.getIcon());
-
-                        if (count == 0) { // Extra weather data
-                            builder
-                                    .isCurrent(true)
-                                    .withCurrent(currently.getTemperature())
-                                    .withWind(String.valueOf(currently.getWindSpeed()))
-                                    .withHumidity(String
-                                            .valueOf((int) (currently.getHumidity() * 100)))
-                                    .withTextExtra(currently.getIcon())
-                                    .withSrcExtra(PATH + currently.getIcon());
-                        }
-
-                        weatherDataList.add(builder.build());
-                        count++;
-                    }
+                return builder.build();
             }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); // TODO check CompositeDisposable from GodRepository
         }
 
-        return weatherDataList;
+        return null;
     }
 
     @Override
-    public Observable<WeatherData> observeWeatherData(double latitude,
-                                                      double longitude) {
-        Observable<DarkSkyData> observable = mService.observeLocationWeather(DarkSkyAuth.getSecretKey(),
-                String.valueOf(latitude), String.valueOf(longitude), "minutely,hourly,flags",
-                "en", "us");
+    public List<WeatherData> getDaily(double latitude, double longitude, String lang) {
+        List<WeatherData> weatherDataList = new ArrayList<>();
 
-        return observable
-                .flatMap(new Function<DarkSkyData, Observable<WeatherData>>() {
-                    @Override
-                    public Observable<WeatherData> apply(DarkSkyData darkSkyData) throws Exception {
-                        List<Datum> datumList;
-                        Currently currently;
+        try {
+            DarkSkyDaily darkSkyData = mService.getDaily(DarkSkyAuth.getSecretKey(),
+                    String.valueOf(latitude), String.valueOf(longitude),
+                    lang, "us")
+                    .execute().body();
 
-                        datumList = darkSkyData.getDaily().getData();
-                        currently = darkSkyData.getCurrently();
+            if (darkSkyData != null) {
+                List<Datum> datumList = darkSkyData.getDaily().getData();
+                for (Datum datum : datumList) {
+                    long time = (long) datum.getTime() * 1000;
+                    DateTime dt = new DateTime(time).withTimeAtStartOfDay();
+                    WeatherData.Builder builder = new WeatherData.Builder();
+                    builder
+                            .withDate((int) (dt.getMillis() / 1000))
+                            .withLow(datum.getTemperatureMin())
+                            .withHigh(datum.getTemperatureMax())
+                            .withText(datum.getSummary())
+                            .withSrc(PATH + datum.getIcon())
+                            .withPressure(datum.getPressure())
+                            .withSpeed(datum.getWindSpeed())
+                            .withDegree(datum.getWindBearing())
+                            .withHumidity((int) (datum.getHumidity() * 100))
+                            .withCurrent(false);
+                    weatherDataList.add(builder.build());
+                }
+            }
+        } catch (IOException e) {
+            //e.printStackTrace(); // TODO check CompositeDisposable from GodRepository
+        }
 
-                        List<WeatherData> weatherDataList = new ArrayList<>();
-                        int count = 0;
-                        for (Datum datum : datumList) {
-                            if (count < DAYS) {
-                                WeatherData.Builder builder = new WeatherData.Builder();
-                                builder
-                                        .withProviderId(getId())
-                                        .withDate(datum.getTime())
-                                        .withLow(datum.getTemperatureMin())
-                                        .withHigh(datum.getTemperatureMax())
-                                        .withText(datum.getIcon())
-                                        .withSrc(PATH + datum.getIcon());
+        return weatherDataList;
 
-                                if (count == 0) { // Extra weather data
-                                    builder
-                                            .isCurrent(true)
-                                            .withCurrent(currently.getTemperature())
-                                            .withWind(String.valueOf(currently.getWindSpeed()))
-                                            .withHumidity(String
-                                                    .valueOf((int) (currently.getHumidity() * 100)))
-                                            .withTextExtra(currently.getIcon())
-                                            .withSrcExtra(PATH + currently.getIcon());
-                                }
-
-                                weatherDataList.add(builder.build());
-                                count++;
-                            }
-                        }
-
-                        return Observable.fromIterable(weatherDataList);
-                    }
-                });
     }
 }

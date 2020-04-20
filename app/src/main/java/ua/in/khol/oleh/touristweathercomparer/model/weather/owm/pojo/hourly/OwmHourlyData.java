@@ -4,6 +4,8 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather.owm.pojo.hourly;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class OwmHourlyData {
 
     @SerializedName("cod")
@@ -11,13 +13,13 @@ public class OwmHourlyData {
     private String cod;
     @SerializedName("message")
     @Expose
-    private Double message;
+    private int message;
     @SerializedName("cnt")
     @Expose
-    private Integer cnt;
+    private int cnt;
     @SerializedName("list")
     @Expose
-    private java.util.List<Hourly> mHourly = null;
+    private List<Hourly> list = null;
     @SerializedName("city")
     @Expose
     private City city;
@@ -30,28 +32,28 @@ public class OwmHourlyData {
         this.cod = cod;
     }
 
-    public Double getMessage() {
+    public int getMessage() {
         return message;
     }
 
-    public void setMessage(Double message) {
+    public void setMessage(int message) {
         this.message = message;
     }
 
-    public Integer getCnt() {
+    public int getCnt() {
         return cnt;
     }
 
-    public void setCnt(Integer cnt) {
+    public void setCnt(int cnt) {
         this.cnt = cnt;
     }
 
-    public java.util.List<Hourly> getHourly() {
-        return mHourly;
+    public List<Hourly> getList() {
+        return list;
     }
 
-    public void setHourly(java.util.List<Hourly> hourly) {
-        this.mHourly = hourly;
+    public void setList(List<Hourly> list) {
+        this.list = list;
     }
 
     public City getCity() {

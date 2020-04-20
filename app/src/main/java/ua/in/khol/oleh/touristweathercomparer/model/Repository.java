@@ -3,11 +3,13 @@ package ua.in.khol.oleh.touristweathercomparer.model;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
+import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
+import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
 
 public interface Repository {
     enum Status {
@@ -15,33 +17,27 @@ public interface Repository {
         LOCATION_UNAVAILABLE, CLEAR
     }
 
-    List<Title> getTitleList();
-
-    List<Provider> getProviderList();
-
-    Observable<Place> observePlace();
-
     Observable<City> observeCity();
 
-    Observable<Forecast> observeForecast();
+    Observable<Average> observeCurrent();
+
+    Observable<List<Average>> observeAverages();
+
+    Observable<Settings> observeSettings();
 
     Observable<Status> observeStatus();
 
-    void clearStatus();
+    Observable<Place> observePlace();
 
-    void update();
+    Observable<List<Forecast>> observeCurrents();
 
-    void cancel();
+    Observable<List<List<Forecast>>> observeDailies();
 
-    void updatePreferences();
+    PublishSubject<Settings> getSettingsSubject();
 
-    void updateConfiguration();
+    PublishSubject<LatLon> getLatLonSubject();
 
-    boolean getPrefCelsius();
+    PublishSubject<Boolean> getRefreshSubject();
 
-    int getPrefLanguageIndex();
-
-    void putPrefCelsius(boolean celsius);
-
-    void putPrefLanguageIndex(int index);
+    Settings getSettings();
 }

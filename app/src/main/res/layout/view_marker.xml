@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="java.util.List" />
+
+        <variable
+            name="settings"
+            type="ua.in.khol.oleh.touristweathercomparer.model.settings.Settings" />
+
+        <variable
+            name="current"
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average" />
+
+        <variable
+            name="averages"
+            type="List&lt;ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average>" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/mini_current"
+            android:visibility="gone"
+            bind:current="@{current}"
+            bind:settings="@{settings}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/miniAveragesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:miniAverages="@{averages}"
+            bind:settings="@{settings}" />
+    </LinearLayout>
+</layout>

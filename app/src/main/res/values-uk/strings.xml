@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Порівнювач погодних прогнозів</string>
-    <string name="preferences">Переваги</string>
+    <string name="preferences">Налаштування</string>
     <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="units">ОДИНИЦІ</string>
     <string name="use_celsius">Відображати за Цельсія</string>
-    <string name="power_consumption">Споживання енергії</string>
-    <string name="refresh_time">Час оновлення</string>
     <string name="pref_language">Мова</string>
-    <string name="location">ЛОКАЦІЯ</string>
     <string name="other_apps">Інші застосунки</string>
     <string name="rate_and_review">Оцінка і відгук</string>
     <string name="error">Помилка</string>
     <string name="permission">Додаток потребує дозволу на визначення місцезнаходження !</string>
     <string name="finish">Завершити</string>
-    <string name="ask_for_intenet">Немає підключення до Інтернету!\nЗавантаження прогнозів із бази даних.</string>
-    <string name="refresh">Оновити</string>
     <string name="search">Пошук</string>
     <string name="alert_location_title">Необхідне місцезнаходження</string>
     <string name="alert_location_message">Увімкнути служби локації ?</string>
@@ -26,8 +20,16 @@
     <string name="cancel">Відміна</string>
     <string name="communicate">Комунікація</string>
     <string name="share">Поділитись</string>
-    <string name="title_home">Домашня</string>
+    <string name="title_home">Прогноз</string>
     <string name="title_map">Карта</string>
-    <string name="title_history">Історія</string>
+    <string name="humidity">Вологість %d%%</string>
+    <string name="pressure">Тиск %.0f %s</string>
+    <string name="wind">Вітер %.1f %s</string>
+    <string name="direction">Напрям %d\u00B0</string>
+    <string name="title_info">Інфо</string>
+    <string name="pref_pressure">Тиск</string>
+    <string name="pref_temperature">Температура</string>
+    <string name="pref_speed">Швидкість</string>
+    <string name="info_file">info_uk.html</string>
 
 </resources>

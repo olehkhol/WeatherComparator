@@ -32,15 +32,24 @@ local.properties
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/location/GeocodingAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/yahoo/YahooOAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/maps/GeocodingAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/maps/TimeZoneAuth.java
+
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyAuth.java
-/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/wwo/WwoAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyCurrently.json
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/darksky/DarkSkyDaily.json
+
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmCurrent.json
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/weather/owm/OwmDaily.json
+
 /app/src/main/res/values/google_maps_api.xml
 /gradle/wrapper/gradle-wrapper.jar
 /gradlew
 /gradlew.bat
+/INFO_EN.md
+/INFO_RU.md
+/INFO_UK.md
 /.idea/encodings.xml
 /.idea/misc.xml
 /.idea/render.experimental.xml

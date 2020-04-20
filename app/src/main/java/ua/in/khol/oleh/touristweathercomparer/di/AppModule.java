@@ -5,6 +5,9 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -12,13 +15,17 @@ import dagger.Module;
 import dagger.Provides;
 import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
+import ua.in.khol.oleh.touristweathercomparer.model.cache.CacheHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.cache.RxCacheHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.db.AppDatabase;
 import ua.in.khol.oleh.touristweathercomparer.model.db.DatabaseHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.db.RxDatabaseHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.location.LocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.preferences.PreferencesHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.preferences.RxPreferencesHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.maps.MapsHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.maps.RxMapsHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetwork;
+import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetworkHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.settings.RxSettingsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
 
@@ -27,10 +34,21 @@ public class AppModule {
     private static final String DB_FILE_NAME = "wc.db";
     private static final String PREFERENCES_FILE_NAME = "wc.pref";
 
-    private Application mApplication;
+    private final Application mApplication;
 
     public AppModule(Application application) {
         mApplication = application;
+    }
+
+
+    @Provides
+    @Singleton
+    Integer provideGoogleAvailability(Context context) {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int code = apiAvailability.isGooglePlayServicesAvailable(context);
+
+        return code == ConnectionResult.SUCCESS
+                ? RxLocationHelper.GOOGLE_LOCATION : RxLocationHelper.ANDROID_LOCATION;
     }
 
     @Provides
@@ -76,8 +94,23 @@ public class AppModule {
 
     @Provides
     @Singleton
-    LocationHelper provideLocationHelper(Context context) {
-        return new RxLocationHelper(context);
+    RxLocationHelper provideLocationHelper(Context context, Integer googleAvailability) {
+        RxLocationHelper rxLocationHelper = new RxLocationHelper(context);
+        rxLocationHelper.setup(googleAvailability);
+
+        return rxLocationHelper;
+    }
+
+    @Provides
+    @Singleton
+    RxNetwork provideNetwork(Context context) {
+        return new RxNetworkHelper(context);
+    }
+
+    @Provides
+    @Singleton
+    MapsHelper provideMapsHelper() {
+        return new RxMapsHelper();
     }
 
     @Provides
@@ -88,20 +121,27 @@ public class AppModule {
 
     @Provides
     @Singleton
-    PreferencesHelper providePreferencesHelper(Context context,
-                                               @Named("pref") String preferencesFileName) {
-        return new RxPreferencesHelper(context, preferencesFileName);
+    RxSettingsHelper provideSettingsHelper(Context context) {
+        return new RxSettingsHelper(context);
     }
 
     @Provides
     @Singleton
-    Repository provideGodRepository(Application application,
-                                    LocationHelper locationHelper,
+    CacheHelper provideCacheHelper() {
+        return new RxCacheHelper();
+    }
+
+    @Provides
+    @Singleton
+    Repository provideGodRepository(CacheHelper cacheHelper,
+                                    RxLocationHelper locationHelper,
+                                    RxNetwork network,
+                                    MapsHelper mapsHelper,
                                     WeatherHelper weatherHelper,
-                                    PreferencesHelper preferencesHelper,
+                                    RxSettingsHelper settingsHelper,
                                     DatabaseHelper databaseHelper) {
-        return new GodRepository(application,
-                locationHelper, weatherHelper, preferencesHelper, databaseHelper);
+        return new GodRepository(cacheHelper, locationHelper, network, mapsHelper, weatherHelper,
+                settingsHelper, databaseHelper);
     }
 
     @Provides

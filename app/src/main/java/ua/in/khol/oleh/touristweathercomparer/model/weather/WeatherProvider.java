@@ -11,18 +11,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class WeatherProvider {
 
-    private String NAME;
-    private String SITE;
-    protected String API;
-    protected String PATH;
-    private String BANNER;
-    protected final static int DAYS = 5;
-    private static int sId = 0;
     private int mId;
-    private boolean mCached;
+    private final String NAME;
+    private final String SITE;
+    private final String API;
 
-    public WeatherProvider(String name, String site, String api) {
-        mId = sId++;
+    protected final String PATH;
+    private final String BANNER;
+
+    protected WeatherProvider(int id, String name, String site, String api) {
+        mId = id;
         NAME = name;
         SITE = site;
         API = api;
@@ -34,7 +32,11 @@ public abstract class WeatherProvider {
         return mId;
     }
 
-    protected Retrofit buildRetrofit() {
+    public void setId(int id) {
+        mId = id;
+    }
+
+    private Retrofit buildRetrofit() {
         return new Retrofit.Builder()
                 .baseUrl(API)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -48,9 +50,9 @@ public abstract class WeatherProvider {
                 .create(service);
     }
 
-    public abstract List<WeatherData> getWeatherDataList(double latitude, double longitude);
+    public abstract WeatherData getCurrent(double latitude, double longitude, String lang);
 
-    public abstract Observable<WeatherData> observeWeatherData(double latitude, double longitude);
+    public abstract List<WeatherData> getDaily(double latitude, double longitude, String lang);
 
     public String getName() {
         return NAME;
@@ -64,20 +66,13 @@ public abstract class WeatherProvider {
         return BANNER;
     }
 
-    protected OkHttpClient createOkHttpClient() {
-        return new OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60 / 2, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+    private OkHttpClient createOkHttpClient() {
+        OkHttpClient.Builder client =new OkHttpClient.Builder()
                 .cache(null)
-                .build();
-    }
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS);
 
-    public void setCached(boolean cached) {
-        mCached = cached;
-    }
-
-    public boolean isCached() {
-        return mCached;
+        return client.build();
     }
 }

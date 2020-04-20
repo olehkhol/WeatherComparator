@@ -1,12 +1,16 @@
 package ua.in.khol.oleh.touristweathercomparer.views;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -27,7 +31,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -35,19 +40,21 @@ import dagger.android.AndroidInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
 import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
-import ua.in.khol.oleh.touristweathercomparer.utils.MarketView;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 
 public class MainView extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements ViewBinding<ViewMainBinding>,
+        NavigationView.OnNavigationItemSelectedListener,
+        BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String SETTINGS_TAG = SettingsView.class.getName();
+    private static final String PREFERENCES_TAG = SettingsView.class.getName();
     private static final String ALERT_TAG = AlertView.class.getName();
-    private static final int LOCATION_PERMISSION_ID = 11;
+    private static final int LOCATION_PERMISSION_ID = 17;
 
     private boolean mHasPermissions = false;
     // UI variables
     private MainViewModel mMainViewModel;
+    private DrawerLayout mDrawerLayout;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
@@ -55,62 +62,43 @@ public class MainView extends AppCompatActivity
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Dagger injection
         AndroidInjection.inject(this);
-        // TODO Dagger this peace of code
         mMainViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
                 .get(MainViewModel.class);
-        mMainViewModel.start();
+        // TODO[40] try find a better place to change language before .onCreate according to MVVM
+        updateLocale(mMainViewModel.getSettings().get().getLanguageIndex());
+
+        // Init
         super.onCreate(savedInstanceState);
-        // Init UI and Binding
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
-        binding.setMainViewModel(mMainViewModel);
-        initUI();
-        // Observe live data
-        mMainViewModel.getDoRecreate().observe(this, aBoolean -> {
-            if (aBoolean) {
-                mMainViewModel.setDoRecreate(false);
-                overridePendingTransition(0, 0);
-                recreate();
-            }
-        });
-        mMainViewModel.getAskForInternetSoftly().observe(this, asked -> {
-            if (asked) {
-                mMainViewModel.setAskForInternetSoftly(false);
-                Snackbar.make(binding.drawerLayout, R.string.ask_for_intenet, Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
-        mMainViewModel.getAskForInternet().observe(this, asked -> {
-            if (asked) {
-                mMainViewModel.setAskForInternet(false);
-                showInternetAlertDialog();
-            }
-        });
-        mMainViewModel.getAskForLocation().observe(this, asked -> {
-            if (asked) {
-                mMainViewModel.setAskForLocation(false);
-                showLocationAlertDialog();
-            }
-        });
+        initBinding(binding);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // Request permissions
+        // Observe events
+        mMainViewModel.getDoRecreate().observe(this, asked -> {
+            if (asked)
+                reload();
+        });
+        mMainViewModel.getAskForInternet().observe(this, asked -> {
+            if (asked)
+                showInternetAlertDialog();
+            else
+                showInternetAlertToast();
+        });
+        mMainViewModel.getAskForLocation().observe(this, asked -> {
+            if (asked)
+                showLocationAlertDialog();
+        });
+
         requestPermissions();
     }
-
     // ----------------[LIFECYCLE CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
-
-    /**
-     * This method asks for location permissions and
-     * starts ipresenter if the permissions are granted.
-     */
     private void requestPermissions() {
         if (ContextCompat
                 .checkSelfPermission(
@@ -123,7 +111,8 @@ public class MainView extends AppCompatActivity
 
             // Permissions granted
             mHasPermissions = true;
-            runEntireFunctionality();
+            // TODO try find a better place to refresh data according to MVVM
+            refreshModelView();
         } else
             ActivityCompat.requestPermissions(
                     this,
@@ -133,6 +122,146 @@ public class MainView extends AppCompatActivity
                     LOCATION_PERMISSION_ID);
     }
     // ----------------[PERMISSIONS]----------------
+
+    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
+
+    private void updateLocale(int index) {
+        Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
+        Locale.setDefault(locale);
+        Configuration config = getResources().getConfiguration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+    // ----------------[REGULAR METHODS]----------------
+
+    // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
+    @Override
+    public void initBinding(ViewMainBinding binding) {
+        binding.setMainViewModel(mMainViewModel);
+
+        Toolbar toolbar = binding.appBar.toolbar;
+        setSupportActionBar(toolbar);
+
+        NavigationView navigationView = binding.navView;
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+
+        mDrawerLayout = binding.drawerLayout;
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        BottomNavigationView bottomNavView = binding.appBar.content.bottomNavView;
+        bottomNavView.setItemIconTintList(null);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_map, R.id.navigation_info)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(bottomNavView, navController);
+    }
+
+    private void refreshModelView() {
+        mMainViewModel.refresh();
+    }
+
+    private void reload() {
+        new Handler().post(() -> {
+            Intent intent = getIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            overridePendingTransition(0, 0);
+            finish();
+
+            overridePendingTransition(0, 0);
+            startActivity(intent);
+        });
+    }
+
+    private void showInternetAlertDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AlertView alertView = (AlertView) fragmentManager
+                .findFragmentByTag(ALERT_TAG);
+        SettingsView preferencesFragment = (SettingsView) fragmentManager
+                .findFragmentByTag(PREFERENCES_TAG);
+        if (alertView == null && preferencesFragment == null) {
+            alertView = AlertView.newInstance(getString(R.string.alert_wireless_title),
+                    getString(R.string.alert_wireless_message),
+                    Settings.ACTION_WIRELESS_SETTINGS);
+            alertView.show(fragmentManager, ALERT_TAG);
+        }
+    }
+
+    private void showInternetAlertToast() {
+        Toast.makeText(this, getString(R.string.alert_wireless_title), Toast.LENGTH_LONG).show();
+    }
+
+    private void showLocationAlertDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AlertView alertView = (AlertView) fragmentManager
+                .findFragmentByTag(ALERT_TAG);
+        SettingsView preferencesFragment = (SettingsView) fragmentManager
+                .findFragmentByTag(PREFERENCES_TAG);
+        if (alertView == null && preferencesFragment == null) {
+            alertView = AlertView.newInstance(getString(R.string.alert_location_title),
+                    getString(R.string.alert_location_message),
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            alertView.show(fragmentManager, ALERT_TAG);
+        }
+    }
+
+    private void showFinishAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.error));
+        builder.setMessage(getString(R.string.permission));
+        builder.setPositiveButton(getString(R.string.finish),
+                (dialog, which) -> finish());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showPreferencesDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SettingsView settingsView = (SettingsView) fragmentManager
+                .findFragmentByTag(PREFERENCES_TAG);
+        AlertView alertView = (AlertView) fragmentManager
+                .findFragmentByTag(ALERT_TAG);
+
+        if (alertView == null && settingsView == null) {
+            settingsView = SettingsView.newInstance();
+            settingsView.show(fragmentManager, PREFERENCES_TAG);
+        }
+    }
+
+    private void shareApplicationName() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details"
+                + "?id=ua.in.khol.oleh.touristweathercomparer");
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent,
+                getResources().getString(R.string.share));
+        startActivity(shareIntent);
+    }
+
+    /**
+     * Opens application page in Google Play
+     **/
+    private void open(AppCompatActivity activity, String appPackageName) {
+        try {
+            activity.startActivity(
+                    new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + appPackageName)));
+        } catch (ActivityNotFoundException e) {
+            activity.startActivity(
+                    new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id="
+                                    + appPackageName)));
+        }
+    }
+    // ----------------[UI]----------------
 
     // -=-=-=-=-=-=-=-=[ACTIVITY CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
@@ -156,22 +285,11 @@ public class MainView extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
     // ----------------[ACTIVITY CALLBACKS]----------------
 
@@ -191,7 +309,7 @@ public class MainView extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.menu_item_settings) {
-            showSettingsFragment();
+            showPreferencesDialog();
             return true;
         }
 
@@ -205,127 +323,28 @@ public class MainView extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_rate:
-                MarketView.open(this, "ua.in.khol.oleh.touristweathercomparer");
+                open(this, "ua.in.khol.oleh.touristweathercomparer");
                 break;
             case R.id.nav_share:
                 shareApplicationName();
                 break;
             case R.id.nav_seo:
-                MarketView.open(this, "com.humanneeds.stackexchangeoffline");
+                open(this, "com.humanneeds.stackexchangeoffline");
                 break;
             case R.id.nav_ujt:
-                MarketView.open(this, "com.humanneeds.upworkjavatest");
+                open(this, "com.humanneeds.upworkjavatest");
                 break;
             case R.id.nav_b64:
-                MarketView.open(this, "com.humanneeds.base64fileencoderdecoder");
+                open(this, "com.humanneeds.base64fileencoderdecoder");
                 break;
             case R.id.nav_afc:
-                MarketView.open(this, "com.humanneeds.aliensflashlight");
+                open(this, "com.humanneeds.aliensflashlight");
                 break;
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
     // ----------------[MENU CALLBACKS]----------------
 
-    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
-    private void runEntireFunctionality() {
-        mMainViewModel.processData();
-    }
-
-    private void showFinishAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.error));
-        builder.setMessage(getString(R.string.permission));
-        builder.setPositiveButton(getString(R.string.finish),
-                (dialog, which) -> finish());
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void showSettingsFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SettingsView settingsFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(SETTINGS_TAG);
-        if (settingsFragment == null) {
-            settingsFragment = new SettingsView();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content, settingsFragment, SETTINGS_TAG)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            fragmentManager.beginTransaction()
-                    .remove(settingsFragment)
-                    .commit();
-            fragmentManager.popBackStack();
-        }
-    }
-
-    private void showLocationAlertDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AlertView alertView = (AlertView) fragmentManager
-                .findFragmentByTag(ALERT_TAG);
-        SettingsView settingsFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(SETTINGS_TAG);
-        if (alertView == null && settingsFragment == null) {
-            alertView = AlertView.newInstance(getString(R.string.alert_location_title),
-                    getString(R.string.alert_location_message),
-                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            alertView.show(fragmentManager, ALERT_TAG);
-        }
-    }
-
-    private void showInternetAlertDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AlertView alertView = (AlertView) fragmentManager
-                .findFragmentByTag(ALERT_TAG);
-        SettingsView settingsFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(SETTINGS_TAG);
-        if (alertView == null && settingsFragment == null) {
-            alertView = AlertView.newInstance(getString(R.string.alert_wireless_title),
-                    getString(R.string.alert_wireless_message),
-                    Settings.ACTION_WIRELESS_SETTINGS);
-            alertView.show(fragmentManager, ALERT_TAG);
-        }
-    }
-
-    private void shareApplicationName() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details"
-                + "?id=ua.in.khol.oleh.touristweathercomparer");
-        sendIntent.setType("text/plain");
-        Intent shareIntent = Intent.createChooser(sendIntent,
-                getResources().getString(R.string.share));
-        startActivity(shareIntent);
-    }
-    // ----------------[REGULAR METHODS]----------------
-
-    // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
-    private void initUI() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        BottomNavigationView bottomNavView = findViewById(R.id.bottom_nav_view);
-        bottomNavView.setItemIconTintList(null);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_map, R.id.navigation_history)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(bottomNavView, navController);
-    }
-    // ----------------[UI]----------------
 }

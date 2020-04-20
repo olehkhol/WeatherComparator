@@ -16,15 +16,18 @@ import java.util.List;
 public class RecyclerAdapter<T>
         extends RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder> {
 
-    private int mHolderLayout, mItemsVariableId;
-    private List<T> mItems = new ArrayList<>();
+    private final int mHolderLayout;
+    private final int mItemsVariableId;
+    private final List<T> mItems = new ArrayList<>();
     private OnItemClickListener<T> mItemClickListener;
 
     public RecyclerAdapter(int holderLayout, int itemsVariableId, List<T> items) {
         mHolderLayout = holderLayout;
         mItemsVariableId = itemsVariableId;
-        if (items != null)
+        if (items != null) {
             mItems.addAll(items);
+            notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -60,9 +63,10 @@ public class RecyclerAdapter<T>
     }
 
     public void addItems(List<T> items) {
-        if (items != null)
+        if (items != null) {
             mItems.addAll(items);
-        notifyDataSetChanged();
+            notifyDataSetChanged();
+        }
     }
 
     public void clearItems() {
@@ -70,8 +74,8 @@ public class RecyclerAdapter<T>
     }
 
     // RECYCLER BINDING HOLDER
-    class RecyclerHolder extends RecyclerView.ViewHolder {
-        private ViewDataBinding mBinding;
+    static class RecyclerHolder extends RecyclerView.ViewHolder {
+        private final ViewDataBinding mBinding;
 
         RecyclerHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,7 +83,7 @@ public class RecyclerAdapter<T>
         }
     }
 
-    public interface OnItemClickListener<T> {
+    interface OnItemClickListener<T> {
         void onItemClick(int position, T item);
     }
 

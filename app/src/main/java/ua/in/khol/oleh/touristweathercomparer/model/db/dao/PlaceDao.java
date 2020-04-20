@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
 @Dao
 public interface PlaceDao {
@@ -14,4 +14,7 @@ public interface PlaceDao {
 
     @Query("SELECT id FROM Place WHERE latitude = :lat AND longitude = :lon LIMIT 1")
     long findPlaceIdByLatLon(double lat, double lon);
+
+    @Query("SELECT * FROM Place WHERE latitude = :lat AND longitude = :lon AND language = :lang LIMIT 1")
+    Place findByLatLon(double lat, double lon, String lang);
 }

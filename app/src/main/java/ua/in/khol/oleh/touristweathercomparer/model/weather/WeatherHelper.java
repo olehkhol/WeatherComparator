@@ -2,16 +2,13 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Provider;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Title;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
 public interface WeatherHelper {
-    List<WeatherProvider> getWeatherProviders();
 
-    Observable<WeatherData> observeWeatherData(double latitude, double longitude);
+    List<Forecast> getCurrents(Place place, int time);
 
-    public List<Title> getTitleList();
+    List<Forecast> getDailies(Place place, int date);
 
-    public List<Provider> getProviderList();
 }

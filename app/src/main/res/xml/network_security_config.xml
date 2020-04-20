@@ -10,4 +10,14 @@
             openweathermap.org
         </domain>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">
+            darksky.net
+        </domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">
+            connectivitycheck.android.com
+        </domain>
+    </domain-config>
 </network-security-config>

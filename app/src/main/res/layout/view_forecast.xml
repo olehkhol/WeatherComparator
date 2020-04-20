@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="forecastViewModel"
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.ForecastViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".views.ForecastView">
+
+        <include
+            android:id="@+id/current"
+            layout="@layout/current"
+            bind:current="@{forecastViewModel.current}"
+            bind:settings="@{forecastViewModel.settings}"
+            bind:visibility="@{!forecastViewModel.mRefreshing}" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/homeSwipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:onRefreshListener="@{() -> forecastViewModel.onRefresh()}"
+            app:refreshing="@{forecastViewModel.mRefreshing}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/averagesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                bind:averages="@{forecastViewModel.averages}"
+                bind:settings="@{forecastViewModel.settings}"
+                bind:visibility="@{!forecastViewModel.mRefreshing}" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</layout>

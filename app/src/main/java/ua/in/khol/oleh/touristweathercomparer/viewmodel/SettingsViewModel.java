@@ -1,56 +1,37 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableInt;
-
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
+import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 
 public class SettingsViewModel extends BaseViewModel {
 
-    private boolean mCriticalChanges;
-    // Fields for Data Binding
-    private ObservableBoolean mCelsius = new ObservableBoolean();
-    private ObservableInt mSelected = new ObservableInt();
+    // Data Binding
+    private final Settings mSettings;
+    private boolean mChanged = false;
 
     public SettingsViewModel(Repository repository) {
         super(repository);
-        setCelsius(getRepository().getPrefCelsius());
-        setSelected(getRepository().getPrefLanguageIndex());
+
+        mSettings = repository.getSettings();
     }
 
     @Override
-    public void start() {
-        mCriticalChanges = false;
+    protected void onCleared() {
+        if (mChanged)
+            getRepository().getSettingsSubject().onNext(mSettings);
+        super.onCleared();
     }
 
     @Override
-    public void stop() {
-        if (mCriticalChanges)
-            getRepository().updatePreferences();
+    public void refresh() {
+
     }
 
-    // POJOs for Data Binding
-    public boolean getCelsius() {
-        return mCelsius.get();
+    public void okButtonClicked() {
+        mChanged = true;
     }
 
-    public void setCelsius(boolean celsius) {
-        if (mCelsius.get() != celsius) {
-            mCelsius.set(celsius);
-            getRepository().putPrefCelsius(celsius);
-            mCriticalChanges = true;
-        }
-    }
-
-    public int getSelected() {
-        return mSelected.get();
-    }
-
-    public void setSelected(int selected) {
-        if (mSelected.get() != selected) {
-            mSelected.set(selected);
-            getRepository().putPrefLanguageIndex(selected);
-            mCriticalChanges = true;
-        }
+    public Settings getSettings() {
+        return mSettings;
     }
 }

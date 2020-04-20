@@ -7,7 +7,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
 
 @Dao
 public interface ForecastDao {
@@ -15,14 +15,20 @@ public interface ForecastDao {
     long insertForecast(Forecast forecast);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertList(List<Forecast> forecasts);
+    void insertForecasts(List<Forecast> forecasts);
 
-    @Query("SELECT * FROM Forecast WHERE place_id = :placeId")
-    List<Forecast> queryByPlaceId(long placeId);
+    @Query("SELECT * FROM Forecast WHERE place_id = :placeId AND date >= :date")
+    List<Forecast> queryByPlaceIdDate(long placeId, int date);
 
-    @Query("SELECT * FROM Forecast WHERE provider_id = :providerId AND place_id = :placeId AND date >= :date")
-    List<Forecast> queryFromDate(int providerId, long placeId, int date);
+    @Query("SELECT * FROM Forecast WHERE place_id = :placeId AND date >= :date AND current = :current")
+    List<Forecast> queryByPlaceFromDate(long placeId, int date, boolean current);
+
+    @Query("SELECT * FROM Forecast WHERE place_id = :placeId AND date >= :date AND current = :current")
+    List<Forecast> queryFromDate(long placeId, int date, boolean current);
+
+    @Query("SELECT * FROM Forecast WHERE provider_id = :providerId AND place_id = :placeId AND date >= :date AND current = :current")
+    List<Forecast> queryFromDate(long providerId, long placeId, int date, boolean current);
 
     @Query("SELECT id FROM Forecast WHERE provider_id = :providerId AND place_id = :placeId AND date = :date")
-    long findForecastId(int providerId, long placeId, int date);
+    long findForecastId(long providerId, long placeId, int date);
 }

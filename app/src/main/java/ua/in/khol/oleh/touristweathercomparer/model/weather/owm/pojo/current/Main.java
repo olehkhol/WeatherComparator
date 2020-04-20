@@ -8,58 +8,69 @@ public class Main {
 
     @SerializedName("temp")
     @Expose
-    private Float temp;
-    @SerializedName("pressure")
+    private float temp;
+    @SerializedName("feels_like")
     @Expose
-    private Integer pressure;
-    @SerializedName("humidity")
-    @Expose
-    private Integer humidity;
+    private float feelsLike;
     @SerializedName("temp_min")
     @Expose
-    private Float tempMin;
+    private float tempMin;
     @SerializedName("temp_max")
     @Expose
-    private Float tempMax;
+    private float tempMax;
+    @SerializedName("pressure")
+    @Expose
+    private int pressure;
+    @SerializedName("humidity")
+    @Expose
+    private int humidity;
 
-    public Float getTemp() {
+    public float getTemp() {
         return temp;
     }
 
-    public void setTemp(Float temp) {
+    public void setTemp(float temp) {
         this.temp = temp;
     }
 
-    public Integer getPressure() {
-        return pressure;
+    public float getFeelsLike() {
+        return feelsLike;
     }
 
-    public void setPressure(Integer pressure) {
-        this.pressure = pressure;
+    public void setFeelsLike(float feelsLike) {
+        this.feelsLike = feelsLike;
     }
 
-    public Integer getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(Integer humidity) {
-        this.humidity = humidity;
-    }
-
-    public Float getTempMin() {
+    public float getTempMin() {
         return tempMin;
     }
 
-    public void setTempMin(Float tempMin) {
+    public void setTempMin(float tempMin) {
         this.tempMin = tempMin;
     }
 
-    public Float getTempMax() {
+    public float getTempMax() {
         return tempMax;
     }
 
-    public void setTempMax(Float tempMax) {
+    public void setTempMax(float tempMax) {
         this.tempMax = tempMax;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 
 }

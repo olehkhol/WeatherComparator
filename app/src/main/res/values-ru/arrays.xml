@@ -11,4 +11,41 @@
         <item>uk</item>
         <item>ru</item>
     </string-array>
+
+    <string-array name="temperature">
+        <item>Цельсия</item>
+        <item>Фаренгейта</item>
+        <item>Кельвин</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>℃</item>
+        <item>℉</item>
+        <item>K</item>
+    </string-array>
+
+    <string-array name="speed">
+        <item>Метр в секунду</item>
+        <item>Километр в час</item>
+        <item>Миля в час</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>м/с</item>
+        <item>км/ч</item>
+        <item>миля/ч</item>
+    </string-array>
+
+    <string-array name="pressure">
+        <item>Миллиметр ртутного ст.</item>
+        <item>Гектопаскаль</item>
+        <item>Миллибар</item>
+    </string-array>
+
+    <string-array name="pressure_values">
+        <item>мм рт.ст.</item>
+        <item>гПа</item>
+        <item>мбар</item>
+    </string-array>
+
 </resources>

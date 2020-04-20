@@ -4,38 +4,43 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather.owm.pojo.hourly;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Hourly {
 
     @SerializedName("dt")
     @Expose
-    private Integer dt;
+    private int dt;
     @SerializedName("main")
     @Expose
     private Main main;
     @SerializedName("weather")
     @Expose
-    private java.util.List<Weather> weather = null;
+    private List<Weather> weather = null;
     @SerializedName("clouds")
     @Expose
     private Clouds clouds;
     @SerializedName("wind")
     @Expose
     private Wind wind;
-    @SerializedName("rain")
-    @Expose
-    private Rain rain;
     @SerializedName("sys")
     @Expose
     private Sys sys;
     @SerializedName("dt_txt")
     @Expose
     private String dtTxt;
+    @SerializedName("rain")
+    @Expose
+    private Rain rain;
+    @SerializedName("snow")
+    @Expose
+    private Snow snow;
 
-    public Integer getDt() {
+    public int getDt() {
         return dt;
     }
 
-    public void setDt(Integer dt) {
+    public void setDt(int dt) {
         this.dt = dt;
     }
 
@@ -71,14 +76,6 @@ public class Hourly {
         this.wind = wind;
     }
 
-    public Rain getRain() {
-        return rain;
-    }
-
-    public void setRain(Rain rain) {
-        this.rain = rain;
-    }
-
     public Sys getSys() {
         return sys;
     }
@@ -93,6 +90,22 @@ public class Hourly {
 
     public void setDtTxt(String dtTxt) {
         this.dtTxt = dtTxt;
+    }
+
+    public Rain getRain() {
+        return rain;
+    }
+
+    public void setRain(Rain rain) {
+        this.rain = rain;
+    }
+
+    public Snow getSnow() {
+        return snow;
+    }
+
+    public void setSnow(Snow snow) {
+        this.snow = snow;
     }
 
 }

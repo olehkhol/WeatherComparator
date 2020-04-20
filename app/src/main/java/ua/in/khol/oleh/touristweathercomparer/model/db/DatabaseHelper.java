@@ -3,45 +3,40 @@ package ua.in.khol.oleh.touristweathercomparer.model.db;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
+import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
 public interface DatabaseHelper {
+    // Place
+    long getPlaceId(Place place);
 
-    Single<Long> rxPutCity(City city);
+    long putPlace(Place place);
 
-    long putCity(City city, int accuracy);
+    Place getPlace(LatLon latLon, String lang);
 
-    Maybe<City> rxGetCity(long placeId);
-
-    City getCity(long placeId);
-
-    String getCityName(long placeId);
-
-    long getCityId(long placeId);
-
-    Completable putForecasts(List<Forecast> forecasts);
+    // Forecasts
+    Completable putForecastsCompletable(List<Forecast> forecasts);
 
     Observable<WeatherData> observeWeatherData(double latitude, double longitude);
 
-    long getForecastId(Forecast forecast, int accuracy);
+    long getForecastId(Forecast forecast);
 
-    long putForecast(Forecast forecast, int accuracy);
+    long putForecast(Forecast forecast);
 
-    long getPlaceId(Place place, int accuracy);
+    List<Forecast> getDailies(long placeId, int date);
 
-    long getPlaceId(double latitude, double longitude, int accuracy);
+    void putDailies(List<Forecast> dailies);
 
-    long putPlace(Place place, int accuracy);
+    Place getPlace(double lat, double lon, String lang);
 
-    List<Forecast> getForecastList(long placeId);
+    Forecast getCurrent(long placeId, int providerId, int date);
 
-    List<Forecast> getForecastList(int providerId, long placeId, int date);
+    long putCurrent(Forecast current);
 
-    void putForecastList(List<Forecast> forecastList);
+    List<Forecast> getCurrents(long place, int date);
+
+    void putCurrents(List<Forecast> currents);
 }

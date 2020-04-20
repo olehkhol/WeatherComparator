@@ -1,77 +1,58 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
 import androidx.databinding.ObservableField;
-import androidx.lifecycle.MutableLiveData;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
+import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.events.SingleLiveEvent;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Place;
 
 public class MainViewModel extends BaseViewModel {
-    // Fields for Data Binding
-    private final ObservableField<Place> mPlace = new ObservableField<>();
+    // Data Binding
     private final ObservableField<City> mCity = new ObservableField<>();
+    private final ObservableField<Settings> mSettings = new ObservableField<>();
 
-    // Fields to be observed in View
-    private final MutableLiveData<Boolean> mDoRecreate = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> mAskForInternetSoftly = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> mAskForInternet = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> mAskForLocation = new MutableLiveData<>();
+    // Events
+    private final SingleLiveEvent<Boolean> mAskForLocation = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> mDoRecreate = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> mAskForInternet = new SingleLiveEvent<>();
+
+    // Test
+    private boolean mRefreshed = false;
 
     public MainViewModel(Repository repository) {
         super(repository);
-
+        // TODO[39] try to replace this trick with Splash
+        mSettings.set(repository.getSettings());
         subscribeOnStatus();
         subscribeCity();
     }
 
     @Override
-    public void start() {
-        getRepository().updateConfiguration();
+    public void refresh() {
+        if (!mRefreshed)
+            getRepository().getRefreshSubject().onNext(true);
+        else
+            getRepository().getRefreshSubject().onNext(false);
     }
 
-    @Override
-    public void stop() {
-
-    }
-
-    public void processData() {
-        if (!isRefreshed())
-            if (!getIsRefreshing().get())
-                getRepository().update();
-    }
-
+    // TODO remove the code with clear status somewhere according to the view state
     private void subscribeOnStatus() {
-        getCompositeDisposable()
-                .add(getRepository().observeStatus().subscribe(status -> {
+        getCompositeDisposable().add(getRepository().observeStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(status -> {
                     switch (status) {
-                        case CLEAR:
-                            mAskForInternetSoftly.postValue(false);
-                            mAskForInternet.postValue(false);
-                            mAskForLocation.postValue(false);
-                            break;
                         case OFFLINE:
-                            mAskForInternetSoftly.postValue(true);
+                            mAskForInternet.setValue(false);
                             break;
                         case CRITICAL_OFFLINE:
-                            mAskForInternet.postValue(true);
+                            mAskForInternet.setValue(true);
                             break;
                         case LOCATION_UNAVAILABLE:
-                            mAskForLocation.postValue(true);
-                            break;
-                        case ONLINE:
-                            break;
-                        case ERROR:
-                            break;
-                        case REFRESHING:
-                            setIsRefreshing(true);
-                            setRefreshed(false);
-                            break;
-                        case REFRESHED:
-                            setIsRefreshing(false);
-                            setRefreshed(true);
+                            mAskForLocation.setValue(true);
                             break;
                         case NEED_RECREATE:
                         default:
@@ -85,46 +66,29 @@ public class MainViewModel extends BaseViewModel {
         getCompositeDisposable().add(getRepository().observeCity()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mCity::set));
-    }
-
-    public ObservableField<Place> getPlace() {
-        return mPlace;
+                .subscribe(value -> {
+                    mCity.set(value);
+                    mRefreshed = true;
+                }));
     }
 
     public ObservableField<City> getCity() {
         return mCity;
     }
 
-    public MutableLiveData<Boolean> getDoRecreate() {
-        return mDoRecreate;
+    public ObservableField<Settings> getSettings() {
+        return mSettings;
     }
 
-    public void setDoRecreate(Boolean doRecreate) {
-        mDoRecreate.setValue(doRecreate);
-    }
-
-    public MutableLiveData<Boolean> getAskForInternetSoftly() {
-        return mAskForInternetSoftly;
-    }
-
-    public void setAskForInternetSoftly(boolean ask) {
-        mAskForInternetSoftly.setValue(ask);
-    }
-
-    public MutableLiveData<Boolean> getAskForInternet() {
-        return mAskForInternet;
-    }
-
-    public void setAskForInternet(boolean ask) {
-        mAskForInternet.setValue(ask);
-    }
-
-    public MutableLiveData<Boolean> getAskForLocation() {
+    public SingleLiveEvent<Boolean> getAskForLocation() {
         return mAskForLocation;
     }
 
-    public void setAskForLocation(boolean ask) {
-        mAskForLocation.setValue(ask);
+    public SingleLiveEvent<Boolean> getDoRecreate() {
+        return mDoRecreate;
+    }
+
+    public SingleLiveEvent<Boolean> getAskForInternet() {
+        return mAskForInternet;
     }
 }

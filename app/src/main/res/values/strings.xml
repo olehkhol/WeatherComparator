@@ -1,9 +1,8 @@
 <resources>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_desc" translatable="false">Navigation header</string>
 
-    <string name="app_name">Weather Forecasts Comparator</string>
+    <string name="app_name" translatable="false">Weather Averages</string>
     <string name="preferences">Preferences</string>
     <string name="asset_image" translatable="false">file:///android_asset/%s.png</string>
 
@@ -11,26 +10,17 @@
     <string name="other_apps">Other applications</string>
     <string name="stack_offline" translatable="false">Stack Exchange Offline</string>
     <string name="upwork_java_test" translatable="false">Upwork Java Test</string>
-    <string name="base64_file_encoderdecoder" translatable="false">Base64 File EncoderDecoder</string>
-    <string name="aliens_flashlight_compass" translatable="false">Aliens Flashlight Compass</string>
-
-    <string name="celsius" translatable="false">PREF_KEY_CELSIUS</string>
-    <string name="language" translatable="false">PREF_KEY_LANGUAGE</string>
+    <string name="base64_file_encoderdecoder" translatable="false">Base64 File Coder</string>
+    <string name="aliens_flashlight_compass" translatable="false">Aliens Compass</string>
 
     <string name="localization">LOCALIZATION</string>
-    <string name="location">LOCATION</string>
     <string name="units">UNITS</string>
     <string name="use_celsius">Display in Celsius</string>
-    <string name="power_consumption">Power consumption</string>
-    <string name="refresh_time">Refresh time</string>
     <string name="pref_language">Language</string>
     <string name="error">Error</string>
     <string name="permission">The app needs location permissions !</string>
     <string name="finish">Finish</string>
 
-    <string name="location_format" translatable="false">"%.06f"</string>
-    <string name="ask_for_intenet">No internet connection!\nLoading forecasts from a database.</string>
-    <string name="refresh">Refresh</string>
     <string name="search">Search</string>
     <string name="alert_location_title">Location required</string>
     <string name="alert_location_message">Turn on Location Services ?</string>
@@ -40,7 +30,16 @@
     <string name="cancel">Cancel</string>
     <string name="communicate">Communicate</string>
     <string name="share">Share</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Forecast</string>
     <string name="title_map">Map</string>
-    <string name="title_history">History</string>
+    <string name="humidity">Humidity %d%%</string>
+    <string name="pressure">Pressure %.0f %s</string>
+    <string name="wind">Wind %.1f %s</string>
+    <string name="direction">Direction %d\u00B0</string>
+    <string name="title_info">Info</string>
+
+    <string name="info_file">info_en.html</string>
+    <string name="pref_pressure">Pressure</string>
+    <string name="pref_speed">Speed</string>
+    <string name="pref_temperature">Temperature</string>
 </resources>

@@ -6,19 +6,16 @@ import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 
 public class AlertViewModel extends BaseViewModel {
 
-    private ObservableField<String> mTitle = new ObservableField<>();
-    private ObservableField<String> mMessage = new ObservableField<>();
+    private final ObservableField<String> mTitle = new ObservableField<>();
+    private final ObservableField<String> mMessage = new ObservableField<>();
 
     public AlertViewModel(Repository repository) {
         super(repository);
     }
 
     @Override
-    public void start() {
-    }
+    public void refresh() {
 
-    @Override
-    public void stop() {
     }
 
     public ObservableField<String> getTitle() {

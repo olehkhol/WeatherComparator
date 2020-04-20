@@ -1,14 +1,14 @@
 package ua.in.khol.oleh.touristweathercomparer.views;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import javax.inject.Inject;
@@ -19,53 +19,68 @@ import ua.in.khol.oleh.touristweathercomparer.databinding.ViewSettingsBinding;
 import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
 
-public class SettingsView extends Fragment {
-    private SettingsViewModel mSettingsViewModel;
+public class SettingsView extends DialogFragment
+        implements ViewBinding<ViewSettingsBinding> {
+
+    private SettingsViewModel mViewModel;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
 
-    // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
+    public SettingsView() {
+    }
+
+    static SettingsView newInstance() {
+        SettingsView fragment = new SettingsView();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
-        // Dagger injection
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        ViewSettingsBinding viewSettingsBinding
-                = ViewSettingsBinding.inflate(inflater, container, false);
-        mSettingsViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+        ViewSettingsBinding binding = ViewSettingsBinding
+                .inflate(requireActivity().getLayoutInflater());
+        initBinding(binding);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(binding.getRoot())
+                .setPositiveButton(R.string.ok, (dialog, which) -> mViewModel.okButtonClicked())
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    if (dialog != null)
+                        dialog.dismiss();
+                });
+
+        return builder.create();
+    }
+
+    @Override
+    public void initBinding(ViewSettingsBinding binding) {
+        mViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
                 .get(SettingsViewModel.class);
-        viewSettingsBinding.setSettingsViewModel(mSettingsViewModel);
+        binding.setSettingsViewModel(mViewModel);
 
-        // Add a background to the Fragment and return its Root View
-        View view = viewSettingsBinding.getRoot();
-        view.setBackgroundColor(ContextCompat
-                .getColor(requireContext(), R.color.toolbar_background));
-        return view;
+        ArrayAdapter tempAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.temperature, R.layout.spinner_item);
+        binding.tempSpinner.setAdapter(tempAdapter);
+        ArrayAdapter presAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.pressure, R.layout.spinner_item);
+        binding.presSpinner.setAdapter(presAdapter);
+        ArrayAdapter windAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.speed, R.layout.spinner_item);
+        binding.windSpinner.setAdapter(windAdapter);
+        ArrayAdapter langAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.languages, R.layout.spinner_item);
+        binding.langSpinner.setAdapter(langAdapter);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mSettingsViewModel.start();
-    }
-
-    @Override
-    public void onStop() {
-        mSettingsViewModel.stop();
-        super.onStop();
-    }
-    // ----------------[LIFECYCLE CALLBACKS]----------------
-
-    // -=-=-=-=-=-=-=-=[VIEW CALLBACKS]=-=-=-=-=-=-=-=-
-    // ----------------[VIEW CALLBACKS]----------------
-
-    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
-    // ----------------[REGULAR METHODS]----------------
 }

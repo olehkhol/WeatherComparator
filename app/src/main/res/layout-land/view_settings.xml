@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="settingsViewModel"
+            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/alertTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/preferences"
+            android:textColor="@color/text_alert"
+            android:textSize="@dimen/title_size" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--UNITS-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/category_padding_half"
+                    android:text="@string/units"
+                    android:textColor="@color/colorAccent" />
+
+                <!--Temperature-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/nav_item_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="@string/pref_temperature"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/tempSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:gravity="end"
+                        android:spinnerMode="dropdown"
+                        bind:selected="@={settingsViewModel.settings.temperatureIndex}" />
+                </LinearLayout>
+
+
+                <!--Pressure-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/nav_item_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="@string/pref_pressure"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/presSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:gravity="end"
+                        android:spinnerMode="dropdown"
+                        bind:selected="@={settingsViewModel.settings.pressureIndex}" />
+                </LinearLayout>
+
+                <!--Wind-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/nav_item_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="@string/pref_speed"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/windSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:gravity="end"
+                        android:spinnerMode="dropdown"
+                        bind:selected="@={settingsViewModel.settings.speedIndex}" />
+                </LinearLayout>
+
+                <!--LOCALIZATION-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/category_padding_half"
+                    android:text="@string/localization"
+                    android:textColor="@color/colorAccent" />
+
+                <!--Language-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/nav_item_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="@string/pref_language"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/langSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:gravity="end"
+                        android:spinnerMode="dropdown"
+                        bind:selected="@={settingsViewModel.settings.languageIndex}" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

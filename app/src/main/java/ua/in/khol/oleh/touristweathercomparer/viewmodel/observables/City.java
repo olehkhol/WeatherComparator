@@ -1,60 +1,47 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel.observables;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
-@Entity(indices = {@Index(value = {"name", "place_id"}, unique = true)})
-public class City {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private long mId;
-
-    @ColumnInfo(name = "name")
+public class City extends BaseObservable {
     private String mName;
+    private double mLatitude;
+    private double mLongitude;
 
-    @ColumnInfo(name = "place_id")
-    private long mPlaceId;
-
-    @Ignore
-    public City() {
-        mName = "";
-    }
-
-    @Ignore
-    public City(String name) {
+    public City(String name, double latitude, double longitude) {
         mName = name;
+        mLatitude = latitude;
+        mLongitude = longitude;
     }
 
-    public City(String name, long placeId) {
-        mName = name;
-        mPlaceId = placeId;
-    }
-
-    public long getId() {
-        return mId;
-    }
-
-    public void setId(long id) {
-        mId = id;
-    }
-
+    @Bindable
     public String getName() {
         return mName;
     }
 
     public void setName(String name) {
         mName = name;
+        notifyPropertyChanged(BR.name);
     }
 
-    public long getPlaceId() {
-        return mPlaceId;
+    @Bindable
+    public double getLatitude() {
+        return mLatitude;
     }
 
-    public void setPlaceId(long placeId) {
-        mPlaceId = placeId;
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
+        notifyPropertyChanged(BR.latitude);
+    }
+
+    @Bindable
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
+        notifyPropertyChanged(BR.longitude);
     }
 }

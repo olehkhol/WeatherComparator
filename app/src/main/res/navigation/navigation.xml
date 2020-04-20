@@ -2,25 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation"
     app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="ua.in.khol.oleh.touristweathercomparer.views.HomeView"
-        android:label="@string/title_home"
-        tools:layout="@layout/view_home" />
+        android:name="ua.in.khol.oleh.touristweathercomparer.views.ForecastView"
+        tools:layout="@layout/view_forecast" />
 
     <fragment
         android:id="@+id/navigation_map"
         android:name="ua.in.khol.oleh.touristweathercomparer.views.MapaView"
-        android:label="@string/title_map"
         tools:layout="@layout/view_mapa" />
 
     <fragment
-        android:id="@+id/navigation_history"
-        android:name="ua.in.khol.oleh.touristweathercomparer.views.HistoryView"
-        android:label="@string/title_history"
-        tools:layout="@layout/view_history" />
+        android:id="@+id/navigation_info"
+        android:name="ua.in.khol.oleh.touristweathercomparer.views.InfoView"
+        tools:layout="@layout/view_info" />
 
 </navigation>

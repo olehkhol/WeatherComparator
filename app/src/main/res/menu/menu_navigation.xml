@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@mipmap/ic_nav_home"
+        android:icon="@mipmap/ic_nav_forecast"
         android:title="@string/title_home" />
 
     <item
@@ -12,7 +12,7 @@
         android:title="@string/title_map" />
 
     <item
-        android:id="@+id/navigation_history"
-        android:icon="@mipmap/ic_nav_history"
-        android:title="@string/title_history" />
+        android:id="@+id/navigation_info"
+        android:icon="@mipmap/ic_nav_info"
+        android:title="@string/title_info" />
 </menu>

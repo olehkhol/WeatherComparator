@@ -36,14 +36,14 @@
 #---------------------------------------------------------------------------------------------------
 
 ################################ -=[ Retrofit2 ]=- ################################
-# Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
+# Retrofit does reflection on generic settings. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
 -keepattributes Signature, InnerClasses, EnclosingMethod
 
 # Retrofit does reflection on method and parameter annotations.
 -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
 
-# Retain service method parameters when optimizing.
+# Retain service method settings when optimizing.
 -keepclassmembers,allowshrinking,allowobfuscation interface * {
     @retrofit2.http.* <methods>;
 }

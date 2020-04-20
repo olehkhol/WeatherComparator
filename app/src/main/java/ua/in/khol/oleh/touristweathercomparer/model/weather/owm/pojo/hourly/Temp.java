@@ -4,7 +4,7 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather.owm.pojo.hourly;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Temp {
+class Temp {
 
     @SerializedName("day")
     @Expose

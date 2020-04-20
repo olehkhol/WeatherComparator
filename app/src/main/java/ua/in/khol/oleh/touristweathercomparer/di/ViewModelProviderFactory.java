@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.HomeViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ForecastViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.InfoViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MapaViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
@@ -30,9 +31,12 @@ public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFacto
         } else if (modelClass.isAssignableFrom(AlertViewModel.class)) {
             //noinspection unchecked
             return (T) new AlertViewModel(mRepository);
-        } else if (modelClass.isAssignableFrom(HomeViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(ForecastViewModel.class)) {
             //noinspection unchecked
-            return (T) new HomeViewModel(mRepository);
+            return (T) new ForecastViewModel(mRepository);
+        } else if (modelClass.isAssignableFrom(InfoViewModel.class)) {
+            //noinspection unchecked
+            return (T) new InfoViewModel(mRepository);
         } else if (modelClass.isAssignableFrom(MapaViewModel.class)) {
             //noinspection unchecked
             return (T) new MapaViewModel(mRepository);
