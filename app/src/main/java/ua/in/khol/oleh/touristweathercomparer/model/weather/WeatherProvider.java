@@ -3,7 +3,6 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -67,12 +66,20 @@ public abstract class WeatherProvider {
     }
 
     private OkHttpClient createOkHttpClient() {
-        OkHttpClient.Builder client =new OkHttpClient.Builder()
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .cache(null)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS);
 
         return client.build();
+    }
+
+    protected String normalizeText(String text) {
+        if (text != null && text.length() > 0)
+            return text.substring(0, 1).toUpperCase() +
+                    text.substring(1).trim().replaceAll("\\.+$","").toLowerCase();
+        else
+            return text;
     }
 }

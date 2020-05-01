@@ -78,7 +78,7 @@ public class MiniAverageAdapter extends RecyclerView.Adapter<MiniAverageAdapter.
         public void initBinding(MiniAverageBinding binding) {
             binding.minipesRecycler
                     .setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext(),
-                            LinearLayoutManager.HORIZONTAL, false));
+                            LinearLayoutManager.VERTICAL, false));
             binding.minipesRecycler.setAdapter(new MinipeAdapter());
         }
     }

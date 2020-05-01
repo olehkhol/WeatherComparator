@@ -43,7 +43,7 @@
     </string-array>
 
     <string-array name="pressure_values">
-        <item>мм рт.ст.</item>
+        <item>мм р.с.</item>
         <item>гПа</item>
         <item>мбар</item>
     </string-array>

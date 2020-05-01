@@ -25,7 +25,7 @@
     <string name="humidity">Влажность %d%%</string>
     <string name="pressure">Давление %.0f %s</string>
     <string name="wind">Ветер %.1f %s</string>
-    <string name="direction">Направление %d\u00B0</string>
+    <string name="direction">Направление %d°</string>
     <string name="title_info">Инфо</string>
     <string name="pref_pressure">Давление</string>
     <string name="pref_temperature">Температура</string>

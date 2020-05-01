@@ -17,5 +17,10 @@
     <dimen name="default_margin">8dp</dimen>
     <dimen name="default_margin_half">4dp</dimen>
     <dimen name="default_margin_mini">2dp</dimen>
-    <dimen name="marker_width">300dp</dimen>
+
+    <dimen name="mini_average_width">300dp</dimen>
+    <dimen name="mini_average_text_size">12sp</dimen>
+
+    <dimen name="minipe_image_size">18dp</dimen>
+    <dimen name="minipe_text_size">12sp</dimen>
 </resources>

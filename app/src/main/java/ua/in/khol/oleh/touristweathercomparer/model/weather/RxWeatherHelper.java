@@ -10,8 +10,8 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.owm.Owm;
 
 public class RxWeatherHelper implements WeatherHelper {
     private final List<WeatherProvider> mWeatherProviders = new ArrayList<WeatherProvider>() {{
-        add(new DarkSky(0));
         add(new Owm(2));
+        add(new DarkSky(0));
     }};
 
     public RxWeatherHelper() {

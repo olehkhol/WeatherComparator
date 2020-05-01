@@ -11,14 +11,14 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:bind="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start|center"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="@dimen/minipe_image_size"
+            android:layout_height="@dimen/minipe_image_size"
             bind:image="@{@string/asset_image(minipe.image)}"
             tools:ignore="ContentDescription" />
 
@@ -27,8 +27,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:freezesText="true"
+            android:gravity="start|center_vertical"
             android:text="@{minipe.text}"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp" />
+            android:textSize="@dimen/minipe_text_size" />
     </LinearLayout>
 </layout>

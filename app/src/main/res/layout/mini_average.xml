@@ -15,29 +15,47 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:bind="http://schemas.android.com/apk/res-auto"
-        android:layout_width="@dimen/marker_width"
+        android:layout_width="@dimen/mini_average_width"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
+            android:layout_height="wrap_content">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:gravity="start|center"
-                android:textColor="@color/colorAccentDark"
-                android:textSize="12sp"
-                bind:date="@{average.date}" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccentDark"
+                    android:textSize="@dimen/mini_average_text_size"
+                    bind:date="@{average.date}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/separator" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/mini_average_text_size"
+                    bind:index="@{settings.temperatureIndex}"
+                    bind:tempHigh="@{average.high}"
+                    bind:tempLow="@{average.low}" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/minipesRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 bind:minipes="@{average.canapes}" />
-        </LinearLayout>
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -48,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{@string/humidity(average.humidity)}"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
+                android:textSize="@dimen/mini_average_text_size"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,31 +74,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
+                android:textSize="@dimen/mini_average_text_size"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 bind:index="@{settings.speedIndex}"
                 bind:speed="@{average.speed}" />
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
+                android:rotation="@{average.degree}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/markerPressure"
-                app:layout_constraintRight_toLeftOf="@id/markerDegree"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:index="@{settings.temperatureIndex}"
-                bind:tempHigh="@{average.high}"
-                bind:tempLow="@{average.low}" />
+                app:srcCompat="@drawable/ic_arrow" />
 
             <TextView
                 android:id="@+id/markerPressure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
+                android:textSize="@dimen/mini_average_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 bind:index="@{settings.pressureIndex}"
@@ -92,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{@string/direction(average.degree)}"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
+                android:textSize="@dimen/mini_average_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
