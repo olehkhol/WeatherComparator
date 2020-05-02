@@ -1,6 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.views;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
@@ -46,11 +48,16 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
         ForecastViewModel viewModel = new ViewModelProvider(this, mFactory)
                 .get(ForecastViewModel.class);
         binding.setForecastViewModel(viewModel);
-        binding.current.currentCanapesRecycler
-                .setLayoutManager(new LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.HORIZONTAL, false));
+        Context context = binding.getRoot().getContext();
+        int orientation = context.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT
+                ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
+        LinearLayoutManager manager = new LinearLayoutManager(context, orientation, false);
+        //manager.setReverseLayout(true);
+        //manager.setStackFromEnd(true);
+        binding.current.currentCanapesRecycler.setLayoutManager(manager);
         binding.current.currentCanapesRecycler.setAdapter(new CanapeAdapter());
-        binding.averagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext(),
+        binding.averagesRecycler.setLayoutManager(new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false));
         binding.averagesRecycler.setAdapter(new AverageAdapter());
     }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,22 +10,15 @@
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average.Canape" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:freezesText="true"
-        android:gravity="start|center"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:orientation="horizontal"
-        android:scrollHorizontally="true"
-        android:singleLine="true">
+        android:gravity="end"
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/canape_image_size"
+            android:layout_height="@dimen/canape_image_size"
             bind:image="@{@string/asset_image(canape.image)}"
             tools:ignore="ContentDescription" />
 
@@ -34,6 +29,6 @@
             android:freezesText="true"
             android:text="@{canape.text}"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/text_size" />
+            android:textSize="@dimen/canape_text_size" />
     </LinearLayout>
 </layout>

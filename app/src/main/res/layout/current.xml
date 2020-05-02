@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,9 +15,7 @@
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average" />
     </data>
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -27,91 +28,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/default_margin_half">
+            android:padding="@dimen/current_padding">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:text="@{@string/humidity(current.humidity)}"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size"
-                    bind:index="@{settings.speedIndex}"
-                    bind:speed="@{current.speed}" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/current_text_size"
-                bind:current="@{current.low}"
-                bind:index="@{settings.temperatureIndex}" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size"
-                    bind:index="@{settings.pressureIndex}"
-                    bind:pressure="@{current.pressure}" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="@{@string/direction(current.degree)}"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:gravity="start|center"
+                    android:layout_gravity="start|top"
+                    android:gravity="center"
                     android:textColor="@color/colorAccentDark"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="@dimen/current_date_text_size"
                     bind:time="@{current.date}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/currentCanapesRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
                     bind:canapes="@{current.canapes}" />
+            </FrameLayout>
 
-            </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/humidity(current.humidity)}"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/current_text_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/current_text_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:index="@{settings.speedIndex}"
+                    bind:speed="@{current.speed}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/current_temp_text_size"
+                    app:layout_constraintLeft_toRightOf="parent"
+                    app:layout_constraintRight_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:current="@{current.low}"
+                    bind:index="@{settings.temperatureIndex}" />
+
+                <TextView
+                    android:id="@+id/markerPressure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/current_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    bind:index="@{settings.pressureIndex}"
+                    bind:pressure="@{current.pressure}" />
+
+                <TextView
+                    android:id="@+id/markerDegree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/direction(current.degree)}"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/current_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>

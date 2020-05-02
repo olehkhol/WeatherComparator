@@ -49,7 +49,7 @@ public class MapaView extends Fragment
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
     private static final String MAP_ZOOM = "MAP_ZOOM";
-    private static final float DEFAULT_ZOOM = 13f;
+    private static final float DEFAULT_ZOOM = 12f;
     private static final LocationSource STUB_LOCATION_SOURCE = new LocationSource() {
         @Override
         public void activate(OnLocationChangedListener onLocationChangedListener) {

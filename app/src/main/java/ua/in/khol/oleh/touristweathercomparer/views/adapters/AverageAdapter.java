@@ -1,5 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.views.adapters;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -75,9 +77,12 @@ public class AverageAdapter extends RecyclerView.Adapter<AverageAdapter.AverageH
 
         @Override
         public void initBinding(AverageBinding binding) {
+            Context context = binding.getRoot().getContext();
+            int orientation = context.getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_PORTRAIT
+                    ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
             binding.canapesRecycler
-                    .setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext(),
-                            LinearLayoutManager.HORIZONTAL, false));
+                    .setLayoutManager(new LinearLayoutManager(context, orientation, false));
             binding.canapesRecycler.setAdapter(new CanapeAdapter());
         }
     }

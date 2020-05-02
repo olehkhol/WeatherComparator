@@ -6,20 +6,20 @@
     <data>
 
         <variable
-            name="minipe"
+            name="canape"
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average.Canape" />
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="@dimen/minipe_image_size"
-            android:layout_height="@dimen/minipe_image_size"
-            bind:image="@{@string/asset_image(minipe.image)}"
+            android:layout_width="@dimen/canape_image_size"
+            android:layout_height="@dimen/canape_image_size"
+            bind:image="@{@string/asset_image(canape.image)}"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -27,9 +27,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:freezesText="true"
-            android:gravity="start|center_vertical"
-            android:text="@{minipe.text}"
+            android:text="@{canape.text}"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/minipe_text_size" />
+            android:textSize="@dimen/canape_text_size" />
     </LinearLayout>
 </layout>

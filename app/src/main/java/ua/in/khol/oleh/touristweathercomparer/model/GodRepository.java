@@ -37,7 +37,7 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 
 public class GodRepository implements Repository {
     private static final int LATLON_ACCURACY = 4; // TODO move this to PreferencesHelper
-    private final static int DAYS = 7; // TODO move this to PreferencesHelper
+    private final static int DAYS = 6; // TODO move this to PreferencesHelper
     private final static int HOUR = 60 * 60;
     private final MapsHelper mMapsHelper;
     private final WeatherHelper mWeatherHelper;

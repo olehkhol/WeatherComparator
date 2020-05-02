@@ -21,7 +21,7 @@
     <string name="communicate">Комунікація</string>
     <string name="share">Поділитись</string>
     <string name="title_home">Прогноз</string>
-    <string name="title_map">Карта</string>
+    <string name="title_map">Мапа</string>
     <string name="humidity">Вологість %d%%</string>
     <string name="pressure">Тиск %.0f %s</string>
     <string name="wind">Вітер %.1f %s</string>
