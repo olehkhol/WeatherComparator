@@ -4,12 +4,15 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +70,7 @@ public class MainView extends AppCompatActivity
                 .get(MainViewModel.class);
         // TODO[40] try find a better place to change language before .onCreate according to MVVM
         updateLocale(mMainViewModel.getSettings().get().getLanguageIndex());
+        adjustFontScale();
 
         // Init
         super.onCreate(savedInstanceState);
@@ -131,6 +135,19 @@ public class MainView extends AppCompatActivity
         Configuration config = getResources().getConfiguration();
         config.locale = locale;
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    private void adjustFontScale() {
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        if (configuration.fontScale > 1f) {
+            configuration.fontScale = 1f;
+            DisplayMetrics metrics = resources.getDisplayMetrics();
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            metrics.scaledDensity = configuration.fontScale * metrics.density;
+            resources.updateConfiguration(configuration, metrics);
+            //applyOverrideConfiguration(configuration);
+        }
     }
     // ----------------[REGULAR METHODS]----------------
 
