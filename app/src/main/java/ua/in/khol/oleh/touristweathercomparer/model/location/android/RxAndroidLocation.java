@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocation;
 
@@ -18,75 +22,58 @@ public class RxAndroidLocation implements RxLocation {
     private static final String TAG = RxAndroidLocation.class.getName();
 
     private final LocationManager mLocationManager;
+    private Criteria mCriteria;
 
     public RxAndroidLocation(Context context) {
         mLocationManager = (LocationManager) context.getApplicationContext()
                 .getSystemService(Context.LOCATION_SERVICE);
+        mCriteria = getCriteria(Criteria.ACCURACY_FINE, Criteria.POWER_HIGH);
     }
 
     @SuppressLint("MissingPermission")
     @Override
     public Single<LatLon> observeSingleLocation() {
-        return Single.create(emitter -> mLocationManager
-                .requestSingleUpdate(getCriteria(Criteria.ACCURACY_FINE, Criteria.POWER_HIGH),
-                        new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                double lat = location.getLatitude();
-                                double lon = location.getLongitude();
-                                Log.d(TAG, String.format("Latitude:%f, longitude:%f", lat, lon));
-                                emitter.onSuccess(new LatLon(lat, lon));
-                                mLocationManager.removeUpdates(this);
-                            }
+        return Single.create(new SingleOnSubscribe<LatLon>() {
+            @Override
+            public void subscribe(SingleEmitter<LatLon> emitter) throws Exception {
+                mLocationManager
+                        .requestSingleUpdate(mCriteria,
+                                new LocationListener() {
+                                    @Override
+                                    public void onLocationChanged(Location location) {
+                                        double lat = location.getLatitude();
+                                        double lon = location.getLongitude();
+                                        Log.d(TAG, String.format("Latitude:%f, longitude:%f", lat, lon));
+                                        emitter.onSuccess(new LatLon(lat, lon));
+                                        mLocationManager.removeUpdates(this);
+                                    }
 
-                            @Override
-                            public void onStatusChanged(String provider,
-                                                        int status, Bundle extras) {
-                            }
+                                    @Override
+                                    public void onStatusChanged(String provider,
+                                                                int status, Bundle extras) {
+                                    }
 
-                            @Override
-                            public void onProviderEnabled(String provider) {
-                            }
+                                    @Override
+                                    public void onProviderEnabled(String provider) {
+                                    }
 
-                            @Override
-                            public void onProviderDisabled(String provider) {
-                            }
-                        }, null));
+                                    @Override
+                                    public void onProviderDisabled(String provider) {
+                                    }
+                                }, null);
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
     @Override
     public Observable<Boolean> observeUsability() {
-        return Observable.create(emitter -> {
-            String bestProvider = mLocationManager
-                    .getBestProvider(getCriteria(Criteria.ACCURACY_FINE, Criteria.POWER_HIGH),
-                            false);
-            emitter.onNext(isLocationEnabled());
-            mLocationManager.requestLocationUpdates(bestProvider, 0, 0,
-                    new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                        }
-
-                        @Override
-                        public void onStatusChanged(String provider,
-                                                    int status, Bundle extras) {
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String provider) {
-                            Log.d(TAG,
-                                    String.format("Provider:%s enabled", provider));
-                            emitter.onNext(isLocationEnabled());
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String provider) {
-                            Log.d(TAG,
-                                    String.format("Provider:%s disabled", provider));
-                            emitter.onNext(isLocationEnabled());
-                        }
-                    });
+        return Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                emitter.onNext(isLocationEnabled());
+                emitter.onComplete();
+            }
         });
     }
 

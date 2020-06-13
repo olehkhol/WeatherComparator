@@ -61,7 +61,7 @@ public class MapaView extends Fragment
     };
     private ViewMapaBinding mBinding;
     private MapaViewModel mViewModel;
-    private InfoView mInfoView;
+    private InfoWindowView mInfoWindowView;
     private GoogleMap mMap;
     private Marker mMarker;
     private LatLng mLatLng;
@@ -137,8 +137,8 @@ public class MapaView extends Fragment
         mMap.setOnMapClickListener(this);
         mMap.setOnMapLongClickListener(this);
         // Create a shuttle/reusable adapter
-        mInfoView = new InfoView(mViewModel.getSettings());
-        mMap.setInfoWindowAdapter(mInfoView);
+        mInfoWindowView = new InfoWindowView(mViewModel.getSettings());
+        mMap.setInfoWindowAdapter(mInfoWindowView);
 
         mViewModel.getCity().observe(this, city -> {
             mLatLng = new LatLng(city.getLatitude(), city.getLongitude());
@@ -150,7 +150,7 @@ public class MapaView extends Fragment
         });
 
         mViewModel.getAverages().observe(this, averages -> {
-            mInfoView.setAverages(averages);
+            mInfoWindowView.setAverages(averages);
             mMarker.showInfoWindow();
 
             // Set marker position
@@ -159,8 +159,8 @@ public class MapaView extends Fragment
             int mapWidth = mBinding.getRoot().getWidth();
             int mapHeight = mBinding.getRoot().getHeight();
             // Get marker view width & height
-            int infoWidth = mInfoView.getRoot().getWidth();
-            int infoHeight = mInfoView.getRoot().getHeight();
+            int infoWidth = mInfoWindowView.getRoot().getWidth();
+            int infoHeight = mInfoWindowView.getRoot().getHeight();
             Projection projection = mMap.getProjection();
             Point point = new Point(mapWidth / 2, (mapHeight - infoHeight) / 2);
             LatLng latLng = projection.fromScreenLocation(point);
@@ -209,12 +209,12 @@ public class MapaView extends Fragment
     }
 
     // ----------------[CALLBACKS]----------------
-    private class InfoView implements ViewBinding<ViewMarkerBinding>, GoogleMap.InfoWindowAdapter {
+    private class InfoWindowView implements ViewBinding<ViewMarkerBinding>, GoogleMap.InfoWindowAdapter {
         private final Settings mSettings;
         private List<Average> mAverages;
         private View mRoot;
 
-        InfoView(Settings settings) {
+        InfoWindowView(Settings settings) {
             mSettings = settings;
         }
 
