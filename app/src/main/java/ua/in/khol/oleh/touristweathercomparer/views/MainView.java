@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -42,25 +43,29 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMainBinding;
-import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MainViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 public class MainView extends AppCompatActivity
         implements ViewBinding<ViewMainBinding>,
         NavigationView.OnNavigationItemSelectedListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String PREFERENCES_TAG = SettingsView.class.getName();
+    private static final String SETTINGS_TAG = SettingsView.class.getName();
+    private static final String SEARCH_TAG = SearchView.class.getName();
     private static final String ALERT_TAG = AlertView.class.getName();
     private static final int LOCATION_PERMISSION_ID = 17;
 
     private boolean mHasPermissions = false;
+    private boolean mDoNotAskForPermissions = false;
     // UI variables
-    private MainViewModel mMainViewModel;
+    private final FragmentManager mFragmentManager = getSupportFragmentManager();
     private DrawerLayout mDrawerLayout;
 
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
+
+    private MainViewModel mMainViewModel;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
@@ -74,6 +79,7 @@ public class MainView extends AppCompatActivity
 
         // Init
         super.onCreate(savedInstanceState);
+
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         initBinding(binding);
     }
@@ -97,14 +103,14 @@ public class MainView extends AppCompatActivity
             if (asked)
                 showLocationAlertDialog();
         });
-
-        requestPermissions();
+        if (!mMainViewModel.getPermissions().get())
+            requestPermissions();
     }
     // ----------------[LIFECYCLE CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
     private void requestPermissions() {
-        if (ContextCompat
+        if (!mHasPermissions && ContextCompat
                 .checkSelfPermission(
                         this,
                         "android.permission.ACCESS_FINE_LOCATION") == 0
@@ -115,6 +121,7 @@ public class MainView extends AppCompatActivity
 
             // Permissions granted
             mHasPermissions = true;
+            mMainViewModel.getPermissions().set(mHasPermissions);
             // TODO try find a better place to refresh data according to MVVM
             refreshModelView();
         } else
@@ -171,6 +178,9 @@ public class MainView extends AppCompatActivity
 
         BottomNavigationView bottomNavView = binding.appBar.content.bottomNavView;
         bottomNavView.setItemIconTintList(null);
+        bottomNavView.setOnNavigationItemReselectedListener(item -> {
+            //do nothing to prevent re-create the fragments
+        });
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_map, R.id.navigation_info)
                 .build();
@@ -195,36 +205,8 @@ public class MainView extends AppCompatActivity
         });
     }
 
-    private void showInternetAlertDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AlertView alertView = (AlertView) fragmentManager
-                .findFragmentByTag(ALERT_TAG);
-        SettingsView preferencesFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(PREFERENCES_TAG);
-        if (alertView == null && preferencesFragment == null) {
-            alertView = AlertView.newInstance(getString(R.string.alert_wireless_title),
-                    getString(R.string.alert_wireless_message),
-                    Settings.ACTION_WIRELESS_SETTINGS);
-            alertView.show(fragmentManager, ALERT_TAG);
-        }
-    }
-
     private void showInternetAlertToast() {
         Toast.makeText(this, getString(R.string.alert_wireless_title), Toast.LENGTH_LONG).show();
-    }
-
-    private void showLocationAlertDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AlertView alertView = (AlertView) fragmentManager
-                .findFragmentByTag(ALERT_TAG);
-        SettingsView preferencesFragment = (SettingsView) fragmentManager
-                .findFragmentByTag(PREFERENCES_TAG);
-        if (alertView == null && preferencesFragment == null) {
-            alertView = AlertView.newInstance(getString(R.string.alert_location_title),
-                    getString(R.string.alert_location_message),
-                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            alertView.show(fragmentManager, ALERT_TAG);
-        }
     }
 
     private void showFinishAlertDialog() {
@@ -237,17 +219,40 @@ public class MainView extends AppCompatActivity
         dialog.show();
     }
 
-    private void showPreferencesDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SettingsView settingsView = (SettingsView) fragmentManager
-                .findFragmentByTag(PREFERENCES_TAG);
-        AlertView alertView = (AlertView) fragmentManager
+    private void showSettingsDialog() {
+        if (isAnyDialogOpened(mFragmentManager))
+            SettingsView.newInstance().show(mFragmentManager, SETTINGS_TAG);
+    }
+
+    private void showSearchDialog() {
+        if (isAnyDialogOpened(mFragmentManager))
+            SearchView.newInstance().show(mFragmentManager, SEARCH_TAG);
+    }
+
+    private void showInternetAlertDialog() {
+        if (isAnyDialogOpened(mFragmentManager))
+            AlertView.newInstance(getString(R.string.alert_wireless_title),
+                    getString(R.string.alert_wireless_message), Settings.ACTION_WIRELESS_SETTINGS)
+                    .show(mFragmentManager, ALERT_TAG);
+    }
+
+    private void showLocationAlertDialog() {
+        if (isAnyDialogOpened(mFragmentManager))
+            AlertView.newInstance(getString(R.string.alert_location_title),
+                    getString(R.string.alert_location_message),
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    .show(mFragmentManager, ALERT_TAG);
+    }
+
+    private boolean isAnyDialogOpened(FragmentManager manager) {
+        SettingsView settingsView = (SettingsView) manager
+                .findFragmentByTag(SETTINGS_TAG);
+        SearchView searchView = (SearchView) manager
+                .findFragmentByTag(SEARCH_TAG);
+        AlertView alertView = (AlertView) manager
                 .findFragmentByTag(ALERT_TAG);
 
-        if (alertView == null && settingsView == null) {
-            settingsView = SettingsView.newInstance();
-            settingsView.show(fragmentManager, PREFERENCES_TAG);
-        }
+        return (settingsView == null && searchView == null && alertView == null);
     }
 
     private void shareApplicationName() {
@@ -289,14 +294,18 @@ public class MainView extends AppCompatActivity
             for (int i = 0; i < permissions.length; i++)
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-                        if (!shouldShowRequestPermissionRationale(permissions[i]))
-                            showFinishAlertDialog();
+                        if (!shouldShowRequestPermissionRationale(permissions[i])) {
+                            // Stop asking for permissions
+                            //showFinishAlertDialog();
+                            mDoNotAskForPermissions = true;
+                        }
         } else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (permissions.length > 0 && !mHasPermissions) {
             // Start request again because we really need this permissions to work
-            requestPermissions();
+            if (!mDoNotAskForPermissions)
+                requestPermissions();
         }
     }
 
@@ -326,7 +335,10 @@ public class MainView extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.menu_item_settings) {
-            showPreferencesDialog();
+            showSettingsDialog();
+            return true;
+        } else if (id == R.id.menu_item_search) {
+            showSearchDialog();
             return true;
         }
 

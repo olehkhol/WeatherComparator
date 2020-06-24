@@ -32,7 +32,7 @@ public class MarkerViewModel extends BaseViewModel {
 
     @Override
     public void refresh() {
-        getRepository().getRefreshSubject().onNext(false);
+        getRepository().processRefresh(false);
     }
 
     private void subscribeCity() {

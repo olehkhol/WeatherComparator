@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="settings"
             type="ua.in.khol.oleh.touristweathercomparer.model.settings.Settings" />
@@ -13,6 +15,10 @@
         <variable
             name="current"
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average" />
+
+        <variable
+            name="isVisible"
+            type="boolean" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -20,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="@dimen/default_margin_half"
+        android:visibility="@{isVisible ? View.VISIBLE : View.GONE}"
         card_view:cardCornerRadius="3dp"
         card_view:cardMaxElevation="1px"
         card_view:cardUseCompatPadding="true">

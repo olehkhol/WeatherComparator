@@ -34,8 +34,8 @@ public class RxLocationHelper implements RxLocation, Helper {
     }
 
     @Override
-    public Single<LatLon> observeSingleLocation() {
-        return mRxLocation.observeSingleLocation();
+    public Single<LatLon> seeLocation() {
+        return mRxLocation.seeLocation();
     }
 
     @Override

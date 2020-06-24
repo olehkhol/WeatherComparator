@@ -18,12 +18,14 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewForecastBinding;
-import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ForecastViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.AverageAdapter;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.CanapeAdapter;
 
 public class ForecastView extends Fragment implements ViewBinding<ViewForecastBinding> {
+
+    private ForecastViewModel mViewModel;
 
     @Inject
     ViewModelProviderFactory mFactory;
@@ -32,12 +34,16 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        // Instantiate a viewmodel from the injected factory
+        mViewModel = new ViewModelProvider(this, mFactory)
+                .get(ForecastViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ViewForecastBinding binding = ViewForecastBinding.inflate(inflater, container, false);
+        binding.setForecastViewModel(mViewModel);
         initBinding(binding);
 
         return binding.getRoot();
@@ -45,9 +51,6 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
 
     @Override
     public void initBinding(ViewForecastBinding binding) {
-        ForecastViewModel viewModel = new ViewModelProvider(this, mFactory)
-                .get(ForecastViewModel.class);
-        binding.setForecastViewModel(viewModel);
         Context context = binding.getRoot().getContext();
         int orientation = context.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT

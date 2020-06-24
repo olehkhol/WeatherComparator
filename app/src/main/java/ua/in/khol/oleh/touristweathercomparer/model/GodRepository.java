@@ -1,6 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.model;
 
 import android.annotation.SuppressLint;
+import android.util.Pair;
 
 import org.joda.time.DateTime;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -29,6 +31,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocationHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.MapsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetwork;
+import ua.in.khol.oleh.touristweathercomparer.model.places.PlacesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.RxSettingsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
@@ -47,43 +50,44 @@ public class GodRepository implements Repository {
     private final RxLocationHelper mLocationHelper;
     private final RxNetwork mNetwork;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    private final PublishSubject<Boolean> mRefreshSubject = PublishSubject.create();
-    private final PublishSubject<Status> mStatus = PublishSubject.create();
+    private final PublishSubject<Boolean> mRefreshPublishSubject = PublishSubject.create();
+    private final PublishSubject<Status> mStatusPublishSubject = PublishSubject.create();
+    private final PlacesHelper mPlacesHelper;
     private Settings mSettings;
-    private final PublishSubject<Settings> mSettingsSubject = PublishSubject.create();
-    private final PublishSubject<LatLon> mLatLonSubject = PublishSubject.create();
-    private final ReplaySubject<Place> mPlace = ReplaySubject.createWithSize(1);
+    private final PublishSubject<Settings> mSettingsPublishSubject = PublishSubject.create();
+    private final PublishSubject<LatLon> mLatLonPublishSubject = PublishSubject.create();
+    private final ReplaySubject<Place> mReplayPlace = ReplaySubject.createWithSize(1);
     private boolean mRefreshed = false;
     private int mCurrentsTimestamp;
     private int mDailiesTimestamp;
+    private boolean mPermissions = false;
 
     public GodRepository(CacheHelper cacheHelper, RxLocationHelper locationHelper,
                          RxNetwork network, MapsHelper mapsHelper,
                          WeatherHelper weatherHelper, RxSettingsHelper settingsHelper,
-                         DatabaseHelper storeHelper) {
+                         DatabaseHelper storeHelper, PlacesHelper placesHelper) {
         // Settings helper
         mSettingsHelper = settingsHelper;
         mSettingsHelper.setup(RxSettingsHelper.SHARED_PREFERENCES);
         mSettings = mSettingsHelper.getSettings();
-        mSettingsSubject.onNext(mSettings);
+        mSettingsPublishSubject.onNext(mSettings);
         // Location helper
         mLocationHelper = locationHelper;
-        LatLon latLon = new LatLon(mSettingsHelper.getLat(), mSettingsHelper.getLon());
-        mLatLonSubject.onNext(latLon);
         // Network helper
         mNetwork = network;
         // Cache helpers
         mCacheHelper = cacheHelper;
         mStoreHelper = storeHelper;
-
+        // Google Maps helpers
         mMapsHelper = mapsHelper;
+        mPlacesHelper = placesHelper;
+
         mWeatherHelper = weatherHelper;
 
         subscribeRefresh();
         subscribeSettings();
         producePlace();
     }
-
 
     /**
      * Responds to the Refresh commands
@@ -96,11 +100,11 @@ public class GodRepository implements Repository {
      */
     @SuppressLint("CheckResult")
     private void subscribeRefresh() {
-        mRefreshSubject
+        mRefreshPublishSubject
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(required -> {
-                    if (required)
+                .subscribe(cold -> {
+                    if (cold)
                         coldRefresh();
                     else
                         hotRefresh();
@@ -121,7 +125,7 @@ public class GodRepository implements Repository {
                 .subscribe(settings -> {
                     mSettings = settings;
                     mSettingsHelper.putSetting(settings);
-                    mStatus.onNext(Status.NEED_RECREATE);
+                    mStatusPublishSubject.onNext(Status.NEED_RECREATE);
                 });
     }
 
@@ -136,9 +140,13 @@ public class GodRepository implements Repository {
      * Uses a cached location data
      */
     private void hotRefresh() {
-        LatLon latLon;
-        if ((latLon = mCacheHelper.getLatLon()) != null)
-            getLatLonSubject().onNext(latLon);
+        LatLon latLon = new LatLon(mSettingsHelper.getLat(), mSettingsHelper.getLon());
+        if (latLon.isValid())
+            mLatLonPublishSubject.onNext(latLon);
+        else if ((latLon = mCacheHelper.getLatLon()) != null)
+            mLatLonPublishSubject.onNext(latLon);
+        else
+            produceLatLon();
     }
 
     /**
@@ -151,25 +159,22 @@ public class GodRepository implements Repository {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(locationUsable -> {
                     if (!locationUsable)
-                        mStatus.onNext(Status.LOCATION_UNAVAILABLE);
+                        mStatusPublishSubject.onNext(Status.LOCATION_UNAVAILABLE);
                     return locationUsable;
                 })
                 .flatMapSingle((Function<Boolean, SingleSource<LatLon>>) usable
-                        -> mLocationHelper.observeSingleLocation()
+                        -> mLocationHelper.seeLocation()
                         .subscribeOn(AndroidSchedulers.mainThread()))
                 .doOnNext(latLon -> {
                     mSettingsHelper.putLat(latLon.getLat());
                     mSettingsHelper.putLon(latLon.getLon());
                 })
-                .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .subscribe(new Consumer<LatLon>() {
                     @Override
                     public void accept(LatLon latLon) throws Exception {
-                        if (latLon == null) {
-                            Timber.e("ERROR! Null location!");
-                        } else
-                            mLatLonSubject.onNext(latLon);
+                        mLatLonPublishSubject.onNext(latLon);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -188,8 +193,13 @@ public class GodRepository implements Repository {
      */
     private void producePlace() {
         mCompositeDisposable.add(Observable.combineLatest(
-                observeLatLon().subscribeOn(Schedulers.io()).observeOn(Schedulers.io()),
-                observeInternet().subscribeOn(Schedulers.io()).observeOn(Schedulers.io()),
+                mLatLonPublishSubject
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .doOnNext(mCacheHelper::putLatLon),
+                observeInternet()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io()),
                 (latLon, connected) -> {
                     Place place;
                     double lat = round(latLon.getLat(), LATLON_ACCURACY);
@@ -212,7 +222,7 @@ public class GodRepository implements Repository {
                                 long placeId = mStoreHelper.putPlace(place);
                                 place.setId(placeId);
                             } else
-                                mStatus.onNext(Status.CRITICAL_OFFLINE);
+                                mStatusPublishSubject.onNext(Status.CRITICAL_OFFLINE);
                         // put Place to cache
                         if (place != null && place.getId() > 0)
                             mCacheHelper.putPlace(place);
@@ -230,18 +240,13 @@ public class GodRepository implements Repository {
                     if (!mRefreshed)
                         mRefreshed = true;
                     // emit new Place instance
-                    mPlace.onNext(place);
+                    mReplayPlace.onNext(place);
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                     }
                 }));
-    }
-
-    private Observable<LatLon> observeLatLon() {
-        return mLatLonSubject
-                .doOnNext(mCacheHelper::putLatLon);
     }
 
     private Observable<Boolean> observeInternet() {
@@ -287,16 +292,16 @@ public class GodRepository implements Repository {
 
     @Override
     public Observable<Settings> observeSettings() {
-        return mSettingsSubject;
+        return mSettingsPublishSubject;
     }
 
     public Observable<Status> observeStatus() {
-        return mStatus.serialize();
+        return mStatusPublishSubject.serialize();
     }
 
     @Override
     public Observable<Place> observePlace() {
-        return mPlace;
+        return mReplayPlace;
     }
 
     @Override
@@ -326,7 +331,7 @@ public class GodRepository implements Repository {
                                     mStoreHelper.putCurrents(currents);
                                 }
                             } else {
-                                mStatus.onNext(Status.OFFLINE);
+                                mStatusPublishSubject.onNext(Status.OFFLINE);
                                 // try to get old stored forecasts from DB
                                 currents = mStoreHelper.getCurrents(placeId, date);
                             }
@@ -363,7 +368,7 @@ public class GodRepository implements Repository {
                                     mStoreHelper.putDailies(dailies);
                                 }
                             } else {
-                                mStatus.onNext(Status.OFFLINE);
+                                mStatusPublishSubject.onNext(Status.OFFLINE);
                                 // try to get old stored forecasts from DB
                                 dailies = mStoreHelper.getDailies(placeId, date);
                             }
@@ -383,18 +388,13 @@ public class GodRepository implements Repository {
     }
 
     @Override
-    public PublishSubject<Settings> getSettingsSubject() {
-        return mSettingsSubject;
+    public void setSettings(Settings settings) {
+        mSettingsPublishSubject.onNext(settings);
     }
 
     @Override
-    public PublishSubject<LatLon> getLatLonSubject() {
-        return mLatLonSubject;
-    }
-
-    @Override
-    public PublishSubject<Boolean> getRefreshSubject() {
-        return mRefreshSubject;
+    public void processRefresh(boolean type) {
+        mRefreshPublishSubject.onNext(type);
     }
 
     @Override
@@ -458,55 +458,35 @@ public class GodRepository implements Repository {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-}
 
-//    private Observable<List<Forecast>> observeCurrentsCached(long placeId, int date, int time) {
-//        List<Forecast> currents = new ArrayList<>();
-//        if (time - mTimestamp < HOUR)
-//            currents.addAll(mCacheHelper.getCurrents(placeId, date));
-//
-//        return Observable
-//                .just(currents)
-//                .filter(forecasts -> !forecasts.isEmpty());
-//    }
-//
-//    private Observable<List<Forecast>> observeCurrentsStored(long placeId, int date, int time) {
-//        List<Forecast> currents = new ArrayList<>();
-//        if (time - mTimestamp < HOUR)
-//            currents.addAll(mDatabaseHelper.getCurrents(placeId, date));
-//
-//        return Observable
-//                .just(currents)
-//                .filter(new Predicate<List<Forecast>>() {
-//                    @Override
-//                    public boolean test(List<Forecast> forecasts) throws Exception {
-//                        return !forecasts.isEmpty();
-//                    }
-//                })
-//                .doOnNext(new Consumer<List<Forecast>>() {
-//                    @Override
-//                    public void accept(List<Forecast> forecasts) throws Exception {
-//                        mCacheHelper.putCurrents(placeId, forecasts);
-//                    }
-//                });
-//    }
-//
-//    private Observable<List<Forecast>> observeCurrentsNetwork(Place place, int time) {
-//        List<Forecast> currents = mWeatherHelper.getCurrents(place);
-//
-//        return Observable
-//                .just(currents)
-//                .filter(new Predicate<List<Forecast>>() {
-//                    @Override
-//                    public boolean test(List<Forecast> forecasts) throws Exception {
-//                        return !forecasts.isEmpty();
-//                    }
-//                })
-//                .doOnNext(new Consumer<List<Forecast>>() {
-//                    @Override
-//                    public void accept(List<Forecast> forecasts) throws Exception {
-//                        mTimestamp = time;
-//                        mDatabaseHelper.putCurrents(forecasts);
-//                    }
-//                });
-//    }
+    @Override
+    public void setLocation(LatLon latLon) {
+        mSettingsHelper.putLat(latLon.getLat());
+        mSettingsHelper.putLon(latLon.getLon());
+        mLatLonPublishSubject.onNext(latLon);
+    }
+
+    @Override
+    public boolean getPermissions() {
+        return mPermissions;
+    }
+
+    @Override
+    public void setPermissions(boolean allowed) {
+        mPermissions = allowed;
+    }
+
+    //  -=-=-=[PlacesHelper]=-=-=-
+    @Override
+    public void processPlaceById(String placeId) {
+        mCompositeDisposable.add(mPlacesHelper.seeLatlon(placeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(this::setLocation));
+    }
+
+    @Override
+    public Single<List<Pair<String, String>>> predictPlacesList(String query) {
+        return mPlacesHelper.seePlacesList(query);
+    }
+}

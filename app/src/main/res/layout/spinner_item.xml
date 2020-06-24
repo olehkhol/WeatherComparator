@@ -3,5 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textSize="@dimen/text_size"
-    android:paddingVertical="@dimen/default_margin"
+    android:paddingVertical="@dimen/default_padding"
+    android:paddingHorizontal="@dimen/default_padding_half"
     android:textColor="@color/colorPrimary" />

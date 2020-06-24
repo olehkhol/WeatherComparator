@@ -17,12 +17,15 @@ public class ForecastViewModel extends BaseViewModel {
     private final ObservableList<Average> mAverages = new ObservableArrayList<>();
     private final ObservableField<Average> mCurrent = new ObservableField<>();
     public final ObservableBoolean mRefreshing = new ObservableBoolean(false);
+    public final ObservableBoolean mRefreshed = new ObservableBoolean(false);
+    private final ObservableField<Boolean> mPermissions = new ObservableField<>();
     private int mActiveRefreshing = 0;
 
     public ForecastViewModel(Repository repository) {
         super(repository);
 
         mSettings = repository.getSettings();
+        mPermissions.set(repository.getPermissions());
         subscribeCurrent();
         subscribeAverages();
         refresh();
@@ -31,12 +34,11 @@ public class ForecastViewModel extends BaseViewModel {
     @Override
     public void refresh() {
         setActiveRefreshing();
-        getRepository().getRefreshSubject().onNext(false);
+        getRepository().processRefresh(false);
     }
 
-    public void onRefresh() {
-        setActiveRefreshing();
-        getRepository().getRefreshSubject().onNext(true);
+    public void onSwipe() {
+        refresh();
     }
 
     private void subscribeCurrent() {
@@ -65,12 +67,15 @@ public class ForecastViewModel extends BaseViewModel {
     private void setActiveRefreshing() {
         mActiveRefreshing = getCompositeDisposable().size();
         mRefreshing.set(true);
+        mRefreshed.set(false);
     }
 
     private void decActiveRefreshing() {
         mActiveRefreshing--;
-        if (mActiveRefreshing == 0)
+        if (mActiveRefreshing == 0) {
             mRefreshing.set(false);
+            mRefreshed.set(true);
+        }
     }
 
     public Settings getSettings() {

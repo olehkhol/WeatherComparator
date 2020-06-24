@@ -25,9 +25,12 @@ import ua.in.khol.oleh.touristweathercomparer.model.maps.MapsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.RxMapsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetwork;
 import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetworkHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.places.PlacesHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.places.RxPlacesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.RxSettingsHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 @Module
 public class AppModule {
@@ -40,17 +43,6 @@ public class AppModule {
         mApplication = application;
     }
 
-
-    @Provides
-    @Singleton
-    Integer provideGoogleAvailability(Context context) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int code = apiAvailability.isGooglePlayServicesAvailable(context);
-
-        return code == ConnectionResult.SUCCESS
-                ? RxLocationHelper.GOOGLE_LOCATION : RxLocationHelper.ANDROID_LOCATION;
-    }
-
     @Provides
     @Singleton
     Application provideApplication() {
@@ -61,6 +53,12 @@ public class AppModule {
     @Singleton
     Context provideBaseContext(Application application) {
         return application.getBaseContext();
+    }
+
+    @Provides
+    @Singleton
+    PlacesHelper providePlacesHelper(Context context) {
+        return new RxPlacesHelper(context);
     }
 
     @Provides
@@ -91,12 +89,20 @@ public class AppModule {
         return PREFERENCES_FILE_NAME;
     }
 
+    @Provides
+    @Singleton
+    Boolean provideGoogleAvailability(Context context) {
+        return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
+                == ConnectionResult.SUCCESS;
+    }
 
     @Provides
     @Singleton
-    RxLocationHelper provideLocationHelper(Context context, Integer googleAvailability) {
+    RxLocationHelper provideLocationHelper(Context context, Boolean googleAvailability) {
         RxLocationHelper rxLocationHelper = new RxLocationHelper(context);
-        rxLocationHelper.setup(googleAvailability);
+        int source = googleAvailability
+                ? RxLocationHelper.GOOGLE_LOCATION : RxLocationHelper.ANDROID_LOCATION;
+        rxLocationHelper.setup(source);
 
         return rxLocationHelper;
     }
@@ -139,9 +145,10 @@ public class AppModule {
                                     MapsHelper mapsHelper,
                                     WeatherHelper weatherHelper,
                                     RxSettingsHelper settingsHelper,
-                                    DatabaseHelper databaseHelper) {
+                                    DatabaseHelper databaseHelper,
+                                    PlacesHelper placesHelper) {
         return new GodRepository(cacheHelper, locationHelper, network, mapsHelper, weatherHelper,
-                settingsHelper, databaseHelper);
+                settingsHelper, databaseHelper, placesHelper);
     }
 
     @Provides

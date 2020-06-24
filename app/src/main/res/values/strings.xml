@@ -33,8 +33,8 @@
     <string name="title_home">Forecast</string>
     <string name="title_map">Map</string>
     <string name="humidity">Humidity %d%%</string>
-    <string name="pressure">Pressure %.0f %s</string>
-    <string name="wind">Wind %.1f %s</string>
+    <string name="pressure">Pressure %1$.0f %2$s</string>
+    <string name="wind">Wind %1$.1f %2$s</string>
     <string name="direction">Direction %d\u00B0</string>
     <string name="title_info">Info</string>
 
@@ -43,4 +43,6 @@
     <string name="pref_speed">Speed</string>
     <string name="pref_temperature">Temperature</string>
     <string name="separator" translatable="false">"  "</string>
+    <string name="city">City</string>
+    <string name="enter_name">Enter a city name:</string>
 </resources>

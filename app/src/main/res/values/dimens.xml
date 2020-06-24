@@ -35,4 +35,6 @@
 
     <dimen name="minipe_image_size">18dp</dimen>
     <dimen name="minipe_text_size">12sp</dimen>
+    <dimen name="default_padding">8dp</dimen>
+    <dimen name="default_padding_half">4dp</dimen>
 </resources>

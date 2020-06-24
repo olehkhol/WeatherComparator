@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_item_search"
         android:icon="@drawable/ic_menu_search"
         android:title="@string/search"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
 
     <item
@@ -14,5 +15,4 @@
         android:title="@string/preferences"
         android:visible="true"
         app:showAsAction="ifRoom" />
-
 </menu>

@@ -29,6 +29,7 @@ public class RxGoogleLocation implements RxLocation {
 
     public RxGoogleLocation(Context context) {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(0);
@@ -39,7 +40,7 @@ public class RxGoogleLocation implements RxLocation {
 
     @SuppressLint("MissingPermission")
     @Override
-    public Single<LatLon> observeSingleLocation() {
+    public Single<LatLon> seeLocation() {
         return Single.create(new SingleOnSubscribe<LatLon>() {
             @Override
             public void subscribe(SingleEmitter<LatLon> emitter) throws Exception {

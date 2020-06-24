@@ -1,9 +1,11 @@
 package ua.in.khol.oleh.touristweathercomparer.model;
 
+import android.util.Pair;
+
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.Single;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
@@ -12,9 +14,10 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 
 public interface Repository {
+
     enum Status {
-        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED, NEED_RECREATE, ERROR,
-        LOCATION_UNAVAILABLE, CLEAR
+        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED,
+        NEED_RECREATE, ERROR, LOCATION_UNAVAILABLE, CLEAR
     }
 
     Observable<City> observeCity();
@@ -33,11 +36,20 @@ public interface Repository {
 
     Observable<List<List<Forecast>>> observeDailies();
 
-    PublishSubject<Settings> getSettingsSubject();
+    void setSettings(Settings settings);
 
-    PublishSubject<LatLon> getLatLonSubject();
-
-    PublishSubject<Boolean> getRefreshSubject();
+    void processRefresh(boolean type);
 
     Settings getSettings();
+
+    Single<List<Pair<String, String>>> predictPlacesList(String query);
+
+    void processPlaceById(String placeId);
+
+    void setLocation(LatLon latLon);
+
+    boolean getPermissions();
+
+    void setPermissions(boolean allowed);
+
 }

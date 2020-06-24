@@ -13,6 +13,7 @@ public class MainViewModel extends BaseViewModel {
     // Data Binding
     private final ObservableField<City> mCity = new ObservableField<>();
     private final ObservableField<Settings> mSettings = new ObservableField<>();
+    private final ObservableField<Boolean> mPermissions = new ObservableField<>();
 
     // Events
     private final SingleLiveEvent<Boolean> mAskForLocation = new SingleLiveEvent<>();
@@ -24,22 +25,22 @@ public class MainViewModel extends BaseViewModel {
 
     public MainViewModel(Repository repository) {
         super(repository);
-        // TODO[39] try to replace this trick with Splash
         mSettings.set(repository.getSettings());
-        subscribeOnStatus();
+        mPermissions.set(repository.getPermissions());
+        subscribeStatus();
         subscribeCity();
     }
 
     @Override
     public void refresh() {
+        if (mPermissions.get())
+            getRepository().setPermissions(true);
         if (!mRefreshed)
-            getRepository().getRefreshSubject().onNext(true);
-        else
-            getRepository().getRefreshSubject().onNext(false);
+            getRepository().processRefresh(false);
     }
 
     // TODO remove the code with clear status somewhere according to the view state
-    private void subscribeOnStatus() {
+    private void subscribeStatus() {
         getCompositeDisposable().add(getRepository().observeStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -55,8 +56,9 @@ public class MainViewModel extends BaseViewModel {
                             mAskForLocation.setValue(true);
                             break;
                         case NEED_RECREATE:
-                        default:
                             mDoRecreate.setValue(true);
+                            break;
+                        default:
                             break;
                     }
                 }));
@@ -90,5 +92,9 @@ public class MainViewModel extends BaseViewModel {
 
     public SingleLiveEvent<Boolean> getAskForInternet() {
         return mAskForInternet;
+    }
+
+    public ObservableField<Boolean> getPermissions() {
+        return mPermissions;
     }
 }

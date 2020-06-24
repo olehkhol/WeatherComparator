@@ -32,7 +32,7 @@ public class RxAndroidLocation implements RxLocation {
 
     @SuppressLint("MissingPermission")
     @Override
-    public Single<LatLon> observeSingleLocation() {
+    public Single<LatLon> seeLocation() {
         return Single.create(new SingleOnSubscribe<LatLon>() {
             @Override
             public void subscribe(SingleEmitter<LatLon> emitter) throws Exception {

@@ -18,7 +18,7 @@ public class SettingsViewModel extends BaseViewModel {
     @Override
     protected void onCleared() {
         if (mChanged)
-            getRepository().getSettingsSubject().onNext(mSettings);
+            getRepository().setSettings(mSettings);
         super.onCleared();
     }
 
@@ -27,7 +27,7 @@ public class SettingsViewModel extends BaseViewModel {
 
     }
 
-    public void okButtonClicked() {
+    public void onOkButtonClicked() {
         mChanged = true;
     }
 

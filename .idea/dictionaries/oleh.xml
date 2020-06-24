@@ -5,9 +5,11 @@
       <w>appid</w>
       <w>conscrypt</w>
       <w>datas</w>
+      <w>encoderdecoder</w>
       <w>hectopascal</w>
       <w>latlon</w>
       <w>lista</w>
+      <w>livedata</w>
       <w>mapa</w>
       <w>mappet</w>
       <w>mbar</w>
@@ -18,6 +20,7 @@
       <w>openweathermap</w>
       <w>quadro</w>
       <w>splitted</w>
+      <w>upwork</w>
     </words>
   </dictionary>
 </component>

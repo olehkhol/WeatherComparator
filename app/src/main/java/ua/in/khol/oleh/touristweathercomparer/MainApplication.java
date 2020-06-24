@@ -19,7 +19,8 @@ import timber.log.Timber;
 import ua.in.khol.oleh.touristweathercomparer.di.AppModule;
 import ua.in.khol.oleh.touristweathercomparer.di.DaggerAppComponent;
 
-public class MainApplication extends Application implements HasAndroidInjector {
+public class MainApplication extends Application
+        implements HasAndroidInjector {
 
     @Inject
     DispatchingAndroidInjector<Object> mDispatchingAndroidInjector;

@@ -1,5 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
@@ -21,11 +22,13 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
     private final Settings mSettings;
     private final MutableLiveData<City> mCity = new MutableLiveData<>();
     private final MutableLiveData<List<Average>> mAverages = new MutableLiveData<>();
+    private final ObservableField<Boolean> mPermissions = new ObservableField<>();
 
     public MapaViewModel(Repository repository) {
         super(repository);
 
         mSettings = repository.getSettings();
+        mPermissions.set(repository.getPermissions());
         subscribeCity();
         subscribeAverages();
         refresh();
@@ -33,7 +36,7 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
     @Override
     public void refresh() {
-        getRepository().getRefreshSubject().onNext(false);
+        getRepository().processRefresh(false);
     }
 
     private void subscribeCity() {
@@ -57,19 +60,17 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
     @Override
     public void onMapaClicked(double latitude, double longitude) {
-        getRepository().getLatLonSubject()
-                .onNext(new LatLon(latitude, longitude));
+        getRepository().setLocation(new LatLon(latitude, longitude));
     }
 
     @Override
     public void onMapaLocationClicked(double latitude, double longitude) {
-        getRepository().getLatLonSubject()
-                .onNext(new LatLon(latitude, longitude));
+        getRepository().setLocation(new LatLon(latitude, longitude));
     }
 
     @Override
     public void onMapaLocationButtonClicked() {
-        getRepository().getRefreshSubject().onNext(true);
+        getRepository().processRefresh(true);
     }
 
     public MutableLiveData<City> getCity() {
@@ -82,5 +83,9 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
     public Settings getSettings() {
         return mSettings;
+    }
+
+    public ObservableField<Boolean> getPermissions() {
+        return mPermissions;
     }
 }

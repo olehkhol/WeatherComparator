@@ -2,6 +2,7 @@ package ua.in.khol.oleh.touristweathercomparer.views;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
@@ -16,8 +17,8 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewSettingsBinding;
-import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 public class SettingsView extends DialogFragment
         implements ViewBinding<ViewSettingsBinding> {
@@ -30,6 +31,15 @@ public class SettingsView extends DialogFragment
     public SettingsView() {
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+        // instantiate a viewmodel from the injected factory
+        mViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
+                .get(SettingsViewModel.class);
+    }
+
     static SettingsView newInstance() {
         SettingsView fragment = new SettingsView();
         Bundle args = new Bundle();
@@ -38,26 +48,28 @@ public class SettingsView extends DialogFragment
         return fragment;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
         ViewSettingsBinding binding = ViewSettingsBinding
                 .inflate(requireActivity().getLayoutInflater());
+        binding.setSettingsViewModel(mViewModel);
         initBinding(binding);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(binding.getRoot())
-                .setPositiveButton(R.string.ok, (dialog, which) -> mViewModel.okButtonClicked())
-                .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                    if (dialog != null)
-                        dialog.dismiss();
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mViewModel.onOkButtonClicked();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dialog != null)
+                            dialog.dismiss();
+                    }
                 });
 
         return builder.create();
@@ -65,10 +77,6 @@ public class SettingsView extends DialogFragment
 
     @Override
     public void initBinding(ViewSettingsBinding binding) {
-        mViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
-                .get(SettingsViewModel.class);
-        binding.setSettingsViewModel(mViewModel);
-
         ArrayAdapter tempAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.temperature, R.layout.spinner_item);
         binding.tempSpinner.setAdapter(tempAdapter);

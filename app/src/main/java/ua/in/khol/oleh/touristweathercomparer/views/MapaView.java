@@ -1,5 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -37,7 +38,7 @@ import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMapaBinding;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMarkerBinding;
-import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MapaViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
@@ -74,6 +75,8 @@ public class MapaView extends Fragment
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        mViewModel = new ViewModelProvider(this, mFactory)
+                .get(MapaViewModel.class);
     }
 
     @Nullable
@@ -82,6 +85,7 @@ public class MapaView extends Fragment
                              @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = ViewMapaBinding.inflate(inflater, container, false);
+        mBinding.setViewModel(mViewModel);
         initBinding(mBinding);
 
         return mBinding.getRoot();
@@ -104,10 +108,6 @@ public class MapaView extends Fragment
 
     @Override
     public void initBinding(ViewMapaBinding binding) {
-        mViewModel = new ViewModelProvider(this, mFactory)
-                .get(MapaViewModel.class);
-        binding.setViewModel(mViewModel);
-
         SupportMapFragment mapFragment
                 = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null)
@@ -116,11 +116,13 @@ public class MapaView extends Fragment
 
     // -=-=-=-=-=-=-=-=[CALLBACKS]=-=-=-=-=-=-=-=-
     // OnMapReadyCallback
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setMyLocationEnabled(true);
+        if (mViewModel.getPermissions().get())
+            mMap.setMyLocationEnabled(true);
         // Stub LocationSource to avoid battery drain
         // because we already have the location pending handler
         mMap.setLocationSource(STUB_LOCATION_SOURCE);

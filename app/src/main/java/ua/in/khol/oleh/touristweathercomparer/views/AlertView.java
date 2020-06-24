@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewAlertBinding;
-import ua.in.khol.oleh.touristweathercomparer.di.ViewModelProviderFactory;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel;
 
 public class AlertView extends DialogFragment {

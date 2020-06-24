@@ -4,7 +4,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public interface RxLocation {
-    Single<LatLon> observeSingleLocation();
+    Single<LatLon> seeLocation();
 
     // TODO change Observable to Single
     Observable<Boolean> observeUsability();

@@ -21,14 +21,14 @@
             android:id="@+id/current"
             layout="@layout/current"
             bind:current="@{forecastViewModel.current}"
-            bind:settings="@{forecastViewModel.settings}"
-            bind:visibility="@{!forecastViewModel.mRefreshing}" />
+            bind:isVisible="@{forecastViewModel.mRefreshed}"
+            bind:settings="@{forecastViewModel.settings}" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/homeSwipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:onRefreshListener="@{() -> forecastViewModel.onRefresh()}"
+            app:onRefreshListener="@{() -> forecastViewModel.onSwipe()}"
             app:refreshing="@{forecastViewModel.mRefreshing}">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 bind:averages="@{forecastViewModel.averages}"
                 bind:settings="@{forecastViewModel.settings}"
-                bind:visibility="@{!forecastViewModel.mRefreshing}" />
+                bind:visibility="@{forecastViewModel.mRefreshed}" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
