@@ -38,9 +38,9 @@ import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMapaBinding;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewMarkerBinding;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MapaViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.MiniAverageAdapter;
 
@@ -144,7 +144,8 @@ public class MapaView extends Fragment
 
         mViewModel.getCity().observe(this, city -> {
             mLatLng = new LatLng(city.getLatitude(), city.getLongitude());
-            mMarker = mMap.addMarker(new MarkerOptions().position(mLatLng));
+            MarkerOptions markerOptions = new MarkerOptions().position(mLatLng);
+            mMarker = mMap.addMarker(markerOptions);
             mMarker.setTitle(city.getName());
             mMarker.setSnippet(" ( " + city.getLatitude() + " : " + city.getLongitude() + " ) ");
             mMarker.setIcon(BitmapDescriptorFactory

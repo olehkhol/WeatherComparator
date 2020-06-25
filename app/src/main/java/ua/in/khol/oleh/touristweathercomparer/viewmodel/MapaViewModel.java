@@ -17,7 +17,7 @@ import ua.in.khol.oleh.touristweathercomparer.views.callbacks.MapaCallbacks;
 
 public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
-    private static final int DAYS_TO_DISPLAY_ON_MAP = 3;
+    private static final int DAYS_TO_DISPLAY_ON_MAP = 2;
     // Fields to be observed in View
     private final Settings mSettings;
     private final MutableLiveData<City> mCity = new MutableLiveData<>();

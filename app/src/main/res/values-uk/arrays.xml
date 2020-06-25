@@ -48,4 +48,15 @@
         <item>мбар</item>
     </string-array>
 
+    <string-array name="directions">
+        <item>Північ</item>
+        <item>Північний схід</item>
+        <item>Схід</item>
+        <item>Південний схід</item>
+        <item>Південь</item>
+        <item>Південний захід</item>
+        <item>Захід</item>
+        <item>Північний захід</item>
+    </string-array>
+
 </resources>

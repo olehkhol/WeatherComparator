@@ -154,6 +154,14 @@ public final class BindingAdapters {
         textView.setText(formatted);
     }
 
+    @BindingAdapter("degree")
+    public static void direction(TextView textView, int degree) {
+        Resources resources = textView.getContext().getResources();
+        int index = degree / 45;
+        String[] directions = resources.getStringArray(R.array.directions);
+        textView.setText(directions[index]);
+    }
+
     @BindingAdapter({"averages", "settings"})
     public static void averages(RecyclerView recyclerView,
                                 List<Average> averages, Settings settings) {

@@ -23,43 +23,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccentDark"
-                    android:textSize="@dimen/mini_average_text_size"
-                    bind:date="@{average.date}" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/separator" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/mini_average_temp_text_size"
-                    bind:index="@{settings.temperatureIndex}"
-                    bind:tempHigh="@{average.high}"
-                    bind:tempLow="@{average.low}" />
-            </LinearLayout>
+                android:layout_gravity="start|top"
+                android:gravity="center"
+                android:textColor="@color/colorAccentDark"
+                android:textSize="@dimen/mini_average_text_size"
+                bind:date="@{average.date}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/minipesRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
                 bind:minipes="@{average.canapes}" />
         </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp">
+            android:layout_height="36dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,18 +58,31 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/mini_average_text_size"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/arrowImage"
                 app:layout_constraintTop_toTopOf="parent"
                 bind:index="@{settings.speedIndex}"
                 bind:speed="@{average.speed}" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/mini_average_temp_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:index="@{settings.temperatureIndex}"
+                bind:tempHigh="@{average.high}"
+                bind:tempLow="@{average.low}" />
+
             <ImageView
+                android:id="@+id/arrowImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:rotation="@{average.degree}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="parent"
-                app:layout_constraintRight_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_arrow" />
 
@@ -105,11 +101,11 @@
                 android:id="@+id/markerDegree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{@string/direction(average.degree)}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/mini_average_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toLeftOf="@id/arrowImage"
+                bind:degree="@{average.degree}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </layout>

@@ -47,5 +47,16 @@
         <item>hPa</item>
         <item>mbar</item>
     </string-array>
+    
+    <string-array name="directions">
+        <item>North</item>
+        <item>Northeast</item>
+        <item>East</item>
+        <item>Southeast</item>
+        <item>South</item>
+        <item>Southwest</item>
+        <item>West</item>
+        <item>Northwest</item>
+    </string-array>
 
 </resources>

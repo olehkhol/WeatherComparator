@@ -1,7 +1,7 @@
 # Weather Averages
 
 ###### The source code of an application
-[Weather Forecasts Comparator](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
+[Weather Averages](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
 
 ## Contents
 * [Build](#build)
@@ -85,6 +85,21 @@ Android Architecture Components
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 
+AndroidX
+- [Multidex](https://developer.android.com/studio/build/multidex) Version 2.0.1
+- [Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) Version 2.2.0
+- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.2.2
+- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 1.1.3
+- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-alpha01
+- [Vectordrawable](https://developer.android.com/jetpack/androidx/releases/vectordrawable) Version 1.1.0
+- [Browser](https://developer.android.com/jetpack/androidx/releases/browser) Version 1.2.0
+- [Exifinterface](https://developer.android.com/jetpack/androidx/releases/exifinterface) Version 1.2.0
+- [Recyclerview](https://developer.android.com/jetpack/androidx/releases/recyclerview) Version 1.1.0
+- [Cardview](https://developer.android.com/jetpack/androidx/releases/cardview) Version 1.0.0
+- [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout) Version 1.0.0
+- [Preference](https://developer.android.com/jetpack/androidx/releases/preference) Version 1.1.1
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.3.0-alpha01
+
 ReactiveX
 - [RxJava](https://github.com/ReactiveX/RxJava) Version 2.2.19
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid) Version 2.1.1
@@ -103,11 +118,12 @@ Google
 - [Material](https://material.io/develop/android/docs/getting-started/) Version 1.1.0
 - [Location](https://developer.android.com/training/location) Version 17.0.0
 - [Maps](https://developer.android.com/training/maps) Version 17.0.0
+- [Places](https://developers.google.com/places/android-sdk/intro) Version 2.3.0
 
 Others
 - [Conscrypt](https://github.com/google/conscrypt) Version 2.2.1
 - [Joda-Time](https://www.joda.org/joda-time) Version 2.10.5
-- [ReactiveNetwork](https://github.com/pwittchen/ReactiveNetwork) Version 3.0.7
+~~- [ReactiveNetwork](https://github.com/pwittchen/ReactiveNetwork) Version 3.0.7~~
 - [Timber](https://github.com/JakeWharton/timber) Version 4.7.1
 
 ## License

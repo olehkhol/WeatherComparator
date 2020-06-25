@@ -78,9 +78,10 @@ public class AverageAdapter extends RecyclerView.Adapter<AverageAdapter.AverageH
         @Override
         public void initBinding(AverageBinding binding) {
             Context context = binding.getRoot().getContext();
-            int orientation = context.getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_PORTRAIT
-                    ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
+            //int orientation = context.getResources().getConfiguration().orientation
+            //        == Configuration.ORIENTATION_PORTRAIT
+            //        ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
+            int orientation = RecyclerView.VERTICAL;
             binding.canapesRecycler
                     .setLayoutManager(new LinearLayoutManager(context, orientation, false));
             binding.canapesRecycler.setAdapter(new CanapeAdapter());

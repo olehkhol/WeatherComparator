@@ -23,10 +23,16 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/canapeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:text="@{canape.text}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/canape_text_size" />

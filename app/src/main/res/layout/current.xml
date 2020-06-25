@@ -60,7 +60,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="64dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,11 +88,21 @@
                     android:gravity="center"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/current_temp_text_size"
-                    app:layout_constraintLeft_toRightOf="parent"
-                    app:layout_constraintRight_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     bind:current="@{current.low}"
                     bind:index="@{settings.temperatureIndex}" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="@{current.degree}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_arrow" />
 
                 <TextView
                     android:id="@+id/markerPressure"
@@ -109,11 +119,11 @@
                     android:id="@+id/markerDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/direction(current.degree)}"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/current_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    app:layout_constraintRight_toRightOf="parent"
+                    bind:degree="@{current.degree}" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

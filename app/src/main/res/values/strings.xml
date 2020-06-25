@@ -35,7 +35,6 @@
     <string name="humidity">Humidity %d%%</string>
     <string name="pressure">Pressure %1$.0f %2$s</string>
     <string name="wind">Wind %1$.1f %2$s</string>
-    <string name="direction">Direction %d\u00B0</string>
     <string name="title_info">Info</string>
 
     <string name="info_file">info_en.html</string>

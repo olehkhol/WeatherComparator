@@ -52,9 +52,10 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
     @Override
     public void initBinding(ViewForecastBinding binding) {
         Context context = binding.getRoot().getContext();
-        int orientation = context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT
-                ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
+        //int orientation = context.getResources().getConfiguration().orientation
+        //        == Configuration.ORIENTATION_PORTRAIT
+        //        ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
+        int orientation = RecyclerView.VERTICAL;
         LinearLayoutManager manager = new LinearLayoutManager(context, orientation, false);
         //manager.setReverseLayout(true);
         //manager.setStackFromEnd(true);

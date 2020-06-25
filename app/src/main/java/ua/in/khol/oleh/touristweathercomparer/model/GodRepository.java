@@ -320,9 +320,11 @@ public class GodRepository implements Repository {
                             .withTimeAtStartOfDay().plusSeconds(offset).getMillis() / 1000);
 
                     if (time - mCurrentsTimestamp > HOUR
-                            || (currents = mCacheHelper.getCurrents(placeId, mCurrentsTimestamp)) == null) {
+                            || (currents = mCacheHelper.getCurrents(placeId, mCurrentsTimestamp))
+                            == null) {
                         if (time - mCurrentsTimestamp > HOUR
-                                || (currents = mStoreHelper.getCurrents(placeId, mCurrentsTimestamp)) == null) {
+                                || (currents = mStoreHelper.getCurrents(placeId, mCurrentsTimestamp))
+                                == null) {
                             if (connected) {
                                 currents = mWeatherHelper.getCurrents(place, time);
                                 // insert list of Current into DB

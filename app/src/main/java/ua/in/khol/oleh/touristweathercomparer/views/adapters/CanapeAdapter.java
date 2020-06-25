@@ -56,6 +56,7 @@ public class CanapeAdapter extends RecyclerView.Adapter<CanapeAdapter.CanapeHold
 
         public void setCanape(Average.Canape canape) {
             mBinding.setCanape(canape);
+            mBinding.canapeText.setSelected(true);
         }
     }
 }

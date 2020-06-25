@@ -37,7 +37,7 @@
     </string-array>
 
     <string-array name="pressure">
-        <item>Миллиметр ртутного ст.</item>
+        <item>Миллиметр рт. ст.</item>
         <item>Гектопаскаль</item>
         <item>Миллибар</item>
     </string-array>
@@ -46,6 +46,17 @@
         <item>мм р.с.</item>
         <item>гПа</item>
         <item>мбар</item>
+    </string-array>
+
+    <string-array name="directions">
+        <item>Север</item>
+        <item>Северо-восток</item>
+        <item>Восток</item>
+        <item>Юго-восток</item>
+        <item>Юг</item>
+        <item>Юго-запад</item>
+        <item>Запад</item>
+        <item>Северо-запад</item>
     </string-array>
 
 </resources>

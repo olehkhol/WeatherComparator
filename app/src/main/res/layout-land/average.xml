@@ -30,10 +30,9 @@
             android:orientation="vertical"
             android:padding="@dimen/average_padding">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -44,22 +43,17 @@
                     android:textSize="@dimen/average_date_text_size"
                     bind:date="@{average.date}" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/canapesRecycler"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
+                    android:layout_gravity="top|end"
                     bind:canapes="@{average.canapes}" />
-            </LinearLayout>
+            </FrameLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="40dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -75,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/average_text_size"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/arrowImage"
                     app:layout_constraintTop_toTopOf="parent"
                     bind:index="@{settings.speedIndex}"
                     bind:speed="@{average.speed}" />
@@ -86,12 +80,23 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/average_temp_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="parent"
-                    app:layout_constraintRight_toLeftOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     bind:index="@{settings.temperatureIndex}"
                     bind:tempHigh="@{average.high}"
                     bind:tempLow="@{average.low}" />
+
+                <ImageView
+                    android:id="@+id/arrowImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/default_padding_half"
+                    android:rotation="@{average.degree}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_arrow" />
 
                 <TextView
                     android:id="@+id/markerPressure"
@@ -108,11 +113,11 @@
                     android:id="@+id/markerDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/direction(average.degree)}"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/average_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    app:layout_constraintRight_toLeftOf="@id/arrowImage"
+                    bind:degree="@{average.degree}" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
