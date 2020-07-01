@@ -16,8 +16,6 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.views.callbacks.MapaCallbacks;
 
 public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
-
-    private static final int DAYS_TO_DISPLAY_ON_MAP = 2;
     // Fields to be observed in View
     private final Settings mSettings;
     private final MutableLiveData<City> mCity = new MutableLiveData<>();
@@ -53,7 +51,7 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
                 .subscribe(new Consumer<List<Average>>() {
                     @Override
                     public void accept(List<Average> value) throws Exception {
-                        mAverages.setValue(value.subList(0, DAYS_TO_DISPLAY_ON_MAP));
+                        mAverages.setValue(value);
                     }
                 }));
     }

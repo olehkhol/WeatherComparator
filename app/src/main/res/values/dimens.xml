@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="elevation">4dp</dimen>
     <dimen name="settings_margin">16dp</dimen>
@@ -43,4 +43,8 @@
 
     <dimen name="minipe_text_size">12sp</dimen>
     <dimen name="minipe_image_size">20dp</dimen>
+
+    <!--BottomNavigationView-->
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">16sp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">16sp</dimen>
 </resources>

@@ -82,6 +82,9 @@ public class MainView extends AppCompatActivity
 
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         initBinding(binding);
+
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        //        WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

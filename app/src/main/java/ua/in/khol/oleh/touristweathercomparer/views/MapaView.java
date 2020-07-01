@@ -49,6 +49,7 @@ public class MapaView extends Fragment
         OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+    private static final int DAYS_TO_DISPLAY_ON_MAP = 4;
     private static final String MAP_ZOOM = "MAP_ZOOM";
     private static final float DEFAULT_ZOOM = 12f;
     private static final LocationSource STUB_LOCATION_SOURCE = new LocationSource() {
@@ -153,7 +154,10 @@ public class MapaView extends Fragment
         });
 
         mViewModel.getAverages().observe(this, averages -> {
-            mInfoWindowView.setAverages(averages);
+
+            int orientation = requireContext().getResources().getConfiguration().orientation;
+            mInfoWindowView // A little trick to change the count of data displayed on the map.
+                    .setAverages(averages.subList(0, DAYS_TO_DISPLAY_ON_MAP - orientation));
             mMarker.showInfoWindow();
 
             // Set marker position
@@ -165,7 +169,7 @@ public class MapaView extends Fragment
             int infoWidth = mInfoWindowView.getRoot().getWidth();
             int infoHeight = mInfoWindowView.getRoot().getHeight();
             Projection projection = mMap.getProjection();
-            Point point = new Point(mapWidth / 2, (mapHeight - infoHeight) / 2);
+            Point point = new Point(mapWidth / 2, (mapHeight - infoHeight) / 10);
             LatLng latLng = projection.fromScreenLocation(point);
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng), 250, null);
         });

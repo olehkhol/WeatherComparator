@@ -51,8 +51,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Context provideBaseContext(Application application) {
-        return application.getBaseContext();
+    Context provideApplicationContext(Application application) {
+        return application.getApplicationContext();
     }
 
     @Provides
