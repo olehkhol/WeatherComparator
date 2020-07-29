@@ -19,6 +19,5 @@ class ModelUnitTests {
         val storedLatLon = cacheHelper.latLon
 
         Assert.assertNotEquals(latLon, storedLatLon)
-
     }
 }

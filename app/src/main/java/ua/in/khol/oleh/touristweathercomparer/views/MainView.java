@@ -137,30 +137,6 @@ public class MainView extends AppCompatActivity
     }
     // ----------------[PERMISSIONS]----------------
 
-    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
-
-    private void updateLocale(int index) {
-        Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
-        Locale.setDefault(locale);
-        Configuration config = getResources().getConfiguration();
-        config.locale = locale;
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-    }
-
-    private void adjustFontScale() {
-        Resources resources = getResources();
-        Configuration configuration = resources.getConfiguration();
-        if (configuration.fontScale > 1f) {
-            configuration.fontScale = 1f;
-            DisplayMetrics metrics = resources.getDisplayMetrics();
-            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            metrics.scaledDensity = configuration.fontScale * metrics.density;
-            resources.updateConfiguration(configuration, metrics);
-            //applyOverrideConfiguration(configuration);
-        }
-    }
-    // ----------------[REGULAR METHODS]----------------
-
     // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
     @Override
     public void initBinding(ViewMainBinding binding) {
@@ -379,4 +355,26 @@ public class MainView extends AppCompatActivity
     }
     // ----------------[MENU CALLBACKS]----------------
 
+    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
+    private void updateLocale(int index) {
+        Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
+        Locale.setDefault(locale);
+        Configuration config = getResources().getConfiguration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    private void adjustFontScale() {
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        if (configuration.fontScale > 1f) {
+            configuration.fontScale = 1f;
+            DisplayMetrics metrics = resources.getDisplayMetrics();
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            metrics.scaledDensity = configuration.fontScale * metrics.density;
+            resources.updateConfiguration(configuration, metrics);
+            //applyOverrideConfiguration(configuration);
+        }
+    }
+    // ----------------[REGULAR METHODS]----------------
 }
