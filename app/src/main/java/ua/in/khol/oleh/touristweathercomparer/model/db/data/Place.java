@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 
-@Entity(indices = {@Index(value = {"latitude", "longitude", "language"}, unique = true)})
+@Entity(indices = {@Index(value = {"latitude", "longitude"}, unique = true)})
 public class Place {
 
     @PrimaryKey(autoGenerate = true)
@@ -44,6 +44,22 @@ public class Place {
     public Place(LatLon latLon) {
         mLatitude = latLon.getLat();
         mLongitude = latLon.getLon();
+    }
+
+    @Ignore
+    public Place(double latitude, double longitude, String language) {
+        mLatitude = latitude;
+        mLongitude = longitude;
+        mLanguage = language;
+    }
+
+    @Ignore
+    public Place(String name, double latitude, double longitude, String language, int offset) {
+        mName = name;
+        mLatitude = latitude;
+        mLongitude = longitude;
+        mLanguage = language;
+        mOffset = offset;
     }
 
     public long getId() {
@@ -94,7 +110,13 @@ public class Place {
         mOffset = offset;
     }
 
-    // TODO write tests for equals and hashCode
+    @Override
+    public int hashCode() {
+        int result = Double.valueOf(mLatitude).hashCode();
+        result = 31 * result + Double.valueOf(mLongitude).hashCode();
+
+        return result;
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {
@@ -103,19 +125,9 @@ public class Place {
         if (obj instanceof Place) {
             Place place = (Place) obj;
 
-            return mLatitude == place.getLatitude() && mLongitude == place.getLongitude()
-                    && mLanguage.equals(place.getLanguage());
+            return mLatitude == place.getLatitude() && mLongitude == place.getLongitude();
         }
 
         return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Double.valueOf(mLatitude).hashCode();
-        result = 31 * result + Double.valueOf(mLongitude).hashCode();
-        result = 31 * result + (mLanguage == null ? 0 : mLanguage.hashCode());
-
-        return result;
     }
 }

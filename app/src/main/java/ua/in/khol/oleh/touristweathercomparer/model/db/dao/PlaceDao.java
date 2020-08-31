@@ -5,16 +5,27 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import java.util.List;
+
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
 @Dao
 public interface PlaceDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPlace(Place place);
 
-    @Query("SELECT id FROM Place WHERE latitude = :lat AND longitude = :lon LIMIT 1")
-    long findPlaceIdByLatLon(double lat, double lon);
+    @Query("SELECT * FROM Place WHERE id=:id")
+    Single<Place> seePlace(long id);
 
-    @Query("SELECT * FROM Place WHERE latitude = :lat AND longitude = :lon AND language = :lang LIMIT 1")
-    Place findByLatLon(double lat, double lon, String lang);
+    @Query("SELECT * FROM Place WHERE latitude = :latitude AND longitude = :longitude AND language = :language LIMIT 1")
+    Maybe<Place> tryPlace(double latitude, double longitude, String language);
+
+    @Query("SELECT * FROM Place ORDER BY id DESC LIMIT :count")
+    Observable<List<Place>> observeLatestPlaces(int count);
+
+    @Query("SELECT * FROM Place ORDER BY id DESC LIMIT 1")
+    Observable<Place> observeLatestPlace();
 }

@@ -4,7 +4,7 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
  * Created by Oleh Kholiavchuk.
  */
 
-public class WeatherData {
+public class Forecast {
 
     private int mDate;
     private float mLow;
@@ -17,12 +17,8 @@ public class WeatherData {
     private int mHumidity;
     private boolean mIsCurrent;
 
-    private WeatherData() {
+    private Forecast() {
 
-    }
-
-    public boolean getTemp() {
-        return mIsCurrent;
     }
 
     public int getDate() {
@@ -67,68 +63,68 @@ public class WeatherData {
 
     public static class Builder {
 
-        private final WeatherData weatherData;
+        private final Forecast mForecast;
 
         public Builder() {
-            weatherData = new WeatherData();
+            mForecast = new Forecast();
         }
 
         public Builder isCurrent(boolean isCurrent) {
-            weatherData.mIsCurrent = isCurrent;
+            mForecast.mIsCurrent = isCurrent;
             return this;
         }
 
         public Builder withDate(int date) {
-            weatherData.mDate = date;
+            mForecast.mDate = date;
             return this;
         }
 
         public Builder withLow(float low) {
-            weatherData.mLow = low;
+            mForecast.mLow = low;
             return this;
         }
 
         public Builder withHigh(float high) {
-            weatherData.mHigh = high;
+            mForecast.mHigh = high;
             return this;
         }
 
         public Builder withText(String text) {
-            weatherData.mText = text;
+            mForecast.mText = text;
             return this;
         }
 
         public Builder withSrc(String src) {
-            weatherData.mSrc = src;
+            mForecast.mSrc = src;
             return this;
         }
 
-        public WeatherData build() {
-            return weatherData;
+        public Forecast build() {
+            return mForecast;
         }
 
         public Builder withPressure(float pressure) {
-            weatherData.mPressure = pressure;
+            mForecast.mPressure = pressure;
             return this;
         }
 
         public Builder withSpeed(float speed) {
-            weatherData.mSpeed = speed;
+            mForecast.mSpeed = speed;
             return this;
         }
 
         public Builder withDegree(int degree) {
-            weatherData.mDegree = degree;
+            mForecast.mDegree = degree;
             return this;
         }
 
         public Builder withHumidity(int humidity) {
-            weatherData.mHumidity = humidity;
+            mForecast.mHumidity = humidity;
             return this;
         }
 
         public Builder withCurrent(boolean isCurrent) {
-            weatherData.mIsCurrent = isCurrent;
+            mForecast.mIsCurrent = isCurrent;
             return this;
         }
     }

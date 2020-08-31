@@ -9,13 +9,6 @@
     </style>
 
     <!-- Custom font required for  -->
-    <style name="CustomTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif-black</item>
-    </style>
-
-    <style name="CustomButtonStyle" parent="android:Widget.Button">
-        <item name="android:fontFamily">sans-serif-black</item>
-    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

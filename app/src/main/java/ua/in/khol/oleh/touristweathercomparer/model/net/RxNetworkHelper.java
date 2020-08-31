@@ -20,6 +20,7 @@ public class RxNetworkHelper implements RxNetwork {
         mContext = context.getApplicationContext();
     }
 
+    @Override
     public Observable<Boolean> observeInternetConnectivity() {
         final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         final Observable<Boolean> observable
@@ -27,6 +28,11 @@ public class RxNetworkHelper implements RxNetwork {
                 .map(intent -> checkConnectivityStatus(mContext));
 
         return observable.startWith(checkConnectivityStatus(mContext)).distinctUntilChanged();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return checkConnectivityStatus(mContext);
     }
 
     private boolean checkConnectivityStatus(Context context) {
@@ -38,8 +44,8 @@ public class RxNetworkHelper implements RxNetwork {
 
     private static class RxBroadcastReceiver implements ObservableOnSubscribe<Intent>, Disposable {
 
-        private Context mContext;
-        private IntentFilter mFilter;
+        private final Context mContext;
+        private final IntentFilter mFilter;
         private BroadcastReceiver mReceiver;
         private Emitter<? super Intent> mEmitter;
 

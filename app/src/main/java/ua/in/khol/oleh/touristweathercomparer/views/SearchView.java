@@ -11,11 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
+import ua.in.khol.oleh.touristweathercomparer.databinding.SearchItemBinding;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewSearchBinding;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.SearchViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
@@ -30,7 +31,8 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory
 public class SearchView extends DialogFragment
         implements ViewBinding<ViewSearchBinding> {
     private static final String ITEM_POSITION = "ITEM_POSITION";
-
+    @Inject
+    ViewModelProviderFactory mViewModelProviderFactory;
     private SearchViewModel mViewModel;
     private ArrayAdapter<String> mAdapter;
     private ListView mListView;
@@ -38,9 +40,6 @@ public class SearchView extends DialogFragment
     private EditText mEditText;
     private Button mOkButton;
     private int mPosition = -1;
-
-    @Inject
-    ViewModelProviderFactory mViewModelProviderFactory;
 
     public SearchView() {
     }
@@ -81,9 +80,7 @@ public class SearchView extends DialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(binding.getRoot())
-                .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    mViewModel.onOkButtonClicked(mPosition);
-                })
+                .setPositiveButton(R.string.ok, (dialog, which) -> mViewModel.onOkButtonClicked(mPosition))
                 .setNegativeButton(R.string.cancel, (dialog, which) -> {
                     if (dialog != null) {
                         dialog.dismiss();
@@ -101,13 +98,10 @@ public class SearchView extends DialogFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        // Enable OK button if an item was selected
-        if (mPosition >= 0)
-            enableOkButton();
-        else
-            disableOkButton();
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(ITEM_POSITION, mPosition);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -126,10 +120,13 @@ public class SearchView extends DialogFragment
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(ITEM_POSITION, mPosition);
-
-        super.onSaveInstanceState(outState);
+    public void onResume() {
+        super.onResume();
+        // Enable OK button if an item was selected
+        if (mPosition >= 0)
+            enableOkButton();
+        else
+            disableOkButton();
     }
 
     @Override
@@ -165,11 +162,13 @@ public class SearchView extends DialogFragment
             public View getView(int position,
                                 @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(R.id.searchItemText);
+                SearchItemBinding binding = DataBindingUtil.bind(view);
+
                 if (position == mPosition)
-                    textView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    binding.searchItemText
+                            .setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 else
-                    textView.setBackground(null);
+                    binding.searchItemText.setBackground(null);
 
                 return view;
             }

@@ -10,35 +10,26 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".views.ForecastView">
+        tools:context=".views.AveragesView">
 
-        <include
-            android:id="@+id/current"
-            layout="@layout/current"
-            bind:current="@{forecastViewModel.current}"
-            bind:isVisible="@{forecastViewModel.mRefreshed}"
-            bind:settings="@{forecastViewModel.settings}" />
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/homeSwipe"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:onRefreshListener="@{() -> forecastViewModel.onSwipe()}"
-            app:refreshing="@{forecastViewModel.mRefreshing}">
+            android:layout_height="wrap_content"
+            app:tabPaddingStart="@dimen/tab_item_padding"
+            app:tabPaddingEnd="@dimen/tab_item_padding"
+            app:tabPaddingBottom="@dimen/tab_item_padding"
+            app:tabPaddingTop="@dimen/tab_item_padding"
+            app:tabMode="scrollable" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/averagesRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                bind:averages="@{forecastViewModel.averages}"
-                bind:settings="@{forecastViewModel.settings}"
-                bind:visibility="@{forecastViewModel.mRefreshed}" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 </layout>

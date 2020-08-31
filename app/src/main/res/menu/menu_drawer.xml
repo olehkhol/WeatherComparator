@@ -30,10 +30,6 @@
                 android:id="@+id/nav_b64"
                 android:icon="@mipmap/ic_b64"
                 android:title="@string/base64_file_encoderdecoder" />
-            <item
-                android:id="@+id/nav_afc"
-                android:icon="@mipmap/ic_afc"
-                android:title="@string/aliens_flashlight_compass" />
         </menu>
     </item>
 

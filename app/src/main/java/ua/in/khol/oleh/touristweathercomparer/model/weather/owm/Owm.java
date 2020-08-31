@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.owm.pojo.current.OwmCurrentData;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.owm.pojo.hourly.Hourly;
@@ -26,15 +26,15 @@ public class Owm extends WeatherProvider {
     }
 
     @Override
-    public WeatherData getCurrent(double latitude, double longitude, String lang) {
+    public Forecast getCurrent(double latitude, double longitude, String lang) {
         try {
             OwmCurrentData currentData = mService.getCurrentWeather(String.valueOf(latitude),
                     String.valueOf(longitude), lang, "imperial", OwmAuth.getApiKey())
                     .execute().body();
             if (currentData != null) {
-                WeatherData.Builder builder = new WeatherData.Builder();
+                Forecast.Builder builder = new Forecast.Builder();
                 builder
-                        .withDate(currentData.getDt())
+                        .withDate(getTime())
                         .withLow(currentData.getMain().getTemp())
                         .withHigh(currentData.getMain().getTemp())
                         .withText(normalizeText(currentData.getWeather().get(0).getDescription()))
@@ -55,9 +55,9 @@ public class Owm extends WeatherProvider {
     }
 
     @Override
-    public List<WeatherData> getDaily(double latitude, double longitude, String lang) {
-        List<WeatherData> weatherDataList = new ArrayList<>();
-        Map<DateTime, List<WeatherData>> map = new LinkedHashMap<>();
+    public List<Forecast> getDaily(double latitude, double longitude, String lang) {
+        List<Forecast> forecastList = new ArrayList<>();
+        Map<DateTime, List<Forecast>> map = new LinkedHashMap<>();
 
         try {
             // Get current
@@ -67,7 +67,7 @@ public class Owm extends WeatherProvider {
             if (currentData != null) {
                 long time = (long) currentData.getDt() * 1000;
                 DateTime dt = new DateTime(time).withTimeAtStartOfDay();
-                WeatherData.Builder builder = new WeatherData.Builder();
+                Forecast.Builder builder = new Forecast.Builder();
                 builder
                         .withDate((int) (dt.getMillis() / 1000))
                         .withLow(currentData.getMain().getTempMin())
@@ -90,7 +90,7 @@ public class Owm extends WeatherProvider {
                 for (Hourly hourly : hourlyData.getList()) {
                     long time = (long) hourly.getDt() * 1000;
                     DateTime dt = new DateTime(time).withTimeAtStartOfDay();
-                    WeatherData wd = new WeatherData.Builder()
+                    Forecast wd = new Forecast.Builder()
                             .withDate((int) (dt.getMillis() / 1000))
                             .withLow(hourly.getMain().getTempMin())
                             .withHigh(hourly.getMain().getTempMax())
@@ -104,33 +104,33 @@ public class Owm extends WeatherProvider {
                     addToMap(map, dt, wd);
                 }
 
-                for (Map.Entry<DateTime, List<WeatherData>> entry : map.entrySet())
-                    weatherDataList.add(calculateAverage(entry));
+                for (Map.Entry<DateTime, List<Forecast>> entry : map.entrySet())
+                    forecastList.add(calculateAverage(entry));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Remove a duplicate item
-        if (weatherDataList.size() > 0) {
-            if (weatherDataList.get(0).getDate() == weatherDataList.get(1).getDate())
-                weatherDataList.remove(1);
+        if (forecastList.size() > 0) {
+            if (forecastList.get(0).getDate() == forecastList.get(1).getDate())
+                forecastList.remove(1);
         }
 
-        return weatherDataList;
+        return forecastList;
     }
 
-    private void addToMap(Map<DateTime, List<WeatherData>> map, DateTime dt, WeatherData wd) {
-        List<WeatherData> list = map.get(dt);
+    private void addToMap(Map<DateTime, List<Forecast>> map, DateTime dt, Forecast wd) {
+        List<Forecast> list = map.get(dt);
         if (list == null)
             list = new ArrayList<>();
         list.add(wd);
         map.put(dt, list);
     }
 
-    private WeatherData calculateAverage(Map.Entry<DateTime, List<WeatherData>> entry) {
+    private Forecast calculateAverage(Map.Entry<DateTime, List<Forecast>> entry) {
         int date = (int) (entry.getKey().getMillis() / 1000);
-        List<WeatherData> list = entry.getValue();
+        List<Forecast> list = entry.getValue();
         int size = list.size();
 
         float[] lows = new float[size];
@@ -143,7 +143,7 @@ public class Owm extends WeatherProvider {
         int[] humidities = new int[size];
 
         for (int i = 0; i < size; i++) {
-            WeatherData wd = list.get(i);
+            Forecast wd = list.get(i);
             lows[i] = wd.getLow();
             highs[i] = wd.getHigh();
 
@@ -169,7 +169,7 @@ public class Owm extends WeatherProvider {
         Arrays.sort(lows);
         Arrays.sort(highs);
 
-        return new WeatherData.Builder()
+        return new Forecast.Builder()
                 .withDate(date)
                 .withLow(lows[0])
                 .withHigh(highs[size - 1])

@@ -8,7 +8,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(indices = {@Index(value = {"provider_id", "place_id", "date"}, unique = true)})
-public class Forecast {
+public class Daily {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -47,14 +47,11 @@ public class Forecast {
     @ColumnInfo(name = "image")
     private String mImage;
 
-    @ColumnInfo(name = "current")
-    private boolean mCurrent;
-
-    public Forecast() {
+    public Daily() {
     }
 
     @Ignore
-    public Forecast(int providerId, long placeId) {
+    public Daily(int providerId, long placeId) {
         mProviderId = providerId;
         mPlaceId = placeId;
     }
@@ -155,32 +152,6 @@ public class Forecast {
         mImage = image;
     }
 
-    public boolean isCurrent() {
-        return mCurrent;
-    }
-
-    public void setCurrent(boolean current) {
-        mCurrent = current;
-    }
-
-// TODO write tests for equals and hashCode
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj == null)
-            return false;
-
-        if (obj instanceof Forecast) {
-            Forecast forecast = (Forecast) obj;
-
-            return mProviderId == forecast.getProviderId()
-                    && mPlaceId == forecast.getPlaceId()
-                    && mDate == forecast.getDate();
-        }
-
-        return false;
-    }
-
     @Override
     public int hashCode() {
         int result = Long.valueOf(mProviderId).hashCode();
@@ -188,5 +159,21 @@ public class Forecast {
         result = 31 * result + Integer.valueOf(mDate).hashCode();
 
         return result;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+
+        if (obj instanceof Daily) {
+            Daily daily = (Daily) obj;
+
+            return mProviderId == daily.getProviderId()
+                    && mPlaceId == daily.getPlaceId()
+                    && mDate == daily.getDate();
+        }
+
+        return false;
     }
 }

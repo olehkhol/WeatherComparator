@@ -2,41 +2,31 @@ package ua.in.khol.oleh.touristweathercomparer.model.db;
 
 import java.util.List;
 
-import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
-import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
-import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
+import io.reactivex.Single;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Current;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Daily;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
 public interface DatabaseHelper {
-    // Place
-    long getPlaceId(Place place);
 
     long putPlace(Place place);
 
-    Place getPlace(LatLon latLon, String lang);
+    void putCurrents(List<Current> currents);
 
-    // Forecasts
-    Completable putForecastsCompletable(List<Forecast> forecasts);
+    void putDailies(List<Daily> dailies);
 
-    Observable<WeatherData> observeWeatherData(double latitude, double longitude);
+    Observable<List<Place>> observeLatestPlaces(int count);
 
-    long getForecastId(Forecast forecast);
+    Observable<Place> observeLatestPlace();
 
-    long putForecast(Forecast forecast);
+    Maybe<List<Current>> tryCurrents(long placeId, int time);
 
-    List<Forecast> getDailies(long placeId, int date);
+    Single<Place> seePlace(long placeId);
 
-    void putDailies(List<Forecast> dailies);
+    Maybe<List<Daily>> tryDailies(long placeId, int date);
 
-    Place getPlace(double lat, double lon, String lang);
+    Maybe<Place> tryPlace(double latitude, double longitude, String language);
 
-    Forecast getCurrent(long placeId, int providerId, int date);
-
-    long putCurrent(Forecast current);
-
-    List<Forecast> getCurrents(long place, int date);
-
-    void putCurrents(List<Forecast> currents);
 }

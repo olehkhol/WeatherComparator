@@ -6,6 +6,7 @@ import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import ua.in.khol.oleh.touristweathercomparer.MainApplication;
 import ua.in.khol.oleh.touristweathercomparer.di.modules.AlertModule;
+import ua.in.khol.oleh.touristweathercomparer.di.modules.AveragesModule;
 import ua.in.khol.oleh.touristweathercomparer.di.modules.ForecastModule;
 import ua.in.khol.oleh.touristweathercomparer.di.modules.InfoModule;
 import ua.in.khol.oleh.touristweathercomparer.di.modules.MainModule;
@@ -19,6 +20,7 @@ import ua.in.khol.oleh.touristweathercomparer.di.modules.SettingsModule;
 
         AlertModule.class,
         ForecastModule.class,
+        AveragesModule.class,
         InfoModule.class,
         MainModule.class,
         MapaModule.class,

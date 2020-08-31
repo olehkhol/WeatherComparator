@@ -1,14 +1,15 @@
 package ua.in.khol.oleh.touristweathercomparer.viewmodel;
 
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
+import io.reactivex.MaybeSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
@@ -16,44 +17,32 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.views.callbacks.MapaCallbacks;
 
 public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
-    // Fields to be observed in View
+
     private final Settings mSettings;
     private final MutableLiveData<City> mCity = new MutableLiveData<>();
     private final MutableLiveData<List<Average>> mAverages = new MutableLiveData<>();
-    private final ObservableField<Boolean> mPermissions = new ObservableField<>();
 
     public MapaViewModel(Repository repository) {
         super(repository);
 
         mSettings = repository.getSettings();
-        mPermissions.set(repository.getPermissions());
-        subscribeCity();
-        subscribeAverages();
-        refresh();
+
+        subscribeOnPlace();
     }
 
-    @Override
-    public void refresh() {
-        getRepository().processRefresh(false);
-    }
-
-    private void subscribeCity() {
-        getCompositeDisposable().add(getRepository().observeCity()
+    private void subscribeOnPlace() {
+        getCompositeDisposable().add(getRepository()
+                .observeLatestPlace()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mCity::setValue));
-    }
-
-    private void subscribeAverages() {
-        getCompositeDisposable().add(getRepository().observeAverages()
+                .doOnNext(place -> mCity.setValue(new City(place.getName(),
+                        place.getLatitude(), place.getLongitude())))
+                .observeOn(Schedulers.io())
+                .flatMapMaybe((Function<Place, MaybeSource<List<Average>>>) place ->
+                        getRepository().tryDailies(place.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Average>>() {
-                    @Override
-                    public void accept(List<Average> value) throws Exception {
-                        mAverages.setValue(value);
-                    }
-                }));
+                .subscribe(mAverages::setValue));
     }
 
     @Override
@@ -68,7 +57,7 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
     @Override
     public void onMapaLocationButtonClicked() {
-        getRepository().processRefresh(true);
+        getRepository().coldRefresh();
     }
 
     public MutableLiveData<City> getCity() {
@@ -81,9 +70,5 @@ public class MapaViewModel extends BaseViewModel implements MapaCallbacks {
 
     public Settings getSettings() {
         return mSettings;
-    }
-
-    public ObservableField<Boolean> getPermissions() {
-        return mPermissions;
     }
 }

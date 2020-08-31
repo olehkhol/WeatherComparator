@@ -1,6 +1,9 @@
 package ua.in.khol.oleh.touristweathercomparer.model.settings;
 
-public interface RxSettings {
+import io.reactivex.Maybe;
+import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
+
+public interface RxPreferences {
 
     String getLanguage();
 
@@ -34,4 +37,9 @@ public interface RxSettings {
 
     Settings getSettings();
 
+    Maybe<LatLon> tryLatLon();
+
+    void putLatLon(LatLon latLon);
+
+    LatLon getLatLon();
 }

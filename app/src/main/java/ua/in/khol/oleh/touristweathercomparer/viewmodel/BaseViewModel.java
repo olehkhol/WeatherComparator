@@ -6,6 +6,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 
 abstract class BaseViewModel extends ViewModel {
+
     private final Repository mRepository;
     private final CompositeDisposable mCompositeDisposable;
 
@@ -28,6 +29,4 @@ abstract class BaseViewModel extends ViewModel {
     Repository getRepository() {
         return mRepository;
     }
-
-    public abstract void refresh();
 }

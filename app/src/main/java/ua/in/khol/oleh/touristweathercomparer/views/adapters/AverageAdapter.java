@@ -1,17 +1,18 @@
 package ua.in.khol.oleh.touristweathercomparer.views.adapters;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.AverageBinding;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
@@ -26,7 +27,10 @@ public class AverageAdapter extends RecyclerView.Adapter<AverageAdapter.AverageH
     @Override
     public AverageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        AverageBinding binding = AverageBinding.inflate(inflater, parent, false);
+//        AverageBinding binding = AverageBinding.inflate(inflater, parent, false);
+
+        AverageBinding binding = DataBindingUtil
+                .inflate(inflater, R.layout.average, parent, false);
 
         return new AverageHolder(binding);
     }
@@ -78,9 +82,6 @@ public class AverageAdapter extends RecyclerView.Adapter<AverageAdapter.AverageH
         @Override
         public void initBinding(AverageBinding binding) {
             Context context = binding.getRoot().getContext();
-            //int orientation = context.getResources().getConfiguration().orientation
-            //        == Configuration.ORIENTATION_PORTRAIT
-            //        ? RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
             int orientation = RecyclerView.VERTICAL;
             binding.canapesRecycler
                     .setLayoutManager(new LinearLayoutManager(context, orientation, false));

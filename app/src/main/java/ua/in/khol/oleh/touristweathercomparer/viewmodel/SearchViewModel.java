@@ -22,11 +22,6 @@ public class SearchViewModel extends BaseViewModel {
     }
 
     @Override
-    public void refresh() {
-
-    }
-
-    @Override
     protected void onCleared() {
         if (mPosition >= 0)
             getRepository().processPlaceById(mIds.get(mPosition));
@@ -35,7 +30,7 @@ public class SearchViewModel extends BaseViewModel {
 
     public void onTextChanged(String text) {
         getCompositeDisposable().clear(); // need to dispose of all previous queries
-        getCompositeDisposable().add(getRepository().predictPlacesList(text)
+        getCompositeDisposable().add(getRepository().predictPlaceNames(text)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pairs -> {

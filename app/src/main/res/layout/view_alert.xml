@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout>
 
     <data>
 
         <variable
-            name="alertLocatioinViewModel"
+            name="alertViewModel"
             type="ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel" />
     </data>
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -20,10 +20,10 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:padding="4dp"
-            android:text="@{alertLocatioinViewModel.title}"
+            android:padding="@dimen/alert_title_padding"
+            android:text="@{alertViewModel.title}"
             android:textColor="@color/text_alert"
-            android:textSize="@dimen/title_size"
+            android:textSize="@dimen/alert_title_text_size"
             tools:text="@string/alert_location_title" />
 
         <TextView
@@ -31,8 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:padding="8dp"
-            android:text="@{alertLocatioinViewModel.message}"
+            android:padding="@dimen/alert_message_padding"
+            android:text="@{alertViewModel.message}"
             tools:text="@string/alert_location_message" />
 
     </LinearLayout>

@@ -3,12 +3,16 @@ package ua.in.khol.oleh.touristweathercomparer.model.weather;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Current;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Daily;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.DarkSky;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.owm.Owm;
 
 public class RxWeatherHelper implements WeatherHelper {
+    private static final String TAG = RxWeatherHelper.class.getName();
     private final List<WeatherProvider> mWeatherProviders = new ArrayList<WeatherProvider>() {{
         add(new Owm(2));
         add(new DarkSky(0));
@@ -18,8 +22,8 @@ public class RxWeatherHelper implements WeatherHelper {
     }
 
     @Override
-    public List<Forecast> getCurrents(Place place, int time) {
-        List<Forecast> currents = new ArrayList<>();
+    public List<Current> getCurrents(Place place, int time) {
+        List<Current> currents = new ArrayList<>();
         long placeId = place.getId();
         double latitude = place.getLatitude();
         double longitude = place.getLongitude();
@@ -27,12 +31,11 @@ public class RxWeatherHelper implements WeatherHelper {
 
         for (WeatherProvider provider : mWeatherProviders) {
             int providerId = provider.getId();
-            WeatherData data = provider.getCurrent(latitude, longitude, language);
+            Forecast data = provider.getCurrent(latitude, longitude, language);
             if (data != null) {
-                Forecast forecast = toForecast(providerId, placeId, data);
+                Current current = Current.fromForecast(providerId, placeId, data);
                 // cast to the same time avoiding cached network data
-                forecast.setDate(time);
-                currents.add(forecast);
+                currents.add(current);
             }
         }
 
@@ -48,8 +51,8 @@ public class RxWeatherHelper implements WeatherHelper {
      * @return - forecasts data for all weather providers
      */
     @Override
-    public List<Forecast> getDailies(Place place, int date) {
-        List<Forecast> dailies = new ArrayList<>();
+    public List<Daily> getDailies(Place place, int date) {
+        List<Daily> dailies = new ArrayList<>();
         long placeId = place.getId();
         double latitude = place.getLatitude();
         double longitude = place.getLongitude();
@@ -57,29 +60,40 @@ public class RxWeatherHelper implements WeatherHelper {
 
         for (WeatherProvider provider : mWeatherProviders) {
             int providerId = provider.getId();
-            List<WeatherData> datas = provider.getDaily(latitude, longitude, language);
+            List<Forecast> datas = provider.getDaily(latitude, longitude, language);
             if (datas != null)
-                for (WeatherData data : datas)
+                for (Forecast data : datas)
                     dailies.add(toForecast(providerId, placeId, data));
         }
 
         return dailies;
     }
 
-    private Forecast toForecast(int providerId, long placeId, WeatherData weatherData) {
-        Forecast forecast = new Forecast(providerId, placeId);
+    @Override
+    public Maybe<List<Current>> tryCurrents(Place place, int time) {
+        return Maybe.fromCallable(() -> getCurrents(place, time))
+                .filter(currents -> currents.size() > 0);
+    }
 
-        forecast.setDate(weatherData.getDate());
-        forecast.setLow(weatherData.getLow());
-        forecast.setHigh(weatherData.getHigh());
-        forecast.setPressure(weatherData.getPressure());
-        forecast.setSpeed(weatherData.getSpeed());
-        forecast.setDegree(weatherData.getDegree());
-        forecast.setHumidity(weatherData.getHumidity());
-        forecast.setText(weatherData.getText());
-        forecast.setImage(weatherData.getSrc());
-        forecast.setCurrent(weatherData.isCurrent());
+    @Override
+    public MaybeSource<List<Daily>> tryDailies(Place place, int date) {
+        return Maybe.fromCallable(() -> getDailies(place, date))
+                .filter(forecasts -> forecasts.size() > 0);
+    }
 
-        return forecast;
+    private Daily toForecast(int providerId, long placeId, Forecast forecast) {
+        Daily daily = new Daily(providerId, placeId);
+
+        daily.setDate(forecast.getDate());
+        daily.setLow(forecast.getLow());
+        daily.setHigh(forecast.getHigh());
+        daily.setPressure(forecast.getPressure());
+        daily.setSpeed(forecast.getSpeed());
+        daily.setDegree(forecast.getDegree());
+        daily.setHumidity(forecast.getHumidity());
+        daily.setText(forecast.getText());
+        daily.setImage(forecast.getSrc());
+
+        return daily;
     }
 }

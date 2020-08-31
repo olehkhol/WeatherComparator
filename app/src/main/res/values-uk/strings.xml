@@ -4,7 +4,6 @@
     <string name="preferences">Налаштування</string>
     <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="units">ОДИНИЦІ</string>
-    <string name="use_celsius">Відображати за Цельсія</string>
     <string name="pref_language">Мова</string>
     <string name="other_apps">Інші застосунки</string>
     <string name="rate_and_review">Оцінка і відгук</string>
@@ -32,4 +31,5 @@
     <string name="info_file">info_uk.html</string>
     <string name="city">Місто</string>
     <string name="enter_name">Введіть назву міста:</string>
+    <string name="name">Київ</string>
 </resources>

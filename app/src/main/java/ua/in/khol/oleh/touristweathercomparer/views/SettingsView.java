@@ -2,7 +2,6 @@ package ua.in.khol.oleh.touristweathercomparer.views;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
@@ -23,12 +22,19 @@ import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory
 public class SettingsView extends DialogFragment
         implements ViewBinding<ViewSettingsBinding> {
 
-    private SettingsViewModel mViewModel;
-
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
+    private SettingsViewModel mViewModel;
 
     public SettingsView() {
+    }
+
+    static SettingsView newInstance() {
+        SettingsView fragment = new SettingsView();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
@@ -38,14 +44,6 @@ public class SettingsView extends DialogFragment
         // instantiate a viewmodel from the injected factory
         mViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
                 .get(SettingsViewModel.class);
-    }
-
-    static SettingsView newInstance() {
-        SettingsView fragment = new SettingsView();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-
-        return fragment;
     }
 
     @NonNull
@@ -58,18 +56,10 @@ public class SettingsView extends DialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(binding.getRoot())
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mViewModel.onOkButtonClicked();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-                    }
+                .setPositiveButton(R.string.ok, (dialog, which) -> mViewModel.onOkButtonClicked())
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    if (dialog != null)
+                        dialog.dismiss();
                 });
 
         return builder.create();

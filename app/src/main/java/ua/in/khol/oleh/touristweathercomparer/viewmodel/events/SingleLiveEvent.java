@@ -9,18 +9,27 @@ import androidx.lifecycle.Observer;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import timber.log.Timber;
+
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private static final String TAG = SingleLiveEvent.class.getName();
-    private static final String WARNING = TAG + " %s";
+
     private final AtomicBoolean mPending = new AtomicBoolean(false);
+
+    public SingleLiveEvent() {
+    }
+
+    public SingleLiveEvent(T value) {
+        super(value);
+        mPending.set(true);
+    }
 
     @MainThread
     public void observe(@NonNull LifecycleOwner owner,
                         @NonNull final Observer<? super T> observer) {
         if (hasActiveObservers())
-            System.out.println(String.format(WARNING, "Multiple observers registered."));
+            Timber.d(TAG, "Multiple observers registered.");
 
-        // observe the internal MutableLiveData
         super.observe(owner, t -> {
             if (mPending.compareAndSet(true, false))
                 observer.onChanged(t);

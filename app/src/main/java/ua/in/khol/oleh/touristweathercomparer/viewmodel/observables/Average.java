@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Average extends BaseObservable {
 
+    private final List<Canape> mCanapes = new ArrayList<>();
     private int mDate;
     private float mLow;
     private float mHigh;
@@ -16,7 +17,6 @@ public class Average extends BaseObservable {
     private float mSpeed;
     private int mDegree;
     private int mHumidity;
-    private final List<Canape> mCanapes = new ArrayList<>();
 
     public Average(int date, float low, float high, List<Canape> canapes) {
         mDate = date;

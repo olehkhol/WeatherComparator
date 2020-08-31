@@ -1,5 +1,7 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -10,13 +12,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class WeatherProvider {
 
-    private int mId;
+    protected final String PATH;
     private final String NAME;
     private final String SITE;
     private final String API;
-
-    protected final String PATH;
     private final String BANNER;
+    private int mId;
 
     protected WeatherProvider(int id, String name, String site, String api) {
         mId = id;
@@ -49,9 +50,9 @@ public abstract class WeatherProvider {
                 .create(service);
     }
 
-    public abstract WeatherData getCurrent(double latitude, double longitude, String lang);
+    public abstract Forecast getCurrent(double latitude, double longitude, String lang);
 
-    public abstract List<WeatherData> getDaily(double latitude, double longitude, String lang);
+    public abstract List<Forecast> getDaily(double latitude, double longitude, String lang);
 
     public String getName() {
         return NAME;
@@ -78,8 +79,12 @@ public abstract class WeatherProvider {
     protected String normalizeText(String text) {
         if (text != null && text.length() > 0)
             return text.substring(0, 1).toUpperCase() +
-                    text.substring(1).trim().replaceAll("\\.+$","").toLowerCase();
+                    text.substring(1).trim().replaceAll("\\.+$", "").toLowerCase();
         else
             return text;
+    }
+
+    protected int getTime() {
+        return (int) (new DateTime().getMillis() / 1000);
     }
 }

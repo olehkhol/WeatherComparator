@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <data>
 
@@ -21,15 +18,18 @@
             type="boolean" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginHorizontal="@dimen/default_margin_half"
-        android:visibility="@{isVisible ? View.VISIBLE : View.GONE}"
+        android:layout_marginHorizontal="@dimen/current_margin"
         card_view:cardCornerRadius="3dp"
         card_view:cardMaxElevation="1px"
         card_view:cardUseCompatPadding="true">
+        <!--        android:visibility="@{isVisible ? View.VISIBLE : View.GONE}"-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp">
+                android:layout_height="@dimen/current_constraint_height">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -96,8 +96,8 @@
                     bind:index="@{settings.temperatureIndex}" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/current_arrow_size"
+                    android:layout_height="@dimen/current_arrow_size"
                     android:rotation="@{current.degree}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

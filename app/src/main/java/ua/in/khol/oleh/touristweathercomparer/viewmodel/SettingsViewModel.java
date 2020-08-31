@@ -5,14 +5,13 @@ import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 
 public class SettingsViewModel extends BaseViewModel {
 
-    // Data Binding
     private final Settings mSettings;
     private boolean mChanged = false;
 
     public SettingsViewModel(Repository repository) {
         super(repository);
 
-        mSettings = repository.getSettings();
+        mSettings = Settings.copy(repository.getSettings());
     }
 
     @Override
@@ -20,11 +19,6 @@ public class SettingsViewModel extends BaseViewModel {
         if (mChanged)
             getRepository().setSettings(mSettings);
         super.onCleared();
-    }
-
-    @Override
-    public void refresh() {
-
     }
 
     public void onOkButtonClicked() {

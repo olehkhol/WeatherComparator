@@ -8,8 +8,4 @@ public class InfoViewModel extends BaseViewModel {
         super(repository);
     }
 
-    @Override
-    public void refresh() {
-
-    }
 }

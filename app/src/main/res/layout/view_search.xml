@@ -18,33 +18,34 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:padding="4dp"
+            android:padding="@dimen/search_padding"
             android:text="@string/city"
             android:textColor="@color/text_alert"
-            android:textSize="@dimen/title_size" />
+            android:textSize="@dimen/search_title_text_size" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/category_padding"
+            android:padding="@dimen/settings_category_padding"
             android:text="@string/enter_name"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/text_size" />
+            android:textSize="@dimen/search_text_size" />
 
         <EditText
+            android:hint="@string/name"
             android:id="@+id/inputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
+            android:layout_margin="@dimen/search_margin"
             android:padding="8dp"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size" />
+            android:textSize="@dimen/search_text_size" />
 
         <ListView
             android:id="@+id/namesListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/nav_item_margin"
-            android:paddingVertical="@dimen/default_margin_half" />
+            android:layout_marginHorizontal="@dimen/search_margin_horizontal"
+            android:paddingVertical="@dimen/search_padding" />
     </LinearLayout>
 </layout>

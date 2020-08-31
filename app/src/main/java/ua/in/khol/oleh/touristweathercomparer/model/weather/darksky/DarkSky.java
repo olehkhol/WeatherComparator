@@ -1,14 +1,12 @@
 package ua.in.khol.oleh.touristweathercomparer.model.weather.darksky;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
-import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherData;
+import ua.in.khol.oleh.touristweathercomparer.model.weather.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.currently.Currently;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.currently.DarkSkyCurrently;
@@ -16,7 +14,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.daily.D
 import ua.in.khol.oleh.touristweathercomparer.model.weather.darksky.pojo.daily.Datum;
 
 public class DarkSky extends WeatherProvider {
-    private DarkSkyService mService;
+    private final DarkSkyService mService;
 
     public DarkSky(int id) {
         super(id, "DarkSky", "https://darksky.net/poweredby/",
@@ -25,7 +23,7 @@ public class DarkSky extends WeatherProvider {
     }
 
     @Override
-    public WeatherData getCurrent(double latitude, double longitude, String lang) {
+    public Forecast getCurrent(double latitude, double longitude, String lang) {
         try {
             DarkSkyCurrently darkSkyCurrently = mService.getCurrently(DarkSkyAuth.getSecretKey(),
                     String.valueOf(latitude), String.valueOf(longitude), lang, "us")
@@ -33,9 +31,9 @@ public class DarkSky extends WeatherProvider {
             if (darkSkyCurrently != null) {
 
                 Currently currently = darkSkyCurrently.getCurrently();
-                WeatherData.Builder builder = new WeatherData.Builder();
+                Forecast.Builder builder = new Forecast.Builder();
                 builder
-                        .withDate(currently.getTime())
+                        .withDate(getTime())
                         .withLow(currently.getTemperature())
                         .withHigh(currently.getTemperature())
                         .withText(normalizeText(currently.getSummary()))
@@ -50,15 +48,15 @@ public class DarkSky extends WeatherProvider {
             }
 
         } catch (IOException e) {
-            //e.printStackTrace(); // TODO check CompositeDisposable from GodRepository
+            e.printStackTrace();
         }
 
         return null;
     }
 
     @Override
-    public List<WeatherData> getDaily(double latitude, double longitude, String lang) {
-        List<WeatherData> weatherDataList = new ArrayList<>();
+    public List<Forecast> getDaily(double latitude, double longitude, String lang) {
+        List<Forecast> forecastList = new ArrayList<>();
 
         try {
             DarkSkyDaily darkSkyData = mService.getDaily(DarkSkyAuth.getSecretKey(),
@@ -71,7 +69,7 @@ public class DarkSky extends WeatherProvider {
                 for (Datum datum : datumList) {
                     long time = (long) datum.getTime() * 1000;
                     DateTime dt = new DateTime(time).withTimeAtStartOfDay();
-                    WeatherData.Builder builder = new WeatherData.Builder();
+                    Forecast.Builder builder = new Forecast.Builder();
                     builder
                             .withDate((int) (dt.getMillis() / 1000))
                             .withLow(datum.getTemperatureMin())
@@ -83,14 +81,14 @@ public class DarkSky extends WeatherProvider {
                             .withDegree(datum.getWindBearing())
                             .withHumidity((int) (datum.getHumidity() * 100))
                             .withCurrent(false);
-                    weatherDataList.add(builder.build());
+                    forecastList.add(builder.build());
                 }
             }
         } catch (IOException e) {
-            //e.printStackTrace(); // TODO check CompositeDisposable from GodRepository
+            e.printStackTrace();
         }
 
-        return weatherDataList;
+        return forecastList;
 
     }
 }

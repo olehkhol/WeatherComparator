@@ -88,17 +88,17 @@ Android Architecture Components
 AndroidX
 - [Multidex](https://developer.android.com/studio/build/multidex) Version 2.0.1
 - [Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) Version 2.2.0
-- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.2.2
-- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 1.1.3
-- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-alpha01
+- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.3.0
+- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 2.0.0
+- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-alpha02
 - [Vectordrawable](https://developer.android.com/jetpack/androidx/releases/vectordrawable) Version 1.1.0
 - [Browser](https://developer.android.com/jetpack/androidx/releases/browser) Version 1.2.0
 - [Exifinterface](https://developer.android.com/jetpack/androidx/releases/exifinterface) Version 1.2.0
 - [Recyclerview](https://developer.android.com/jetpack/androidx/releases/recyclerview) Version 1.1.0
 - [Cardview](https://developer.android.com/jetpack/androidx/releases/cardview) Version 1.0.0
-- [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout) Version 1.0.0
+- [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout) Version 1.1.0
 - [Preference](https://developer.android.com/jetpack/androidx/releases/preference) Version 1.1.1
-- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.3.0-alpha01
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.2.5
 
 ReactiveX
 - [RxJava](https://github.com/ReactiveX/RxJava) Version 2.2.19
@@ -110,20 +110,19 @@ Square Open Source
 - [Retrofit](https://square.github.io/retrofit) Version 2.6.2
     - [RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2) Version 2.6.2
     - [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson) Version 2.6.2
-- [LeakCanary](https://square.github.io/leakcanary) Version 2.1
+- [LeakCanary](https://square.github.io/leakcanary) Version 2.3
 
 Google
 - [Guava](https://github.com/google/guava) Version 28.2-android
 - [Dagger](https://github.com/google/dagger) Version 2.24
-- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.1.0
+- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.2.0
 - [Location](https://developer.android.com/training/location) Version 17.0.0
 - [Maps](https://developer.android.com/training/maps) Version 17.0.0
 - [Places](https://developers.google.com/places/android-sdk/intro) Version 2.3.0
 
 Others
 - [Conscrypt](https://github.com/google/conscrypt) Version 2.2.1
-- [Joda-Time](https://www.joda.org/joda-time) Version 2.10.5
-~~- [ReactiveNetwork](https://github.com/pwittchen/ReactiveNetwork) Version 3.0.7~~
+- [Joda-Time](https://www.joda.org/joda-time) Version 2.10.6
 - [Timber](https://github.com/JakeWharton/timber) Version 4.7.1
 
 ## License

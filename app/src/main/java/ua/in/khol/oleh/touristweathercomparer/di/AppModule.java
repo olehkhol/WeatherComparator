@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import ua.in.khol.oleh.touristweathercomparer.bus.RxBus;
 import ua.in.khol.oleh.touristweathercomparer.model.GodRepository;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 import ua.in.khol.oleh.touristweathercomparer.model.cache.CacheHelper;
@@ -27,7 +28,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetwork;
 import ua.in.khol.oleh.touristweathercomparer.model.net.RxNetworkHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.places.PlacesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.places.RxPlacesHelper;
-import ua.in.khol.oleh.touristweathercomparer.model.settings.RxSettingsHelper;
+import ua.in.khol.oleh.touristweathercomparer.model.settings.RxPreferencesHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.RxWeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.model.weather.WeatherHelper;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
@@ -127,8 +128,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    RxSettingsHelper provideSettingsHelper(Context context) {
-        return new RxSettingsHelper(context);
+    RxPreferencesHelper providePreferences(Context context) {
+        return new RxPreferencesHelper(context);
     }
 
     @Provides
@@ -139,16 +140,22 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Repository provideGodRepository(CacheHelper cacheHelper,
-                                    RxLocationHelper locationHelper,
-                                    RxNetwork network,
-                                    MapsHelper mapsHelper,
-                                    WeatherHelper weatherHelper,
-                                    RxSettingsHelper settingsHelper,
-                                    DatabaseHelper databaseHelper,
-                                    PlacesHelper placesHelper) {
-        return new GodRepository(cacheHelper, locationHelper, network, mapsHelper, weatherHelper,
-                settingsHelper, databaseHelper, placesHelper);
+    RxBus provideRxBus() {
+        return new RxBus();
+    }
+
+    @Provides
+    @Singleton
+    Repository provideGodRepository(RxBus rxBus,
+                                    CacheHelper cache,
+                                    RxLocationHelper location,
+                                    MapsHelper maps,
+                                    WeatherHelper weather,
+                                    RxPreferencesHelper preferences,
+                                    DatabaseHelper database,
+                                    PlacesHelper places) {
+        return new GodRepository(rxBus, cache, location, maps,
+                weather, preferences, database, places);
     }
 
     @Provides

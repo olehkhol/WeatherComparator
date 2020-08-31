@@ -25,10 +25,4 @@ public class LatLon {
     public void setLon(double lon) {
         mLon = lon;
     }
-
-    public boolean isValid() {
-        if (mLat == 0 && mLon == 0)
-            return false;
-        return true;
-    }
 }

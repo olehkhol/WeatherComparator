@@ -73,6 +73,10 @@ public class RecyclerAdapter<T>
         mItems.clear();
     }
 
+    interface OnItemClickListener<T> {
+        void onItemClick(int position, T item);
+    }
+
     // RECYCLER BINDING HOLDER
     static class RecyclerHolder extends RecyclerView.ViewHolder {
         private final ViewDataBinding mBinding;
@@ -81,10 +85,6 @@ public class RecyclerAdapter<T>
             super(itemView);
             mBinding = DataBindingUtil.bind(itemView);
         }
-    }
-
-    interface OnItemClickListener<T> {
-        void onItemClick(int position, T item);
     }
 
 }

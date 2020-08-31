@@ -3,7 +3,6 @@
 
     <string name="preferences">Настройки</string>
     <string name="localization">ЛОКАЛИЗАЦИЯ</string>
-    <string name="use_celsius">Отображать по Цельсия</string>
     <string name="pref_language">Язык</string>
     <string name="units">ЕДИНИЦЫ</string>
     <string name="other_apps">Другие приложения</string>
@@ -14,7 +13,7 @@
     <string name="search">Поиск</string>
     <string name="alert_location_title">Необходимо местонахождение</string>
     <string name="alert_location_message">Включить службы локации ?</string>
-    <string name="alert_wireless_title">Необходим беспроводная связь</string>
+    <string name="alert_wireless_title">Необходима беспроводная связь</string>
     <string name="alert_wireless_message">Включить беспроводные службы?</string>
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
@@ -32,4 +31,5 @@
     <string name="info_file">info_ru.html</string>
     <string name="city">Город</string>
     <string name="enter_name">Введите название города:</string>
+    <string name="name">Киев</string>
 </resources>

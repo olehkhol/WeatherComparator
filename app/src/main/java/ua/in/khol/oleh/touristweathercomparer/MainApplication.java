@@ -6,6 +6,8 @@ import android.os.Build;
 
 import androidx.multidex.MultiDex;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import org.conscrypt.Conscrypt;
 
 import java.security.Security;
@@ -21,7 +23,6 @@ import ua.in.khol.oleh.touristweathercomparer.di.DaggerAppComponent;
 
 public class MainApplication extends Application
         implements HasAndroidInjector {
-
     @Inject
     DispatchingAndroidInjector<Object> mDispatchingAndroidInjector;
 
@@ -46,14 +47,15 @@ public class MainApplication extends Application
         super.onCreate();
 
         // Install a DebugTree instance for Timber
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
-        }
 
-        // Instantiating the components of dagger
+        // Instantiating the components of Dagger
         DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build()
                 .inject(this);
+
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 }

@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.GeocodingAuth;
 
@@ -29,74 +27,66 @@ public class RxPlacesHelper implements PlacesHelper {
     private final AutocompleteSessionToken mToken;
 
     public RxPlacesHelper(Context context) {
-        /**
-         * Initialize Places. For simplicity, the API key is hard-coded. In a production
-         * environment we recommend using a secure mechanism to manage API keys.
-         */
-        if (!Places.isInitialized()) {
-            Places.initialize(context, GeocodingAuth.getApiKey()); // TODO replace with PlacesApiKey
-        }
+        // TODO[38] replace with PlacesApiKey
+        if (!Places.isInitialized())
+            Places.initialize(context, GeocodingAuth.getApiKey());
+
         // Create a new Places client instance.
         mPlacesClient = Places.createClient(context);
 
-        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // Create a new token for the autocomplete session.
+        // Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
         mToken = AutocompleteSessionToken.newInstance();
     }
 
     @Override
     public Single<List<Pair<String, String>>> seePlacesList(String query) {
-        return Single.create(new SingleOnSubscribe<List<Pair<String, String>>>() {
-            @Override
-            public void subscribe(SingleEmitter<List<Pair<String, String>>> emitter) throws Exception {
-                List<Pair<String, String>> list = new ArrayList<>();
+        return Single.create(emitter -> {
+            List<Pair<String, String>> list = new ArrayList<>();
 
-                FindAutocompletePredictionsRequest request
-                        = FindAutocompletePredictionsRequest.builder()
-                        .setTypeFilter(TypeFilter.GEOCODE)
-                        .setSessionToken(mToken)
-                        .setQuery(query)
-                        .build();
-                mPlacesClient.findAutocompletePredictions(request)
-                        .addOnSuccessListener(response -> {
-                            List<AutocompletePrediction> predictions
-                                    = response.getAutocompletePredictions();
-                            for (AutocompletePrediction prediction : predictions) {
-                                String id = prediction.getPlaceId();
-                                String name = prediction.getPrimaryText(null).toString()
-                                        + "," + prediction.getSecondaryText(null);
-                                list.add(new Pair<>(id, name));
-                            }
+            FindAutocompletePredictionsRequest request
+                    = FindAutocompletePredictionsRequest.builder()
+                    .setTypeFilter(TypeFilter.GEOCODE)
+                    .setSessionToken(mToken)
+                    .setQuery(query)
+                    .build();
+            mPlacesClient.findAutocompletePredictions(request)
+                    .addOnSuccessListener(response -> {
+                        List<AutocompletePrediction> predictions
+                                = response.getAutocompletePredictions();
+                        for (AutocompletePrediction prediction : predictions) {
+                            String id = prediction.getPlaceId();
+                            String name = prediction.getPrimaryText(null).toString()
+                                    + "," + prediction.getSecondaryText(null);
+                            list.add(new Pair<>(id, name));
+                        }
 
-                            emitter.onSuccess(list);
-                        });
-            }
+                        emitter.onSuccess(list);
+                    });
         });
     }
 
     @Override
     public Single<LatLon> seeLatlon(String placeId) {
-        return Single.create(new SingleOnSubscribe<LatLon>() {
-            @Override
-            public void subscribe(SingleEmitter<LatLon> emitter) throws Exception {
-                // Specify the fields to return.
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG);
+        return Single.create(emitter -> {
+            // Specify the fields to return.
+            List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG);
 
-                // Construct a request object, passing the place ID and fields array.
-                FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields)
-                        .setSessionToken(mToken)
-                        .build();
+            // Construct a request object, passing the place ID and fields array.
+            FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields)
+                    .setSessionToken(mToken)
+                    .build();
 
-                // Add a listener to handle the response.
-                mPlacesClient.fetchPlace(request)
-                        .addOnSuccessListener(response -> {
-                            Place place = response.getPlace();
-                            LatLng latLng = place.getLatLng();
-                            LatLon latLon = new LatLon(latLng.latitude, latLng.longitude);
+            // Add a listener to handle the response.
+            mPlacesClient.fetchPlace(request)
+                    .addOnSuccessListener(response -> {
+                        Place place = response.getPlace();
+                        LatLng latLng = place.getLatLng();
+                        LatLon latLon = new LatLon(latLng.latitude, latLng.longitude);
 
-                            emitter.onSuccess(latLon);
-                        });
-            }
+                        emitter.onSuccess(latLon);
+                    });
         });
     }
 }

@@ -2,6 +2,7 @@ package ua.in.khol.oleh.touristweathercomparer.model.location;
 
 import android.content.Context;
 
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import ua.in.khol.oleh.touristweathercomparer.model.Helper;
@@ -41,6 +42,11 @@ public class RxLocationHelper implements RxLocation, Helper {
     @Override
     public Observable<Boolean> observeUsability() {
         return mRxLocation.observeUsability();
+    }
+
+    @Override
+    public Maybe<LatLon> tryLatLon() {
+        return mRxLocation.tryLatLon();
     }
 
 }

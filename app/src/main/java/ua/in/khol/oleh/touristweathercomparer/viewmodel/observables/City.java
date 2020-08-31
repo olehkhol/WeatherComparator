@@ -5,6 +5,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
 
 public class City extends BaseObservable {
+
     private String mName;
     private double mLatitude;
     private double mLongitude;

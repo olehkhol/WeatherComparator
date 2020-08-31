@@ -16,8 +16,8 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import ua.in.khol.oleh.touristweathercomparer.R;
 import ua.in.khol.oleh.touristweathercomparer.databinding.ViewAlertBinding;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.AlertViewModel;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 
 public class AlertView extends DialogFragment {
 
@@ -28,6 +28,9 @@ public class AlertView extends DialogFragment {
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
 
+    public AlertView() {
+    }
+
     static AlertView newInstance(String title, String message, String action) {
         AlertView fragment = new AlertView();
         Bundle args = new Bundle();
@@ -37,9 +40,6 @@ public class AlertView extends DialogFragment {
         fragment.setArguments(args);
 
         return fragment;
-    }
-
-    public AlertView() {
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AlertView extends DialogFragment {
                 .get(AlertViewModel.class);
         viewModel.getTitle().set(title);
         viewModel.getMessage().set(message);
-        binding.setAlertLocatioinViewModel(viewModel);
+        binding.setAlertViewModel(viewModel);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(binding.getRoot())

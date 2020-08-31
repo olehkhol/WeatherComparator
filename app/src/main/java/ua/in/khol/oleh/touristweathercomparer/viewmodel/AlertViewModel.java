@@ -13,11 +13,6 @@ public class AlertViewModel extends BaseViewModel {
         super(repository);
     }
 
-    @Override
-    public void refresh() {
-
-    }
-
     public ObservableField<String> getTitle() {
         return mTitle;
     }

@@ -3,14 +3,18 @@ package ua.in.khol.oleh.touristweathercomparer.model.maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Maybe;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.pojo.GeocodingModel;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.pojo.Result;
 import ua.in.khol.oleh.touristweathercomparer.model.maps.pojo.TimeZoneModel;
@@ -93,6 +97,20 @@ public class RxMapsHelper implements MapsHelper {
         }
 
         return name;
+    }
+
+    @Override
+    public Maybe<Place> tryPlace(double latitude, double longitude, String language) {
+        return Maybe.fromCallable(() -> {
+            String name = getLocationName(latitude, longitude, language);
+            if (name.isEmpty())
+                return null;
+
+            int offset = getTimeZoneOffset(latitude, longitude,
+                    new DateTime().getMillis() / 1000);
+
+            return new Place(name, latitude, longitude, language, offset);
+        });
     }
 
     private OkHttpClient createOkHttpClient() {

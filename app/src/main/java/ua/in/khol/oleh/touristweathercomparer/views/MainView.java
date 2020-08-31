@@ -12,13 +12,11 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -50,48 +48,44 @@ public class MainView extends AppCompatActivity
         implements ViewBinding<ViewMainBinding>,
         NavigationView.OnNavigationItemSelectedListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
-
     private static final String SETTINGS_TAG = SettingsView.class.getName();
     private static final String SEARCH_TAG = SearchView.class.getName();
     private static final String ALERT_TAG = AlertView.class.getName();
     private static final int LOCATION_PERMISSION_ID = 17;
-
-    private boolean mHasPermissions = false;
-    private boolean mDoNotAskForPermissions = false;
-    // UI variables
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
-    private DrawerLayout mDrawerLayout;
-
     @Inject
     ViewModelProviderFactory mViewModelProviderFactory;
-
+    private boolean mHasPermissions = false;
+    private boolean mDoNotAskForPermissions = false;
+    private DrawerLayout mDrawerLayout;
     private MainViewModel mMainViewModel;
 
     // -=-=-=-=-=-=-=-=[LIFECYCLE CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
+        // TODO[38] move this ViewModelProvider instantiation to DI
         mMainViewModel = new ViewModelProvider(this, mViewModelProviderFactory)
                 .get(MainViewModel.class);
-        // TODO[40] try find a better place to change language before .onCreate according to MVVM
-        updateLocale(mMainViewModel.getSettings().get().getLanguageIndex());
+        // TODO[38] try find a better place to change language before .onCreate according to MVVM
+        updateLocale(mMainViewModel.getLanguageIndex());
         adjustFontScale();
 
-        // Init
+        // This call must be called exactly after the Dependency Injection
+        // and before the Data Binding initialization
         super.onCreate(savedInstanceState);
 
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         initBinding(binding);
 
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        //        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // Observe events
         mMainViewModel.getDoRecreate().observe(this, asked -> {
             if (asked)
                 reload();
@@ -106,10 +100,64 @@ public class MainView extends AppCompatActivity
             if (asked)
                 showLocationAlertDialog();
         });
-        if (!mMainViewModel.getPermissions().get())
-            requestPermissions();
+        mMainViewModel.getPermissions().observe(this, granted -> {
+            if (!granted)
+                requestPermissions();
+        });
+        mMainViewModel.getAskForPlace().observe(this, asked -> showSearchDialog());
+    }
+
+    @Override
+    protected void onStop() {
+        mMainViewModel.getAskForPlace().removeObservers(this);
+        mMainViewModel.getPermissions().removeObservers(this);
+        mMainViewModel.getAskForLocation().removeObservers(this);
+        mMainViewModel.getAskForInternet().removeObservers(this);
+        mMainViewModel.getDoRecreate().removeObservers(this);
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mMainViewModel = null;
+
+        super.onDestroy();
     }
     // ----------------[LIFECYCLE CALLBACKS]----------------
+
+    // -=-=-=-=-=-=-=-=[ACTIVITY CALLBACKS]=-=-=-=-=-=-=-=-
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_ID) {
+            for (int i = 0; i < permissions.length; i++)
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+                        if (!shouldShowRequestPermissionRationale(permissions[i])) {
+                            // Stop asking for permissions
+                            mDoNotAskForPermissions = true;
+                        }
+        } else
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (permissions.length > 0 && !mHasPermissions) {
+            // Start request again because we really need this permissions to work
+            if (!mDoNotAskForPermissions)
+                requestPermissions();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    // ----------------[ACTIVITY CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[PERMISSIONS]=-=-=-=-=-=-=-=-
     private void requestPermissions() {
@@ -124,9 +172,6 @@ public class MainView extends AppCompatActivity
 
             // Permissions granted
             mHasPermissions = true;
-            mMainViewModel.getPermissions().set(mHasPermissions);
-            // TODO try find a better place to refresh data according to MVVM
-            refreshModelView();
         } else
             ActivityCompat.requestPermissions(
                     this,
@@ -140,8 +185,6 @@ public class MainView extends AppCompatActivity
     // -=-=-=-=-=-=-=-=[UI]=-=-=-=-=-=-=-=-
     @Override
     public void initBinding(ViewMainBinding binding) {
-        binding.setMainViewModel(mMainViewModel);
-
         Toolbar toolbar = binding.appBar.toolbar;
         setSupportActionBar(toolbar);
 
@@ -168,14 +211,11 @@ public class MainView extends AppCompatActivity
         NavigationUI.setupWithNavController(bottomNavView, navController);
     }
 
-    private void refreshModelView() {
-        mMainViewModel.refresh();
-    }
-
     private void reload() {
         new Handler().post(() -> {
             Intent intent = getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             overridePendingTransition(0, 0);
             finish();
 
@@ -186,16 +226,6 @@ public class MainView extends AppCompatActivity
 
     private void showInternetAlertToast() {
         Toast.makeText(this, getString(R.string.alert_wireless_title), Toast.LENGTH_LONG).show();
-    }
-
-    private void showFinishAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.error));
-        builder.setMessage(getString(R.string.permission));
-        builder.setPositiveButton(getString(R.string.finish),
-                (dialog, which) -> finish());
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     private void showSettingsDialog() {
@@ -223,17 +253,6 @@ public class MainView extends AppCompatActivity
                     .show(mFragmentManager, ALERT_TAG);
     }
 
-    private boolean isAnyDialogOpened(FragmentManager manager) {
-        SettingsView settingsView = (SettingsView) manager
-                .findFragmentByTag(SETTINGS_TAG);
-        SearchView searchView = (SearchView) manager
-                .findFragmentByTag(SEARCH_TAG);
-        AlertView alertView = (AlertView) manager
-                .findFragmentByTag(ALERT_TAG);
-
-        return (settingsView == null && searchView == null && alertView == null);
-    }
-
     private void shareApplicationName() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -245,9 +264,6 @@ public class MainView extends AppCompatActivity
         startActivity(shareIntent);
     }
 
-    /**
-     * Opens application page in Google Play
-     **/
     private void open(AppCompatActivity activity, String appPackageName) {
         try {
             activity.startActivity(
@@ -263,40 +279,6 @@ public class MainView extends AppCompatActivity
         }
     }
     // ----------------[UI]----------------
-
-    // -=-=-=-=-=-=-=-=[ACTIVITY CALLBACKS]=-=-=-=-=-=-=-=-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_PERMISSION_ID) {
-            for (int i = 0; i < permissions.length; i++)
-                if (grantResults[i] == PackageManager.PERMISSION_DENIED)
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-                        if (!shouldShowRequestPermissionRationale(permissions[i])) {
-                            // Stop asking for permissions
-                            //showFinishAlertDialog();
-                            mDoNotAskForPermissions = true;
-                        }
-        } else
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (permissions.length > 0 && !mHasPermissions) {
-            // Start request again because we really need this permissions to work
-            if (!mDoNotAskForPermissions)
-                requestPermissions();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-    // ----------------[ACTIVITY CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[MENU CALLBACKS]=-=-=-=-=-=-=-=-
     @Override
@@ -345,9 +327,6 @@ public class MainView extends AppCompatActivity
             case R.id.nav_b64:
                 open(this, "com.humanneeds.base64fileencoderdecoder");
                 break;
-            case R.id.nav_afc:
-                open(this, "com.humanneeds.aliensflashlight");
-                break;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -356,6 +335,17 @@ public class MainView extends AppCompatActivity
     // ----------------[MENU CALLBACKS]----------------
 
     // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
+    private boolean isAnyDialogOpened(FragmentManager manager) {
+        SettingsView settingsView = (SettingsView) manager
+                .findFragmentByTag(SETTINGS_TAG);
+        SearchView searchView = (SearchView) manager
+                .findFragmentByTag(SEARCH_TAG);
+        AlertView alertView = (AlertView) manager
+                .findFragmentByTag(ALERT_TAG);
+
+        return (settingsView == null && searchView == null && alertView == null);
+    }
+
     private void updateLocale(int index) {
         Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
         Locale.setDefault(locale);
@@ -370,10 +360,8 @@ public class MainView extends AppCompatActivity
         if (configuration.fontScale > 1f) {
             configuration.fontScale = 1f;
             DisplayMetrics metrics = resources.getDisplayMetrics();
-            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
             metrics.scaledDensity = configuration.fontScale * metrics.density;
             resources.updateConfiguration(configuration, metrics);
-            //applyOverrideConfiguration(configuration);
         }
     }
     // ----------------[REGULAR METHODS]----------------

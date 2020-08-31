@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +42,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.MapaViewModel;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.ViewModelProviderFactory;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
+import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 import ua.in.khol.oleh.touristweathercomparer.views.adapters.MiniAverageAdapter;
 
 public class MapaView extends Fragment
@@ -61,23 +62,32 @@ public class MapaView extends Fragment
         public void deactivate() {
         }
     };
+
+    @Inject
+    ViewModelProviderFactory mFactory;
+
     private ViewMapaBinding mBinding;
     private MapaViewModel mViewModel;
     private InfoWindowView mInfoWindowView;
     private GoogleMap mMap;
     private Marker mMarker;
-    private LatLng mLatLng;
     private float mZoom;
-
-    @Inject
-    ViewModelProviderFactory mFactory;
 
     @Override
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
+
         super.onAttach(context);
-        mViewModel = new ViewModelProvider(this, mFactory)
-                .get(MapaViewModel.class);
+
+        mViewModel = new ViewModelProvider(this, mFactory).get(MapaViewModel.class);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mZoom = savedInstanceState == null
+                ? DEFAULT_ZOOM : savedInstanceState.getFloat(MAP_ZOOM, DEFAULT_ZOOM);
     }
 
     @Nullable
@@ -93,18 +103,18 @@ public class MapaView extends Fragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mZoom = savedInstanceState == null ? DEFAULT_ZOOM
-                : savedInstanceState.getFloat(MAP_ZOOM, DEFAULT_ZOOM);
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putFloat(MAP_ZOOM, mZoom);
+    }
+
+    @Override
+    public void onDestroy() {
+        mViewModel.getAverages().removeObservers(this);
+        mViewModel.getCity().removeObservers(this);
+
+        super.onDestroy();
     }
 
     @Override
@@ -122,7 +132,7 @@ public class MapaView extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        if (mViewModel.getPermissions().get())
+        if (hasLocationPermissions())
             mMap.setMyLocationEnabled(true);
         // Stub LocationSource to avoid battery drain
         // because we already have the location pending handler
@@ -143,25 +153,22 @@ public class MapaView extends Fragment
         mInfoWindowView = new InfoWindowView(mViewModel.getSettings());
         mMap.setInfoWindowAdapter(mInfoWindowView);
 
+        // Subscribe to ViewModel observables
         mViewModel.getCity().observe(this, city -> {
-            mLatLng = new LatLng(city.getLatitude(), city.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions().position(mLatLng);
-            mMarker = mMap.addMarker(markerOptions);
-            mMarker.setTitle(city.getName());
-            mMarker.setSnippet(" ( " + city.getLatitude() + " : " + city.getLongitude() + " ) ");
+            mInfoWindowView.setCity(city);
+            LatLng latLng = new LatLng(city.getLatitude(), city.getLongitude());
+            mMarker = mMap.addMarker(new MarkerOptions().position(latLng));
             mMarker.setIcon(BitmapDescriptorFactory
                     .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+            // Move to marker position
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoom));
         });
 
         mViewModel.getAverages().observe(this, averages -> {
-
             int orientation = requireContext().getResources().getConfiguration().orientation;
             mInfoWindowView // A little trick to change the count of data displayed on the map.
                     .setAverages(averages.subList(0, DAYS_TO_DISPLAY_ON_MAP - orientation));
             mMarker.showInfoWindow();
-
-            // Set marker position
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoom));
             // Get map width & height
             int mapWidth = mBinding.getRoot().getWidth();
             int mapHeight = mBinding.getRoot().getHeight();
@@ -171,6 +178,7 @@ public class MapaView extends Fragment
             Projection projection = mMap.getProjection();
             Point point = new Point(mapWidth / 2, (mapHeight - infoHeight) / 10);
             LatLng latLng = projection.fromScreenLocation(point);
+            // Slowly scroll the marker down
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng), 250, null);
         });
     }
@@ -214,12 +222,22 @@ public class MapaView extends Fragment
         mViewModel.onMapaClicked(latLng.latitude, latLng.longitude);
         return true;
     }
-
     // ----------------[CALLBACKS]----------------
-    private class InfoWindowView implements ViewBinding<ViewMarkerBinding>, GoogleMap.InfoWindowAdapter {
+
+    private boolean hasLocationPermissions() {
+        return ActivityCompat.checkSelfPermission(requireContext(),
+                "android.permission.ACCESS_FINE_LOCATION") == 0
+                &&
+                ActivityCompat.checkSelfPermission(requireContext(),
+                        "android.permission.ACCESS_COARSE_LOCATION") == 0;
+    }
+
+    private class InfoWindowView implements GoogleMap.InfoWindowAdapter {
+
         private final Settings mSettings;
-        private List<Average> mAverages;
         private View mRoot;
+        private City mCity;
+        private List<Average> mAverages;
 
         InfoWindowView(Settings settings) {
             mSettings = settings;
@@ -232,27 +250,23 @@ public class MapaView extends Fragment
 
         @Override
         public View getInfoContents(Marker marker) {
-            ViewMarkerBinding markerBinding = DataBindingUtil
+            ViewMarkerBinding binding = DataBindingUtil
                     .inflate(getLayoutInflater(), R.layout.view_marker, null, true);
 
-            initBinding(markerBinding);
-
-            return markerBinding.getRoot();
-        }
-
-        @Override
-        public void initBinding(ViewMarkerBinding binding) {
-            mRoot = binding.getRoot();
-            binding.miniAveragesRecycler
-                    .addItemDecoration(new DividerItemDecoration(requireContext(),
-                            DividerItemDecoration.VERTICAL));
             binding.miniAveragesRecycler.setLayoutManager(new LinearLayoutManager(requireContext(),
                     LinearLayoutManager.VERTICAL, false));
             binding.miniAveragesRecycler.setAdapter(new MiniAverageAdapter());
-            // TODO check two lines below
-            binding.setSettings(mSettings);
+
+            binding.setCity(mCity);
             binding.setAverages(mAverages);
+            binding.setSettings(mSettings);
             binding.executePendingBindings();
+
+            return mRoot = binding.getRoot();
+        }
+
+        public void setCity(City city) {
+            mCity = city;
         }
 
         public void setAverages(List<Average> averages) {
@@ -264,27 +278,3 @@ public class MapaView extends Fragment
         }
     }
 }
-
-//    // -=-=-=-=-=-=-=-=[REGULAR METHODS]=-=-=-=-=-=-=-=-
-//    private void setLocaleResources(final String languageCode) {
-//        Context context = requireContext();
-//        Resources res = context.getResources();
-//        // Change locale settings in the app.
-//        DisplayMetrics dm = res.getDisplayMetrics();
-//        android.content.res.Configuration conf = res.getConfiguration();
-//        conf.locale = new Locale(languageCode);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            conf.setLayoutDirection(conf.locale);
-//        }
-//        res.updateConfiguration(conf, dm);
-//    }
-//
-//    private void updateLocale(String language) {
-//        Locale locale = new Locale(language);
-//        Locale.setDefault(locale);
-//        Configuration config = getResources().getConfiguration();
-//        config.locale = locale;
-//        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-//    }
-//
-//    // ----------------[REGULAR METHODS]----------------

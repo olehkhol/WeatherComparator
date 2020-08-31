@@ -1,6 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.model.settings;
 
-public class Settings {
+public class Settings implements Cloneable {
     private int mLanguageIndex;
     private int mPressureIndex;
     private int mTemperatureIndex;
@@ -11,6 +11,11 @@ public class Settings {
         mPressureIndex = pressureIndex;
         mTemperatureIndex = temperatureIndex;
         mSpeedIndex = speedIndex;
+    }
+
+    public static Settings copy(Settings settings) {
+        return new Settings(settings.getLanguageIndex(), settings.getPressureIndex(),
+                settings.getTemperatureIndex(), settings.getSpeedIndex());
     }
 
     public int getLanguageIndex() {

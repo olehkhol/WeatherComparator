@@ -11,11 +11,9 @@
     <string name="stack_offline" translatable="false">Stack Exchange Offline</string>
     <string name="upwork_java_test" translatable="false">Upwork Java Test</string>
     <string name="base64_file_encoderdecoder" translatable="false">Base64 File Coder</string>
-    <string name="aliens_flashlight_compass" translatable="false">Aliens Compass</string>
 
     <string name="localization">LOCALIZATION</string>
     <string name="units">UNITS</string>
-    <string name="use_celsius">Display in Celsius</string>
     <string name="pref_language">Language</string>
     <string name="error">Error</string>
     <string name="permission">The app needs location permissions !</string>
@@ -41,7 +39,8 @@
     <string name="pref_pressure">Pressure</string>
     <string name="pref_speed">Speed</string>
     <string name="pref_temperature">Temperature</string>
-    <string name="separator" translatable="false">"  "</string>
     <string name="city">City</string>
     <string name="enter_name">Enter a city name:</string>
+    <string name="name">Kyiv</string>
+    <string name="formatted_latlon" translatable="false">( %2.4f , %2.4f )</string>
 </resources>

@@ -1,4 +1,4 @@
-package ua.in.khol.oleh.touristweathercomparer.model.settings.preferences;
+package ua.in.khol.oleh.touristweathercomparer.model.settings;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,26 +10,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Maybe;
 import ua.in.khol.oleh.touristweathercomparer.R;
-import ua.in.khol.oleh.touristweathercomparer.model.settings.RxSettings;
-import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
+import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 
-public class RxPreferencesSettings implements RxSettings {
+public class RxPreferencesHelper implements RxPreferences {
     private static final String PREF_KEY_LANGUAGE_INDEX = "PREF_KEY_LANGUAGE_INDEX";
     private static final String PREF_KEY_PRESSURE_INDEX = "PREF_KEY_PRESSURE_INDEX";
     private static final String PREF_KEY_SPEED_INDEX = "PREF_KEY_SPEED_INDEX";
     private static final String PREF_KEY_TEMPERATURE_INDEX = "PREF_KEY_TEMPERATURE_INDEX";
     private static final String PREF_KEY_LATITUDE = "PREF_KEY_LATITUDE";
     private static final String PREF_KEY_LONGITUDE = "PREF_KEY_LONGITUDE";
+    private static final String PREF_KEY_CURRENT_TIMESTAMP = "PREF_KEY_CURRENT_TIMESTAMP";
+    private static final String PREF_KEY_DAILIES_TIMESTAMP = "PREF_KEY_DAILIES_TIMESTAMP";
 
     private static List<String> mLanguages;
-    private final SharedPreferences mSharedPreferences;
-    private final SharedPreferences.Editor mSharedPreferencesEditor;
+    private final SharedPreferences mPreferences;
+    private final SharedPreferences.Editor mEditor;
 
     @SuppressLint("CommitPrefEdits")
-    public RxPreferencesSettings(Context context) {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        mSharedPreferencesEditor = mSharedPreferences.edit();
+    public RxPreferencesHelper(Context context) {
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mEditor = mPreferences.edit();
         mLanguages = Arrays.asList(context.getResources().getStringArray(R.array.languages_values));
     }
 
@@ -43,14 +45,14 @@ public class RxPreferencesSettings implements RxSettings {
         int index = mLanguages.indexOf(language);
         if (index == -1)
             index = 0;
-        mSharedPreferencesEditor.putInt(PREF_KEY_LANGUAGE_INDEX, index).apply();
+        mEditor.putInt(PREF_KEY_LANGUAGE_INDEX, index).apply();
     }
 
     @Override
     public int getLanguageIndex() {
         int index = 0;
-        if (mSharedPreferences.contains(PREF_KEY_LANGUAGE_INDEX))
-            index = mSharedPreferences.getInt(PREF_KEY_LANGUAGE_INDEX, 0);
+        if (mPreferences.contains(PREF_KEY_LANGUAGE_INDEX))
+            index = mPreferences.getInt(PREF_KEY_LANGUAGE_INDEX, 0);
         else {
             String language = Locale.getDefault().getLanguage();
             if (mLanguages.contains(language))
@@ -63,14 +65,14 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putLanguageIndex(int index) {
-        mSharedPreferencesEditor.putInt(PREF_KEY_LANGUAGE_INDEX, index).apply();
+        mEditor.putInt(PREF_KEY_LANGUAGE_INDEX, index).apply();
     }
 
     @Override
     public int getPressureIndex() {
         int index = 0;
-        if (mSharedPreferences.contains(PREF_KEY_PRESSURE_INDEX))
-            index = mSharedPreferences.getInt(PREF_KEY_PRESSURE_INDEX, 0);
+        if (mPreferences.contains(PREF_KEY_PRESSURE_INDEX))
+            index = mPreferences.getInt(PREF_KEY_PRESSURE_INDEX, 0);
         else
             putPressureIndex(index);
 
@@ -79,14 +81,14 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putPressureIndex(int index) {
-        mSharedPreferencesEditor.putInt(PREF_KEY_PRESSURE_INDEX, index).apply();
+        mEditor.putInt(PREF_KEY_PRESSURE_INDEX, index).apply();
     }
 
     @Override
     public int getTemperatureIndex() {
         int index = 0;
-        if (mSharedPreferences.contains(PREF_KEY_TEMPERATURE_INDEX))
-            index = mSharedPreferences.getInt(PREF_KEY_TEMPERATURE_INDEX, 0);
+        if (mPreferences.contains(PREF_KEY_TEMPERATURE_INDEX))
+            index = mPreferences.getInt(PREF_KEY_TEMPERATURE_INDEX, 0);
         else
             putTemperatureIndex(index);
 
@@ -95,14 +97,14 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putTemperatureIndex(int index) {
-        mSharedPreferencesEditor.putInt(PREF_KEY_TEMPERATURE_INDEX, index).apply();
+        mEditor.putInt(PREF_KEY_TEMPERATURE_INDEX, index).apply();
     }
 
     @Override
     public int getSpeedIndex() {
         int index = 0;
-        if (mSharedPreferences.contains(PREF_KEY_SPEED_INDEX))
-            index = mSharedPreferences.getInt(PREF_KEY_SPEED_INDEX, 0);
+        if (mPreferences.contains(PREF_KEY_SPEED_INDEX))
+            index = mPreferences.getInt(PREF_KEY_SPEED_INDEX, 0);
         else
             putSpeedIndex(index);
 
@@ -111,14 +113,14 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putSpeedIndex(int index) {
-        mSharedPreferencesEditor.putInt(PREF_KEY_SPEED_INDEX, index).apply();
+        mEditor.putInt(PREF_KEY_SPEED_INDEX, index).apply();
     }
 
     @Override
     public double getLat() {
         double latitude = 0f;
-        if (mSharedPreferences.contains(PREF_KEY_LATITUDE))
-            return getDouble(mSharedPreferences, PREF_KEY_LATITUDE, latitude);
+        if (mPreferences.contains(PREF_KEY_LATITUDE))
+            return getDouble(mPreferences, PREF_KEY_LATITUDE, latitude);
         else
             putLat(latitude);
 
@@ -127,14 +129,14 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putLat(double lat) {
-        putDouble(mSharedPreferencesEditor, PREF_KEY_LATITUDE, lat).apply();
+        putDouble(mEditor, PREF_KEY_LATITUDE, lat).apply();
     }
 
     @Override
     public double getLon() {
         double longitude = 0f;
-        if (mSharedPreferences.contains(PREF_KEY_LONGITUDE))
-            return getDouble(mSharedPreferences, PREF_KEY_LONGITUDE, longitude);
+        if (mPreferences.contains(PREF_KEY_LONGITUDE))
+            return getDouble(mPreferences, PREF_KEY_LONGITUDE, longitude);
         else
             putLon(longitude);
 
@@ -143,7 +145,7 @@ public class RxPreferencesSettings implements RxSettings {
 
     @Override
     public void putLon(double lon) {
-        putDouble(mSharedPreferencesEditor, PREF_KEY_LONGITUDE, lon).apply();
+        putDouble(mEditor, PREF_KEY_LONGITUDE, lon).apply();
     }
 
     @Override
@@ -158,6 +160,30 @@ public class RxPreferencesSettings implements RxSettings {
     public Settings getSettings() {
         return new Settings(getLanguageIndex(), getPressureIndex(),
                 getTemperatureIndex(), getSpeedIndex());
+    }
+
+    @Override
+    public Maybe<LatLon> tryLatLon() {
+        return Maybe.fromCallable(() -> {
+            if (mPreferences.contains(PREF_KEY_LATITUDE)
+                    && mPreferences.contains(PREF_KEY_LONGITUDE))
+                return new LatLon(getDouble(mPreferences, PREF_KEY_LATITUDE, 0),
+                        getDouble(mPreferences, PREF_KEY_LONGITUDE, 0));
+
+            return null;
+        });
+    }
+
+    @Override
+    public void putLatLon(LatLon latLon) {
+        putDouble(mEditor, PREF_KEY_LATITUDE, latLon.getLat()).apply();
+        putDouble(mEditor, PREF_KEY_LONGITUDE, latLon.getLon()).apply();
+    }
+
+    @Override
+    public LatLon getLatLon() {
+        return new LatLon(getDouble(mPreferences, PREF_KEY_LATITUDE, 0),
+                getDouble(mPreferences, PREF_KEY_LONGITUDE, 0));
     }
 
     private double getDouble(SharedPreferences prefs, String key, double defaultValue) {

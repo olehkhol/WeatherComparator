@@ -4,52 +4,43 @@ import android.util.Pair;
 
 import java.util.List;
 
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import ua.in.khol.oleh.touristweathercomparer.model.db.data.Forecast;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.settings.Settings;
 import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.Average;
-import ua.in.khol.oleh.touristweathercomparer.viewmodel.observables.City;
 
 public interface Repository {
 
-    enum Status {
-        OFFLINE, CRITICAL_OFFLINE, ONLINE, REFRESHING, REFRESHED,
-        NEED_RECREATE, ERROR, LOCATION_UNAVAILABLE, CLEAR
-    }
+    void coldRefresh();
 
-    Observable<City> observeCity();
+    void hotRefresh();
 
-    Observable<Average> observeCurrent();
-
-    Observable<List<Average>> observeAverages();
-
-    Observable<Settings> observeSettings();
-
-    Observable<Status> observeStatus();
+    Observable<Object> observeBus();
 
     Observable<Place> observePlace();
 
-    Observable<List<Forecast>> observeCurrents();
+    Observable<Place> observeLatestPlace();
 
-    Observable<List<List<Forecast>>> observeDailies();
+    Maybe<LatLon> tryLatLon();
 
-    void setSettings(Settings settings);
+    Maybe<Place> tryPlace(LatLon latLon);
 
-    void processRefresh(boolean type);
+    Maybe<Average> tryCurrent(long placeId);
+
+    Maybe<List<Average>> tryDailies(long placeId);
 
     Settings getSettings();
 
-    Single<List<Pair<String, String>>> predictPlacesList(String query);
-
-    void processPlaceById(String placeId);
+    void setSettings(Settings settings);
 
     void setLocation(LatLon latLon);
 
-    boolean getPermissions();
+    void processPlaceById(String placeId);
 
-    void setPermissions(boolean allowed);
+    Single<List<Pair<String, String>>> predictPlaceNames(String query);
 
+    Observable<List<Place>> observeLatestPlaces(int placesCount);
 }

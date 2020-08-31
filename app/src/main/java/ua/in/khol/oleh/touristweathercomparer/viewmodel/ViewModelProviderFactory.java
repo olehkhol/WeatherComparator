@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ua.in.khol.oleh.touristweathercomparer.model.Repository;
 
 public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFactory {
+
     private final Repository mRepository;
 
     public ViewModelProviderFactory(Repository repository) {
@@ -31,6 +32,9 @@ public class ViewModelProviderFactory extends ViewModelProvider.NewInstanceFacto
         } else if (modelClass.isAssignableFrom(ForecastViewModel.class)) {
             //noinspection unchecked
             return (T) new ForecastViewModel(mRepository);
+        } else if (modelClass.isAssignableFrom(AveragesViewModel.class)) {
+            //noinspection unchecked
+            return (T) new AveragesViewModel(mRepository);
         } else if (modelClass.isAssignableFrom(InfoViewModel.class)) {
             //noinspection unchecked
             return (T) new InfoViewModel(mRepository);

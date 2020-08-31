@@ -7,11 +7,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -19,10 +19,8 @@ import ua.in.khol.oleh.touristweathercomparer.model.location.LatLon;
 import ua.in.khol.oleh.touristweathercomparer.model.location.RxLocation;
 
 public class RxAndroidLocation implements RxLocation {
-    private static final String TAG = RxAndroidLocation.class.getName();
-
     private final LocationManager mLocationManager;
-    private Criteria mCriteria;
+    private final Criteria mCriteria;
 
     public RxAndroidLocation(Context context) {
         mLocationManager = (LocationManager) context.getApplicationContext()
@@ -40,10 +38,10 @@ public class RxAndroidLocation implements RxLocation {
                         .requestSingleUpdate(mCriteria,
                                 new LocationListener() {
                                     @Override
-                                    public void onLocationChanged(Location location) {
+                                    public void onLocationChanged(@NotNull Location location) {
                                         double lat = location.getLatitude();
                                         double lon = location.getLongitude();
-                                        Log.d(TAG, String.format("Latitude:%f, longitude:%f", lat, lon));
+
                                         emitter.onSuccess(new LatLon(lat, lon));
                                         mLocationManager.removeUpdates(this);
                                     }
@@ -54,11 +52,11 @@ public class RxAndroidLocation implements RxLocation {
                                     }
 
                                     @Override
-                                    public void onProviderEnabled(String provider) {
+                                    public void onProviderEnabled(@NotNull String provider) {
                                     }
 
                                     @Override
-                                    public void onProviderDisabled(String provider) {
+                                    public void onProviderDisabled(@NotNull String provider) {
                                     }
                                 }, null);
             }
@@ -68,23 +66,35 @@ public class RxAndroidLocation implements RxLocation {
     @SuppressLint("MissingPermission")
     @Override
     public Observable<Boolean> observeUsability() {
-        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                emitter.onNext(isLocationEnabled());
+        return Observable.create(emitter -> {
+            boolean enabled = isLocationEnabled();
+            emitter.onNext(enabled);
+            if (enabled)
                 emitter.onComplete();
-            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public Maybe<LatLon> tryLatLon() {
+        return Maybe.fromCallable(() -> {
+            if (!isLocationEnabled())
+                return null;
+
+            Location location = mLocationManager
+                    .getLastKnownLocation(mLocationManager.getBestProvider(mCriteria, true));
+            if (location != null)
+                return new LatLon(location.getLatitude(), location.getLongitude());
+
+            return null;
         });
     }
 
     private boolean isLocationEnabled() {
         boolean gps = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean net = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        boolean locationEnabled = gps | net;
 
-        Log.d(TAG, String.format("Location enabled:%b", locationEnabled));
-
-        return locationEnabled;
+        return gps | net;
     }
 
     private Criteria getCriteria(int accuracy, int power) {

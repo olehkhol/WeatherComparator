@@ -4,4 +4,6 @@ import io.reactivex.Observable;
 
 public interface RxNetwork {
     Observable<Boolean> observeInternetConnectivity();
+
+    boolean isConnected();
 }
