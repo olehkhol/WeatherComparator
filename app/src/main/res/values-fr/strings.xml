@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="communication">Communication</string>
+    <string name="rate_and_review">Revue et évaluer</string>
+    <string name="share">Partager</string>
+
+    <string name="other_apps">Autres applications</string>
+
+    <string name="preferences">Préférences</string>
+    <string name="units">UNITÉS</string>
+    <string name="temperature">Température</string>
+    <string name="pressure">Pression %1$.0f %2$s</string>
+    <string name="speed">Vitesse</string>
+    <string name="localization">LOCALISATION</string>
+    <string name="language">Langue</string>
+
+    <string name="error">Erreur</string>
+    <string name="permission">Besoin d\'autorisations de localisation!</string>
+    <string name="finish">Finition</string>
+    <string name="search">Chercher</string>
+    <string name="alert_location_title">Emplacement requis</string>
+    <string name="alert_location_message">Activer les services de localisation?</string>
+    <string name="alert_wireless_title">Sans fil requis</string>
+    <string name="alert_wireless_message">Activer les services sans fil?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="title_home">Prévision</string>
+    <string name="title_map">Carte</string>
+    <string name="humidity">Humidité %d%%</string>
+    <string name="wind">Vent %1$.1f %2$s</string>
+    <string name="title_info">Info</string>
+    <string name="info_file">info_fr.html</string>
+    <string name="pref_pressure">Pression</string>
+    <string name="city">Ville</string>
+    <string name="enter_name">Entrez un nom de ville:</string>
+    <string name="name">Paris</string>
+
+</resources>

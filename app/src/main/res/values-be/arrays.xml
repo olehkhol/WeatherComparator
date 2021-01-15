@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="temperature">
-        <item>Цельсія</item>
-        <item>Фаренгейта</item>
+        <item>Цэльсія</item>
+        <item>Фарэнгейта</item>
         <item>Кельвін</item>
     </string-array>
 
@@ -13,38 +13,38 @@
     </string-array>
 
     <string-array name="speed">
-        <item>Метр за секунду</item>
-        <item>Кілометр за годину</item>
-        <item>Миля за годину</item>
+        <item>Метр у секунду</item>
+        <item>Кіламетр у гадзіну</item>
+        <item>Міля ў гадзіну</item>
     </string-array>
 
     <string-array name="speed_values">
         <item>м/с</item>
-        <item>км/год</item>
-        <item>миля/год</item>
+        <item>км/г</item>
+        <item>міля/г</item>
     </string-array>
 
     <string-array name="pressure">
-        <item>Міліметр рт. ст.</item>
+        <item>Мілімэтар рт. сл.</item>
         <item>Гектопаскаль</item>
         <item>Мілібар</item>
     </string-array>
 
     <string-array name="pressure_values">
-        <item>мм рт.ст.</item>
+        <item>мм р.с.</item>
         <item>гПа</item>
         <item>мбар</item>
     </string-array>
 
     <string-array name="directions">
-        <item>Північ</item>
-        <item>Північний схід</item>
-        <item>Схід</item>
-        <item>Південний схід</item>
-        <item>Південь</item>
-        <item>Південний захід</item>
-        <item>Захід</item>
-        <item>Північний захід</item>
+        <item>Поўнач</item>
+        <item>Паўночны ўсход</item>
+        <item>Усход</item>
+        <item>Паўднёва ўсход</item>
+        <item>Поўдзень</item>
+        <item>Паўднёвы захад</item>
+        <item>Захад</item>
+        <item>Паўночны захад</item>
     </string-array>
 
 </resources>

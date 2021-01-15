@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="temperature">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+        <item>Kelvin</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>℃</item>
+        <item>℉</item>
+        <item>K</item>
+    </string-array>
+
+    <string-array name="speed">
+        <item>Metro al secondo</item>
+        <item>Miglio orario</item>
+        <item>Chilometro orario</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>m/s</item>
+        <item>mi/h</item>
+        <item>km/h</item>
+    </string-array>
+
+    <string-array name="pressure">
+        <item>Millimetro di mercurio</item>
+        <item>Hectopascal</item>
+        <item>Millibar</item>
+    </string-array>
+
+    <string-array name="pressure_values">
+        <item>mmHg</item>
+        <item>hPa</item>
+        <item>mbar</item>
+    </string-array>
+    
+    <string-array name="directions">
+        <item>Nord</item>
+        <item>Nord-est</item>
+        <item>Est</item>
+        <item>Sud-est</item>
+        <item>Sud</item>
+        <item>Sud-ovest</item>
+        <item>Ovest</item>
+        <item>Nord-ovest</item>
+    </string-array>
+
+</resources>

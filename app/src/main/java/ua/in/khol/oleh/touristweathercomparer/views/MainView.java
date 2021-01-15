@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,9 +76,6 @@ public class MainView extends AppCompatActivity
 
         ViewMainBinding binding = DataBindingUtil.setContentView(this, R.layout.view_main);
         initBinding(binding);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override
@@ -347,7 +343,7 @@ public class MainView extends AppCompatActivity
     }
 
     private void updateLocale(int index) {
-        Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
+        Locale locale = new Locale(getResources().getStringArray(R.array.language_values)[index]);
         Locale.setDefault(locale);
         Configuration config = getResources().getConfiguration();
         config.locale = locale;

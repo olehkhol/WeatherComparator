@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 
+import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDex;
 
 import com.google.firebase.analytics.FirebaseAnalytics;

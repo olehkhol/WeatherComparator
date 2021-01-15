@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="languages">
-        <item>English</item>
-        <item>Ukrainian</item>
-        <item>Russian</item>
-    </string-array>
-
-    <string-array name="languages_values">
-        <item>en</item>
-        <item>uk</item>
-        <item>ru</item>
-    </string-array>
-
     <string-array name="temperature">
         <item>Celsius</item>
         <item>Fahrenheit</item>
@@ -59,4 +47,23 @@
         <item>Northwest</item>
     </string-array>
 
+    <string-array name="languages" translatable="false">
+        <item>English</item>
+        <item>Italiano</item>
+        <item>Deutsch</item>
+        <item>Français</item>
+        <item>Українська</item>
+        <item>Беларуская</item>
+        <item>Русский</item>
+    </string-array>
+
+    <string-array name="language_values" translatable="false">
+        <item>en</item>
+        <item>it</item>
+        <item>de</item>
+        <item>fr</item>
+        <item>uk</item>
+        <item>be</item>
+        <item>ru</item>
+    </string-array>
 </resources>

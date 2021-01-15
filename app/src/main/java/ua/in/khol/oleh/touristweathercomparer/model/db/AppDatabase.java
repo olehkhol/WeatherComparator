@@ -10,7 +10,7 @@ import ua.in.khol.oleh.touristweathercomparer.model.db.data.Current;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Daily;
 import ua.in.khol.oleh.touristweathercomparer.model.db.data.Place;
 
-@Database(entities = {Place.class, Daily.class, Current.class}, version = 3, exportSchema = false)
+@Database(entities = {Place.class, Daily.class, Current.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract PlaceDao getPlaceDao();

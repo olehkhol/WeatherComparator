@@ -52,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center_vertical"
-                        android:text="@string/pref_temperature"
+                        android:text="@string/temperature"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/settings_text_size" />
 
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center_vertical"
-                        android:text="@string/pref_speed"
+                        android:text="@string/speed"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/settings_text_size" />
 
@@ -151,7 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center_vertical"
-                        android:text="@string/pref_language"
+                        android:text="@string/language"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/settings_text_size" />
 

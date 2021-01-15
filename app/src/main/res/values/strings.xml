@@ -1,24 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-
-    <string name="app_name" translatable="false">Weather Averages</string>
-    <string name="preferences">Preferences</string>
-    <string name="asset_image" translatable="false">file:///android_asset/%s.png</string>
-
+    <string name="communication">Communication</string>
     <string name="rate_and_review">Rate and review</string>
-    <string name="other_apps">Other applications</string>
-    <string name="stack_offline" translatable="false">Stack Exchange Offline</string>
-    <string name="upwork_java_test" translatable="false">Upwork Java Test</string>
-    <string name="base64_file_encoderdecoder" translatable="false">Base64 File Coder</string>
+    <string name="share">Share</string>
 
-    <string name="localization">LOCALIZATION</string>
+    <string name="other_apps">Other applications</string>
+
+    <string name="preferences">Preferences</string>
     <string name="units">UNITS</string>
-    <string name="pref_language">Language</string>
+    <string name="temperature">Temperature</string>
+    <string name="pressure">Pressure %1$.0f %2$s</string>
+    <string name="speed">Speed</string>
+    <string name="localization">LOCALIZATION</string>
+    <string name="language">Language</string>
+
     <string name="error">Error</string>
     <string name="permission">The app needs location permissions !</string>
     <string name="finish">Finish</string>
-
     <string name="search">Search</string>
     <string name="alert_location_title">Location required</string>
     <string name="alert_location_message">Turn on Location Services ?</string>
@@ -26,21 +24,24 @@
     <string name="alert_wireless_message">Turn on Wireless Services ?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="communicate">Communicate</string>
-    <string name="share">Share</string>
     <string name="title_home">Forecast</string>
     <string name="title_map">Map</string>
     <string name="humidity">Humidity %d%%</string>
-    <string name="pressure">Pressure %1$.0f %2$s</string>
     <string name="wind">Wind %1$.1f %2$s</string>
     <string name="title_info">Info</string>
-
     <string name="info_file">info_en.html</string>
     <string name="pref_pressure">Pressure</string>
-    <string name="pref_speed">Speed</string>
-    <string name="pref_temperature">Temperature</string>
     <string name="city">City</string>
     <string name="enter_name">Enter a city name:</string>
-    <string name="name">Kyiv</string>
+    <string name="name">London</string>
+
+    <string name="app_name" translatable="false">Weather Averages</string>
+    <string name="asset_image" translatable="false">file:///android_asset/%s.png</string>
     <string name="formatted_latlon" translatable="false">( %2.4f , %2.4f )</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
+    <string name="stack_offline" translatable="false">Stack Exchange Offline</string>
+    <string name="upwork_java_test" translatable="false">Upwork Java Test</string>
+    <string name="base64_file_encoderdecoder" translatable="false">Base64 File Coder</string>
 </resources>
