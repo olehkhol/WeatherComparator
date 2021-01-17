@@ -191,10 +191,11 @@ public class GodRepository implements Repository {
         mSettings = Settings.copy(settings);
         mPreferences.putSetting(mSettings);
 
-        mRxBus.send(Event.NEED_RECREATE);
+        // hotRefresh();
 
-        if (languageChanged)
-            hotRefresh();
+        if (languageChanged) {
+            mRxBus.send(Event.NEED_RECREATE);
+        }
     }
 
     @Override

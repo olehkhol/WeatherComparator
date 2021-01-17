@@ -18,6 +18,11 @@ public class Settings implements Cloneable {
                 settings.getTemperatureIndex(), settings.getSpeedIndex());
     }
 
+    public Settings clone() {
+        return new Settings(mLanguageIndex, mPressureIndex,
+                mTemperatureIndex, mSpeedIndex);
+    }
+
     public int getLanguageIndex() {
         return mLanguageIndex;
     }

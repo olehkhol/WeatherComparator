@@ -39,8 +39,7 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
 
     private ForecastViewModel mViewModel;
     private ForecastCollectionAdapter mAdapter;
-    private ViewPager2 mViewPager;
-    private List<Town> mTowns = new ArrayList<>();
+    private final List<Town> mTowns = new ArrayList<>();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -84,14 +83,15 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
     @Override
     public void initBinding(ViewForecastBinding binding) {
         mAdapter = new ForecastCollectionAdapter(this);
-        mViewPager = binding.viewPager;
+        ViewPager2 mViewPager = binding.viewPager;
         mViewPager.setAdapter(mAdapter);
 
         TabLayout tabLayout = binding.tabLayout;
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
+                //mViewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -106,7 +106,10 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
         });
 
         new TabLayoutMediator(tabLayout, mViewPager,
-                (tab, position) -> tab.setCustomView(mAdapter.getTabView(position))).attach();
+                (tab, position) -> {
+                    tab.setCustomView(mAdapter.getTabView(position));
+                })
+                .attach();
     }
 
     private class ForecastCollectionAdapter extends FragmentStateAdapter {
@@ -149,6 +152,7 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
 
 
         public View getTabView(int position) {
+            //TabItemBinding binding = TabItemBinding.inflate(getLayoutInflater());
             TabItemBinding binding = DataBindingUtil
                     .inflate(getLayoutInflater(), R.layout.tab_item, null, true);
 

@@ -28,6 +28,11 @@ public class AveragesViewModel extends BaseViewModel {
         mSettings = repository.getSettings();
     }
 
+    public void setPlaceId(long placeId) {
+        mPlaceId = placeId;
+        onSwipe();
+    }
+
     public void onSwipe() {
         subscribeCurrent();
         subscribeAverages();
@@ -88,8 +93,4 @@ public class AveragesViewModel extends BaseViewModel {
         return mDailies;
     }
 
-    public void setPlaceId(long placeId) {
-        mPlaceId = placeId;
-        onSwipe();
-    }
 }
