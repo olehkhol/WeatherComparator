@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="@string/communicate">
+    <item android:title="@string/communication">
         <menu>
             <item
                 android:id="@+id/nav_rate"

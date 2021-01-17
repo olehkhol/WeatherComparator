@@ -347,7 +347,7 @@ public class MainView extends AppCompatActivity
     }
 
     private void updateLocale(int index) {
-        Locale locale = new Locale(getResources().getStringArray(R.array.languages_values)[index]);
+        Locale locale = new Locale(getResources().getStringArray(R.array.language_values)[index]);
         Locale.setDefault(locale);
         Configuration config = getResources().getConfiguration();
         config.locale = locale;

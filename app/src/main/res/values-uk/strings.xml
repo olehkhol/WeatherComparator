@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="communication">Комунікація</string>
+    <string name="rate_and_review">Оцінка і відгук</string>
+    <string name="share">Поділитись</string>
+
+    <string name="other_apps">Інші застосунки</string>
 
     <string name="preferences">Налаштування</string>
-    <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="units">ОДИНИЦІ</string>
-    <string name="pref_language">Мова</string>
-    <string name="other_apps">Інші застосунки</string>
-    <string name="rate_and_review">Оцінка і відгук</string>
+    <string name="temperature">Температура</string>
+    <string name="pressure">Тиск %1$.0f %2$s</string>
+    <string name="speed">Швидкість</string>
+    <string name="localization">ЛОКАЛІЗАЦІЯ</string>
+    <string name="language">Мова</string>
+
     <string name="error">Помилка</string>
     <string name="permission">Додаток потребує дозволу на визначення місцезнаходження !</string>
     <string name="finish">Завершити</string>
@@ -14,20 +21,15 @@
     <string name="alert_location_title">Необхідне місцезнаходження</string>
     <string name="alert_location_message">Увімкнути служби локації ?</string>
     <string name="alert_wireless_title">Необхідний бездротовий зв’язок</string>
-    <string name="alert_wireless_message">Увімкнути бездротові служби?</string>
+    <string name="alert_wireless_message">Увімкнути бездротові служби ?</string>
     <string name="ok">OK</string>
     <string name="cancel">Відміна</string>
-    <string name="communicate">Комунікація</string>
-    <string name="share">Поділитись</string>
     <string name="title_home">Прогноз</string>
     <string name="title_map">Мапа</string>
     <string name="humidity">Вологість %d%%</string>
-    <string name="pressure">Тиск %1$.0f %2$s</string>
     <string name="wind">Вітер %1$.1f %2$s</string>
     <string name="title_info">Інфо</string>
     <string name="pref_pressure">Тиск</string>
-    <string name="pref_temperature">Температура</string>
-    <string name="pref_speed">Швидкість</string>
     <string name="info_file">info_uk.html</string>
     <string name="city">Місто</string>
     <string name="enter_name">Введіть назву міста:</string>

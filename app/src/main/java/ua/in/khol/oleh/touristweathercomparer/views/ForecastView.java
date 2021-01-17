@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -39,8 +38,7 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
 
     private ForecastViewModel mViewModel;
     private ForecastCollectionAdapter mAdapter;
-    private ViewPager2 mViewPager;
-    private List<Town> mTowns = new ArrayList<>();
+    private final List<Town> mTowns = new ArrayList<>();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -84,28 +82,10 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
     @Override
     public void initBinding(ViewForecastBinding binding) {
         mAdapter = new ForecastCollectionAdapter(this);
-        mViewPager = binding.viewPager;
+        ViewPager2 mViewPager = binding.viewPager;
         mViewPager.setAdapter(mAdapter);
 
-        TabLayout tabLayout = binding.tabLayout;
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        new TabLayoutMediator(tabLayout, mViewPager,
+        new TabLayoutMediator(binding.tabLayout, mViewPager,
                 (tab, position) -> tab.setCustomView(mAdapter.getTabView(position))).attach();
     }
 

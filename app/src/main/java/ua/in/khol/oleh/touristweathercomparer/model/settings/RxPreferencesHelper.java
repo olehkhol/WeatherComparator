@@ -32,7 +32,7 @@ public class RxPreferencesHelper implements RxPreferences {
     public RxPreferencesHelper(Context context) {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mEditor = mPreferences.edit();
-        mLanguages = Arrays.asList(context.getResources().getStringArray(R.array.languages_values));
+        mLanguages = Arrays.asList(context.getResources().getStringArray(R.array.language_values));
     }
 
     @Override

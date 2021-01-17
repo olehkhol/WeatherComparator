@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="communication">Comunicazione</string>
+    <string name="rate_and_review">Valuta e recensisci</string>
+    <string name="share">Condividere</string>
+
+    <string name="other_apps">Altre applicazioni</string>
+
+    <string name="preferences">Preferenze</string>
+    <string name="units">UNITÀ</string>
+    <string name="temperature">Temperatura</string>
+    <string name="pressure">Pressione %1$.0f %2$s</string>
+    <string name="speed">Velocità</string>
+    <string name="localization">LOCALIZZAZIONE</string>
+    <string name="language">Linguaggio</string>
+
+    <string name="error">Errore</string>
+    <string name="permission">App necessità di autorizzazioni di localizzazione !</string>
+    <string name="finish">Finire</string>
+    <string name="search">Ricerca</string>
+    <string name="alert_location_title">Richiesta posizione</string>
+    <string name="alert_location_message">Attivare i Servizi di Localizzazione ?</string>
+    <string name="alert_wireless_title">Richiesta wireless</string>
+    <string name="alert_wireless_message">Attivare il Servizio Wireless ?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annulla</string>
+    <string name="title_home">Previsione</string>
+    <string name="title_map">Mappa</string>
+    <string name="humidity">Umidità %d%%</string>
+    <string name="wind">Vento %1$.1f %2$s</string>
+    <string name="title_info">Info</string>
+    <string name="info_file">info_it.html</string>
+    <string name="pref_pressure">Pressione</string>
+    <string name="city">Città</string>
+    <string name="enter_name">Inserisci il nome della città:</string>
+    <string name="name">Rome</string>
+</resources>
