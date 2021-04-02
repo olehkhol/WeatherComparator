@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="communication">Сувязь</string>
+    <string name="communication">Камунікацыя</string>
     <string name="rate_and_review">Ацэнка і водгук</string>
     <string name="share">Падзяліцца</string>
 
-    <string name="other_apps">Іншыя прыкладання</string>
+    <string name="more_apps">Больш прыкладанняў</string>
 
     <string name="preferences">Налады</string>
     <string name="units">АДЗІНКУ</string>
     <string name="temperature">Тэмпература</string>
     <string name="pressure">Ціск %1$.0f %2$s</string>
     <string name="speed">Хуткасць</string>
-    <string name="localization">ЛАКАЛІЗАЦЫІ</string>
+    <string name="localization">ЛАКАЛІЗАЦЫЯ</string>
     <string name="language">Мова</string>
 
-    <string name="error">Памылка</string>
-    <string name="permission">Дадаткам неободимо дазвол на вызначэнне месцазнаходжання !</string>
-    <string name="finish">Завяршыць</string>
     <string name="search">Пошук</string>
-    <string name="alert_location_title">Неабходна месцазнаходжанне</string>
-    <string name="alert_location_message">Уключыць службы лакацыі ?</string>
-    <string name="alert_wireless_title">Неабходна бесправадная сувязь</string>
-    <string name="alert_wireless_message">Уключыць бесправадныя службы ?</string>
+    <string name="alert_location_title">Уключыць GPS</string>
+    <string name="alert_location_message">Уключыце GPS на вашай прыладзе</string>
+    <string name="alert_wireless_title">Уключыць Інтэрнэт</string>
+    <string name="alert_wireless_message">Уключыце Інтэрнэт на вашай прыладзе</string>
     <string name="ok">OK</string>
     <string name="cancel">Адмена</string>
     <string name="title_home">Прагноз</string>

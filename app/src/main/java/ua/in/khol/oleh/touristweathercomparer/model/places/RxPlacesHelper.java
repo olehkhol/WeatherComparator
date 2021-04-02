@@ -28,8 +28,9 @@ public class RxPlacesHelper implements PlacesHelper {
 
     public RxPlacesHelper(Context context) {
         // TODO[38] replace with PlacesApiKey
+        String placesApiKey = PlacesAuth.getPlacesApiKey();
         if (!Places.isInitialized())
-            Places.initialize(context, GeocodingAuth.getApiKey());
+            Places.initialize(context, placesApiKey);
 
         // Create a new Places client instance.
         mPlacesClient = Places.createClient(context);
@@ -63,6 +64,9 @@ public class RxPlacesHelper implements PlacesHelper {
                         }
 
                         emitter.onSuccess(list);
+                    })
+                    .addOnFailureListener(e -> {
+                        e.printStackTrace();
                     });
         });
     }

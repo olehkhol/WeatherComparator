@@ -4,7 +4,7 @@
     <string name="rate_and_review">Rate and review</string>
     <string name="share">Share</string>
 
-    <string name="other_apps">Other applications</string>
+    <string name="more_apps">More applications</string>
 
     <string name="preferences">Preferences</string>
     <string name="units">UNITS</string>
@@ -14,14 +14,11 @@
     <string name="localization">LOCALIZATION</string>
     <string name="language">Language</string>
 
-    <string name="error">Error</string>
-    <string name="permission">The app needs location permissions !</string>
-    <string name="finish">Finish</string>
     <string name="search">Search</string>
-    <string name="alert_location_title">Location required</string>
-    <string name="alert_location_message">Turn on Location Services ?</string>
-    <string name="alert_wireless_title">Wireless required</string>
-    <string name="alert_wireless_message">Turn on Wireless Services ?</string>
+    <string name="alert_location_title">Enable GPS</string>
+    <string name="alert_location_message">Please enable GPS on your device</string>
+    <string name="alert_wireless_title">Enable Internet</string>
+    <string name="alert_wireless_message">Please enable Internet on your device</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Forecast</string>

@@ -16,7 +16,7 @@
         </menu>
     </item>
 
-    <item android:title="@string/other_apps">
+    <item android:title="@string/more_apps">
         <menu>
             <item
                 android:id="@+id/nav_seo"

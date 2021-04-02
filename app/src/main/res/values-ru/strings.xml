@@ -4,7 +4,7 @@
     <string name="rate_and_review">Оценка и отзыв</string>
     <string name="share">Поделиться</string>
 
-    <string name="other_apps">Другие приложения</string>
+    <string name="more_apps">Больше приложений</string>
 
     <string name="preferences">Настройки</string>
     <string name="units">ЕДИНИЦЫ</string>
@@ -14,14 +14,11 @@
     <string name="localization">ЛОКАЛИЗАЦИЯ</string>
     <string name="language">Язык</string>
 
-    <string name="error">Ошибка</string>
-    <string name="permission">Приложению неободимо разрешение на определение местоположения !</string>
-    <string name="finish">Завершить</string>
     <string name="search">Поиск</string>
-    <string name="alert_location_title">Необходимо местонахождение</string>
-    <string name="alert_location_message">Включить службы локации ?</string>
-    <string name="alert_wireless_title">Необходима беспроводная связь</string>
-    <string name="alert_wireless_message">Включить беспроводные службы ?</string>
+    <string name="alert_location_title">Включить GPS</string>
+    <string name="alert_location_message">Включите GPS на вашем устройстве</string>
+    <string name="alert_wireless_title">Включить Интернет</string>
+    <string name="alert_wireless_message">Включите Интернет на вашем устройстве</string>
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
     <string name="title_home">Прогноз</string>

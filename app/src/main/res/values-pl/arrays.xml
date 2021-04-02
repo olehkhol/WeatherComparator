@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="temperature">
-        <item>Celsius</item>
+        <item>Celsjusz</item>
         <item>Fahrenheit</item>
-        <item>Kelvin</item>
+        <item>Kelwin</item>
     </string-array>
 
     <string-array name="temperature_values">
@@ -13,9 +13,9 @@
     </string-array>
 
     <string-array name="speed">
-        <item>Metro al secondo</item>
-        <item>Miglio orario</item>
-        <item>Chilometro orario</item>
+        <item>Metr na sekundę</item>
+        <item>Mila na godzinę</item>
+        <item>Kilometr na godzinę</item>
     </string-array>
 
     <string-array name="speed_values">
@@ -25,9 +25,9 @@
     </string-array>
 
     <string-array name="pressure">
-        <item>Millimetro di mercurio</item>
-        <item>Ettopascal</item>
-        <item>Millibar</item>
+        <item>Milimetr słupa rtęci</item>
+        <item>Hektopaskal</item>
+        <item>Milibar</item>
     </string-array>
 
     <string-array name="pressure_values">
@@ -35,16 +35,16 @@
         <item>hPa</item>
         <item>mbar</item>
     </string-array>
-    
+
     <string-array name="directions">
-        <item>Nord</item>
-        <item>Nord-Est</item>
-        <item>Est</item>
-        <item>Sud-Est</item>
-        <item>Sud</item>
-        <item>Sud-Ovest</item>
-        <item>Ovest</item>
-        <item>Nord-Ovest</item>
+        <item>Północ</item>
+        <item>Północny wschód</item>
+        <item>Wschód</item>
+        <item>Południowy wschód</item>
+        <item>Południe</item>
+        <item>Południowy zachód</item>
+        <item>Zachód</item>
+        <item>Północny zachód</item>
     </string-array>
 
 </resources>

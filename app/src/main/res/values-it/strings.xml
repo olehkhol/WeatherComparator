@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="communication">Comunicazione</string>
-    <string name="rate_and_review">Valuta e recensisci</string>
-    <string name="share">Condividere</string>
+    <string name="rate_and_review">Valutazione e recensione</string>
+    <string name="share">Condividi</string>
 
-    <string name="other_apps">Altre applicazioni</string>
+    <string name="more_apps">Più apps</string>
 
     <string name="preferences">Preferenze</string>
     <string name="units">UNITÀ</string>
@@ -12,16 +12,13 @@
     <string name="pressure">Pressione %1$.0f %2$s</string>
     <string name="speed">Velocità</string>
     <string name="localization">LOCALIZZAZIONE</string>
-    <string name="language">Linguaggio</string>
+    <string name="language">Lingua</string>
 
-    <string name="error">Errore</string>
-    <string name="permission">App necessità di autorizzazioni di localizzazione !</string>
-    <string name="finish">Finire</string>
     <string name="search">Ricerca</string>
-    <string name="alert_location_title">Richiesta posizione</string>
-    <string name="alert_location_message">Attivare i Servizi di Localizzazione ?</string>
-    <string name="alert_wireless_title">Richiesta wireless</string>
-    <string name="alert_wireless_message">Attivare il Servizio Wireless ?</string>
+    <string name="alert_location_title">Abilita GPS</string>
+    <string name="alert_location_message">Si prega di abilitare il GPS nel dispositivo</string>
+    <string name="alert_wireless_title">Abilita Internet</string>
+    <string name="alert_wireless_message">"Si prega di abilitare Internet nel dispositivo "</string>
     <string name="ok">OK</string>
     <string name="cancel">Annulla</string>
     <string name="title_home">Previsione</string>

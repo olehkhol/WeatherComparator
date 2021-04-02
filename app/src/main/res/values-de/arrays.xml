@@ -20,7 +20,7 @@
 
     <string-array name="speed_values">
         <item>m/s</item>
-        <item>mi/h</item>
+        <item>mph</item>
         <item>km/h</item>
     </string-array>
 
@@ -31,7 +31,7 @@
     </string-array>
 
     <string-array name="pressure_values">
-        <item>mm Hg</item>
+        <item>mmHg</item>
         <item>hPa</item>
         <item>mbar</item>
     </string-array>

@@ -31,7 +31,7 @@ class GeocodingAuthTest {
     // Test .getApiKey() returns not null
     @Test
     fun checkGeocodingApiKey_returnsNotNull() {
-        val key: String = GeocodingAuth.getApiKey();
+        val key: String = GeocodingAuth.getGeocodingApiKey();
 
         if (key != null)
             print("Success")
@@ -51,7 +51,7 @@ class GeocodingAuthTest {
     // Test .getApiKey() returns not empty string
     @Test
     fun checkGeocodingApiKey_returnsNotEmpty() {
-        val key: String = GeocodingAuth.getApiKey();
+        val key: String = GeocodingAuth.getGeocodingApiKey();
 
         if (key.isNotEmpty())
             print("Success")

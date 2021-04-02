@@ -119,14 +119,14 @@ public final class BindingAdapters {
 
         switch (index) {
             case 0:
-                speed = mph * 0.44704f;
+                speed = mph * 0.44704f; // MPS
                 break;
-            case 2:
+            case 1:
             default:
                 speed = mph;
                 break;
-            case 1:
-                speed = mph * 1.609344f;
+            case 2:
+                speed = mph * 1.609344f; // KPH
                 break;
         }
         String formatted = String.format(resources.getString(R.string.wind),

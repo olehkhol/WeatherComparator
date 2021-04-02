@@ -33,6 +33,8 @@ google-services.json
 
 # External native build folder generated in Android Studio 2.2 and later
 
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/maps/MapsAuth.java
+/app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/places/PlacesAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/maps/GeocodingAuth.java
 /app/src/main/java/ua/in/khol/oleh/touristweathercomparer/model/maps/TimeZoneAuth.java
 

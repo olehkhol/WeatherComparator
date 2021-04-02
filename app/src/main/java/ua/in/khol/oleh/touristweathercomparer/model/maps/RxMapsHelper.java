@@ -36,7 +36,7 @@ public class RxMapsHelper implements MapsHelper {
     public int getTimeZoneOffset(double latitude, double longitude, long timestamp) {
         Call<TimeZoneModel> timeZoneModelCall = mService
                 .getTimeZoneModel(latitude + "," + longitude, String.valueOf(timestamp),
-                        TimeZoneAuth.getApiKey());
+                        TimeZoneAuth.getTimeZoneApiKey());
 
         try {
             TimeZoneModel timeZoneModel = timeZoneModelCall.execute().body();
@@ -56,7 +56,7 @@ public class RxMapsHelper implements MapsHelper {
     public String getLocationName(double lat, double lon, String language) {
         Call<GeocodingModel> locationModelCall = mService
                 .getLocationModel(lat + "," + lon, language,
-                        GeocodingAuth.getApiKey());
+                        GeocodingAuth.getGeocodingApiKey());
         String name = "";
 
         try {

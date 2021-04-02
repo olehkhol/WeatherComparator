@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="communication">Комунікація</string>
-    <string name="rate_and_review">Оцінка і відгук</string>
+    <string name="rate_and_review">Оцінка та відгук</string>
     <string name="share">Поділитись</string>
 
-    <string name="other_apps">Інші застосунки</string>
+    <string name="more_apps">Більше додатків</string>
 
     <string name="preferences">Налаштування</string>
     <string name="units">ОДИНИЦІ</string>
@@ -14,14 +14,11 @@
     <string name="localization">ЛОКАЛІЗАЦІЯ</string>
     <string name="language">Мова</string>
 
-    <string name="error">Помилка</string>
-    <string name="permission">Додаток потребує дозволу на визначення місцезнаходження !</string>
-    <string name="finish">Завершити</string>
     <string name="search">Пошук</string>
-    <string name="alert_location_title">Необхідне місцезнаходження</string>
-    <string name="alert_location_message">Увімкнути служби локації ?</string>
-    <string name="alert_wireless_title">Необхідний бездротовий зв’язок</string>
-    <string name="alert_wireless_message">Увімкнути бездротові служби ?</string>
+    <string name="alert_location_title">Увімкнути GPS</string>
+    <string name="alert_location_message">Увімкніть GPS на своєму пристрої</string>
+    <string name="alert_wireless_title">Увімкнути Інтернет</string>
+    <string name="alert_wireless_message">Увімкніть Інтернет на своєму пристрої</string>
     <string name="ok">OK</string>
     <string name="cancel">Відміна</string>
     <string name="title_home">Прогноз</string>
