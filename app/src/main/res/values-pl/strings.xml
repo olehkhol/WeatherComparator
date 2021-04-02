@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="communication">Komunikacja</string>
+    <string name="rate_and_review">Opinia i ocena</string>
+    <string name="share">Udostępnij</string>
+
+    <string name="more_apps">Więcej apps</string>
+
+    <string name="preferences">Ustawienia</string>
+    <string name="units">JEDNOSTKI</string>
+    <string name="temperature">Temperatura</string>
+    <string name="pressure">Ciśnienie %1$.0f %2$s</string>
+    <string name="speed">Prędkość</string>
+    <string name="localization">LOKALIZACJA</string>
+    <string name="language">Język</string>
+
+    <string name="search">Szukaj</string>
+    <string name="alert_location_title">Włącz GPS</string>
+    <string name="alert_location_message">Włącz GPS na swoim urządzeniu</string>
+    <string name="alert_wireless_title">Włącz Internet</string>
+    <string name="alert_wireless_message">Włącz Internet na swoim urządzeniu</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Anuluj</string>
+    <string name="title_home">Prognoza</string>
+    <string name="title_map">Mapa</string>
+    <string name="humidity">Wilgotność %d%%</string>
+    <string name="wind">Wiatr %1$.1f %2$s</string>
+    <string name="title_info">Informacje</string>
+    <string name="pref_pressure">Ciśnienie</string>
+    <string name="info_file">info_pl.html</string>
+    <string name="city">Miasto</string>
+    <string name="enter_name">Wpisz nazwę miasta:</string>
+    <string name="name">Warsaw</string>
+</resources>

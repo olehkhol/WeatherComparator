@@ -12,6 +12,19 @@
 
 ## Build
 ###### Add four classes containing your own private API keys to the correspond packages
+##### `PlacesAuth.java`
+```java
+package ua.in.khol.oleh.touristweathercomparer.model.places;
+public class PlacesAuth {
+    // https://developers.google.com/maps/documentation/places/web-service/get-api-key
+    private static final String API_KEY = "API_KEY";
+    
+    public static String getPlacesApiKey() {
+        return API_KEY;
+    }
+}
+```
+
 ##### `GeocodingAuth.java`
 ```java
 package ua.in.khol.oleh.touristweathercomparer.model.maps;
@@ -19,7 +32,7 @@ public class GeocodingAuth {
     // https://developers.google.com/maps/documentation/geocoding/get-api-key
     private static final String API_KEY = "API_KEY";
     
-    public static String getApiKey() {
+    public static String getGeocodingApiKey() {
         return API_KEY;
     }
 }
@@ -32,7 +45,7 @@ class TimeZoneAuth {
     // https://developers.google.com/maps/documentation/timezone/get-api-key
     private static final String API_KEY = "API_KEY";
 
-    public static String getApiKey() {
+    public static String getTimeZoneApiKey() {
         return API_KEY;
     }
 }
@@ -88,37 +101,37 @@ Android Architecture Components
 AndroidX
 - [Multidex](https://developer.android.com/studio/build/multidex) Version 2.0.1
 - [Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) Version 2.2.0
-- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.3.0
-- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 2.0.0
-- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-alpha02
+- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.3.4
+- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 2.0.4
+- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-rc01
 - [Vectordrawable](https://developer.android.com/jetpack/androidx/releases/vectordrawable) Version 1.1.0
-- [Browser](https://developer.android.com/jetpack/androidx/releases/browser) Version 1.2.0
-- [Exifinterface](https://developer.android.com/jetpack/androidx/releases/exifinterface) Version 1.2.0
+- [Browser](https://developer.android.com/jetpack/androidx/releases/browser) Version 1.3.0
+- [Exifinterface](https://developer.android.com/jetpack/androidx/releases/exifinterface) Version 1.3.2
 - [Recyclerview](https://developer.android.com/jetpack/androidx/releases/recyclerview) Version 1.1.0
 - [Cardview](https://developer.android.com/jetpack/androidx/releases/cardview) Version 1.0.0
 - [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout) Version 1.1.0
 - [Preference](https://developer.android.com/jetpack/androidx/releases/preference) Version 1.1.1
-- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.2.5
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.2.6
 
 ReactiveX
-- [RxJava](https://github.com/ReactiveX/RxJava) Version 2.2.19
+- [RxJava](https://github.com/ReactiveX/RxJava) Version 2.2.21
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid) Version 2.1.1
 
 Square Open Source
 - [OkHttp](https://square.github.io/okhttp) Version 3.12.8
 - [Picasso](https://square.github.io/picasso) Version 2.71828
-- [Retrofit](https://square.github.io/retrofit) Version 2.6.2
-    - [RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2) Version 2.6.2
-    - [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson) Version 2.6.2
-- [LeakCanary](https://square.github.io/leakcanary) Version 2.3
+- [Retrofit](https://square.github.io/retrofit) Version 2.6.4
+    - [RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2) Version 2.6.4
+    - [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson) Version 2.6.4
+- [LeakCanary](https://square.github.io/leakcanary) Version 2.5
 
 Google
 - [Guava](https://github.com/google/guava) Version 28.2-android
-- [Dagger](https://github.com/google/dagger) Version 2.24
-- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.2.0
-- [Location](https://developer.android.com/training/location) Version 17.0.0
+- [Dagger](https://github.com/google/dagger) Version 2.29.1
+- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.3.0
+- [Location](https://developer.android.com/training/location) Version 18.0.0
 - [Maps](https://developer.android.com/training/maps) Version 17.0.0
-- [Places](https://developers.google.com/places/android-sdk/intro) Version 2.3.0
+- [Places](https://developers.google.com/places/android-sdk/intro) Version 2.4.0
 
 Others
 - [Conscrypt](https://github.com/google/conscrypt) Version 2.2.1

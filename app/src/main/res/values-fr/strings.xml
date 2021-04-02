@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="communication">Communication</string>
-    <string name="rate_and_review">Revue et évaluer</string>
+    <string name="rate_and_review">Note et avis</string>
     <string name="share">Partager</string>
 
-    <string name="other_apps">Autres applications</string>
+    <string name="more_apps">Plus d\'apps</string>
 
     <string name="preferences">Préférences</string>
     <string name="units">UNITÉS</string>
@@ -14,14 +14,11 @@
     <string name="localization">LOCALISATION</string>
     <string name="language">Langue</string>
 
-    <string name="error">Erreur</string>
-    <string name="permission">Besoin d\'autorisations de localisation!</string>
-    <string name="finish">Finition</string>
     <string name="search">Chercher</string>
-    <string name="alert_location_title">Emplacement requis</string>
-    <string name="alert_location_message">Activer les services de localisation?</string>
-    <string name="alert_wireless_title">Sans fil requis</string>
-    <string name="alert_wireless_message">Activer les services sans fil?</string>
+    <string name="alert_location_title">Activer le GPS</string>
+    <string name="alert_location_message">Veuillez activer le GPS sur votre appareil</string>
+    <string name="alert_wireless_title">Activer Internet</string>
+    <string name="alert_wireless_message">Veuillez activer Internet sur votre appareil</string>
     <string name="ok">OK</string>
     <string name="cancel">Annuler</string>
     <string name="title_home">Prévision</string>

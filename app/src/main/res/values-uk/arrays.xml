@@ -14,14 +14,14 @@
 
     <string-array name="speed">
         <item>Метр за секунду</item>
-        <item>Кілометр за годину</item>
         <item>Миля за годину</item>
+        <item>Кілометр за годину</item>
     </string-array>
 
     <string-array name="speed_values">
         <item>м/с</item>
-        <item>км/год</item>
         <item>миля/год</item>
+        <item>км/год</item>
     </string-array>
 
     <string-array name="pressure">

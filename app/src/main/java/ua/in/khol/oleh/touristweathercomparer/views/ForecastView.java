@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -86,30 +85,8 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
         ViewPager2 mViewPager = binding.viewPager;
         mViewPager.setAdapter(mAdapter);
 
-        TabLayout tabLayout = binding.tabLayout;
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                //mViewPager.setCurrentItem(tab.getPosition());
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        new TabLayoutMediator(tabLayout, mViewPager,
-                (tab, position) -> {
-                    tab.setCustomView(mAdapter.getTabView(position));
-                })
-                .attach();
+        new TabLayoutMediator(binding.tabLayout, mViewPager,
+                (tab, position) -> tab.setCustomView(mAdapter.getTabView(position))).attach();
     }
 
     private class ForecastCollectionAdapter extends FragmentStateAdapter {
@@ -152,7 +129,6 @@ public class ForecastView extends Fragment implements ViewBinding<ViewForecastBi
 
 
         public View getTabView(int position) {
-            //TabItemBinding binding = TabItemBinding.inflate(getLayoutInflater());
             TabItemBinding binding = DataBindingUtil
                     .inflate(getLayoutInflater(), R.layout.tab_item, null, true);
 

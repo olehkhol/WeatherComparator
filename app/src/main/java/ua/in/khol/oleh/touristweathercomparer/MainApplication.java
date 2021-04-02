@@ -7,8 +7,6 @@ import android.os.Build;
 import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDex;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import org.conscrypt.Conscrypt;
 
 import java.security.Security;
@@ -56,7 +54,5 @@ public class MainApplication extends Application
                 .appModule(new AppModule(this))
                 .build()
                 .inject(this);
-
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 }

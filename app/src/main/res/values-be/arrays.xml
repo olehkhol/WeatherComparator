@@ -14,24 +14,24 @@
 
     <string-array name="speed">
         <item>Метр у секунду</item>
-        <item>Кіламетр у гадзіну</item>
         <item>Міля ў гадзіну</item>
+        <item>Кіламетр у гадзіну</item>
     </string-array>
 
     <string-array name="speed_values">
         <item>м/с</item>
+        <item>м/г</item>
         <item>км/г</item>
-        <item>міля/г</item>
     </string-array>
 
     <string-array name="pressure">
         <item>Мілімэтар рт. сл.</item>
-        <item>Гектопаскаль</item>
+        <item>Гектапаскаль</item>
         <item>Мілібар</item>
     </string-array>
 
     <string-array name="pressure_values">
-        <item>мм р.с.</item>
+        <item>мм рт. сл.</item>
         <item>гПа</item>
         <item>мбар</item>
     </string-array>
@@ -40,7 +40,7 @@
         <item>Поўнач</item>
         <item>Паўночны ўсход</item>
         <item>Усход</item>
-        <item>Паўднёва ўсход</item>
+        <item>Паўднёвы ўсход</item>
         <item>Поўдзень</item>
         <item>Паўднёвы захад</item>
         <item>Захад</item>
