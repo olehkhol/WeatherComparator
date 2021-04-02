@@ -64,3 +64,7 @@ google-services.json
 /.idea/modules.xml
 
 /app/google-services.json
+/app/release/app-release.aab
+/app/release/output-metadata.json
+/app/release/app-release.apk
+/.idea/compiler.xml
