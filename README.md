@@ -11,74 +11,33 @@
 * [License](#license)
 
 ## Build
-###### Add four classes containing your own private API keys to the correspond packages
-##### `PlacesAuth.java`
+###### This is a fully functional codebase of the application. 
+###### The only thing you need to do is to fill the API keys file 
+###### and the resources file with your own values.
+
+##### `app/src/main/java/ua/in/khol/oleh/touristweathercomparer/Secrets.java`
 ```java
-package ua.in.khol.oleh.touristweathercomparer.model.places;
-public class PlacesAuth {
-    // https://developers.google.com/maps/documentation/places/web-service/get-api-key
-    private static final String API_KEY = "API_KEY";
-    
-    public static String getPlacesApiKey() {
-        return API_KEY;
-    }
+package ua.in.khol.oleh.touristweathercomparer;
+
+public interface Secrets {
+
+    String OPEN_WEATHER_API_KEY = "YOUR_OPEN_WEATHER_API_KEY";
+    String GEOCODING_API_KEY = "YOUR_GEOCODING_API_KEY";
+    String PLACES_API_KEY = "YOUR_PLACES_API_KEY";
 }
 ```
 
-##### `GeocodingAuth.java`
-```java
-package ua.in.khol.oleh.touristweathercomparer.model.maps;
-public class GeocodingAuth {
-    // https://developers.google.com/maps/documentation/geocoding/get-api-key
-    private static final String API_KEY = "API_KEY";
-    
-    public static String getGeocodingApiKey() {
-        return API_KEY;
-    }
-}
-```
-
-##### `TimeZoneAuth.java`
-```java
-package ua.in.khol.oleh.touristweathercomparer.model.maps;
-class TimeZoneAuth {
-    // https://developers.google.com/maps/documentation/timezone/get-api-key
-    private static final String API_KEY = "API_KEY";
-
-    public static String getTimeZoneApiKey() {
-        return API_KEY;
-    }
-}
-```
-
-##### `DarkSkyAuth.java`
-```java
-package ua.in.khol.oleh.touristweathercomparer.model.weather.darksky;
-public class DarkSkyAuth {
-    // https://darksky.net/dev/account
-    private static final String SECRET_KEY = "SECRET_KEY";
-    
-    public static String getSecretKey() {
-        return SECRET_KEY;
-    }
-}
-```
-##### `OwmAuth.java`
-```java
-package ua.in.khol.oleh.touristweathercomparer.model.weather.owm;
-public class OwmAuth {
-    // https://home.openweathermap.org/api_keys
-    private static final String API_KEY = "API_KEY";
-
-    public static String getApiKey() {
-        return API_KEY;
-    }
-}
+##### `app/src/main/res/values/api_keys.xml`
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="maps_sdk_for_android_api_key" translatable="false">YOUR_MAPS_SDK_FOR_ANDROID_API_KEY</string>
+</resources>
 ```
 
 ## Architecture
 
-       MVVM + DATA BINDING + DI + RX
+       MVVM + DI + RX
 
 ## Services
 
@@ -87,60 +46,45 @@ Location
 - [Google Time Zone](https://developers.google.com/maps/documentation/timezone)
 
 Weather
-- [Dark Sky](https://darksky.net/dev)
 - [OpenWeatherMap](https://openweathermap.org/api)
 
 ## Dependencies
 
 Android Architecture Components
-- [Data Binding](https://developer.android.com/topic/libraries/data-binding/)
 - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 
 AndroidX
-- [Multidex](https://developer.android.com/studio/build/multidex) Version 2.0.1
-- [Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) Version 2.2.0
-- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.3.4
-- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 2.0.4
-- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.3.0-rc01
-- [Vectordrawable](https://developer.android.com/jetpack/androidx/releases/vectordrawable) Version 1.1.0
-- [Browser](https://developer.android.com/jetpack/androidx/releases/browser) Version 1.3.0
-- [Exifinterface](https://developer.android.com/jetpack/androidx/releases/exifinterface) Version 1.3.2
-- [Recyclerview](https://developer.android.com/jetpack/androidx/releases/recyclerview) Version 1.1.0
+- [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation) Version 2.7.6
+- [Constraintlayout](https://developer.android.com/jetpack/androidx/releases/constraintlayout) Version 2.7.6
+- [Appcompat](https://developer.android.com/jetpack/androidx/releases/appcompat) Version 1.6.1
+- [Recyclerview](https://developer.android.com/jetpack/androidx/releases/recyclerview) Version 1.3.2
 - [Cardview](https://developer.android.com/jetpack/androidx/releases/cardview) Version 1.0.0
-- [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout) Version 1.1.0
-- [Preference](https://developer.android.com/jetpack/androidx/releases/preference) Version 1.1.1
-- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.2.6
+- [Preference](https://developer.android.com/jetpack/androidx/releases/preference) Version 1.2.1
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) Version 2.6.1
 
 ReactiveX
 - [RxJava](https://github.com/ReactiveX/RxJava) Version 2.2.21
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid) Version 2.1.1
 
 Square Open Source
-- [OkHttp](https://square.github.io/okhttp) Version 3.12.8
-- [Picasso](https://square.github.io/picasso) Version 2.71828
-- [Retrofit](https://square.github.io/retrofit) Version 2.6.4
-    - [RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2) Version 2.6.4
-    - [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson) Version 2.6.4
-- [LeakCanary](https://square.github.io/leakcanary) Version 2.5
+- [OkHttp](https://square.github.io/okhttp) Version 4.12.0
+- [Picasso](https://square.github.io/picasso) Version 2.8
+- [Retrofit](https://square.github.io/retrofit) Version 2.9.0
+    - [RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2) Version 2.9.0
+    - [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson) Version 2.9.0
+- [LeakCanary](https://square.github.io/leakcanary) Version 2.13
 
 Google
-- [Guava](https://github.com/google/guava) Version 28.2-android
-- [Dagger](https://github.com/google/dagger) Version 2.29.1
-- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.3.0
-- [Location](https://developer.android.com/training/location) Version 18.0.0
-- [Maps](https://developer.android.com/training/maps) Version 17.0.0
-- [Places](https://developers.google.com/places/android-sdk/intro) Version 2.4.0
-
-Others
-- [Conscrypt](https://github.com/google/conscrypt) Version 2.2.1
-- [Joda-Time](https://www.joda.org/joda-time) Version 2.10.6
-- [Timber](https://github.com/JakeWharton/timber) Version 4.7.1
+- [Dagger](https://github.com/google/dagger) Version 2.50
+- [Material](https://material.io/develop/android/docs/getting-started/) Version 1.11.0
+- [Maps](https://developer.android.com/training/maps) Version 18.2.0
+- [Places](https://developers.google.com/places/android-sdk) Version 3.3.0
 
 ## License
 
-   Copyright 2020 Oleh Kholiavchuk
+   Copyright 2020-2024 Oleh Kholiavchuk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

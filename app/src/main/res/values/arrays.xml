@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="temperature">
-        <item>Celsius</item>
-        <item>Fahrenheit</item>
-        <item>Kelvin</item>
-    </string-array>
 
-    <string-array name="temperature_values">
-        <item>℃</item>
-        <item>℉</item>
-        <item>K</item>
-    </string-array>
-
-    <string-array name="speed">
-        <item>Metre per second</item>
-        <item>Miles per hour</item>
-        <item>Kilometers per hour</item>
-    </string-array>
-
-    <string-array name="speed_values">
-        <item>m/s</item>
-        <item>mph</item>
-        <item>km/h</item>
-    </string-array>
-
-    <string-array name="pressure">
-        <item>Millimetre of mercury</item>
-        <item>Hectopascal</item>
-        <item>Millibar</item>
-    </string-array>
-
-    <string-array name="pressure_values">
-        <item>mmHg</item>
-        <item>hPa</item>
-        <item>mbar</item>
-    </string-array>
-    
     <string-array name="directions">
         <item>North</item>
         <item>Northeast</item>
@@ -47,25 +12,69 @@
         <item>Northwest</item>
     </string-array>
 
-    <string-array name="languages" translatable="false">
-        <item>English</item>
-        <item>Italiano</item>
-        <item>Deutsch</item>
-        <item>Français</item>
-        <item>Українська</item>
-        <item>Беларуская</item>
-        <item>Русский</item>
-        <item>Polski</item>
+    <string-array name="unit_names">
+        <item>Standard (K, m/s)</item>
+        <item>Metric (℃, m/s)</item>
+        <item>Imperial (℉, mph)</item>
     </string-array>
 
-    <string-array name="language_values" translatable="false">
+    <string-array name="unit_values" translatable="false">
+        <item>standard</item>
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+    <string-array name="temperature">
+        <item>Kelvin</item>
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>K</item>
+        <item>℃</item>
+        <item>℉</item>
+    </string-array>
+
+    <string-array name="speed">
+        <item>Meter per second</item>
+        <item>Meter per second</item>
+        <item>Miles per hour</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>m/s</item>
+        <item>m/s</item>
+        <item>mph</item>
+    </string-array>
+
+    <string-array name="theme_names" translatable="false">
+        <item>@string/default_theme</item>
+        <item>@string/light_theme</item>
+        <item>@string/dark_theme</item>
+    </string-array>
+
+    <string-array name="theme_codes" translatable="false">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="language_names" translatable="false">
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Français</item>
+        <item>Italiano</item>
+        <item>Polski</item>
+        <item>Українська</item>
+    </string-array>
+
+    <string-array name="language_codes" translatable="false">
         <item>en</item>
-        <item>it</item>
         <item>de</item>
         <item>fr</item>
-        <item>uk</item>
-        <item>be</item>
-        <item>ru</item>
+        <item>it</item>
         <item>pl</item>
+        <item>uk</item>
     </string-array>
 </resources>

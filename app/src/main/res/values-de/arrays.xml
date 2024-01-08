@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="temperature">
-        <item>Celsius</item>
-        <item>Fahrenheit</item>
-        <item>Kelvin</item>
-    </string-array>
 
-    <string-array name="temperature_values">
-        <item>℃</item>
-        <item>℉</item>
-        <item>K</item>
-    </string-array>
-
-    <string-array name="speed">
-        <item>Meter pro sekunde</item>
-        <item>Meilen pro stunde</item>
-        <item>Kilometer pro stunde</item>
-    </string-array>
-
-    <string-array name="speed_values">
-        <item>m/s</item>
-        <item>mph</item>
-        <item>km/h</item>
-    </string-array>
-
-    <string-array name="pressure">
-        <item>Millimeter quecksilber</item>
-        <item>Hektopascal</item>
-        <item>Millibar</item>
-    </string-array>
-
-    <string-array name="pressure_values">
-        <item>mmHg</item>
-        <item>hPa</item>
-        <item>mbar</item>
-    </string-array>
-    
     <string-array name="directions">
         <item>Norden</item>
         <item>Nordost</item>
@@ -45,6 +10,42 @@
         <item>Südwest</item>
         <item>Westen</item>
         <item>Nordwest</item>
+    </string-array>
+
+    <string-array name="unit_names">
+        <item>Standard (K, m/s)</item>
+        <item>Metrisch (℃, m/s)</item>
+        <item>Imperial (℉, mph)</item>
+    </string-array>
+
+    <string-array name="unit_values" translatable="false">
+        <item>standard</item>
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+    <string-array name="temperature">
+        <item>Kelvin</item>
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>K</item>
+        <item>℃</item>
+        <item>℉</item>
+    </string-array>
+
+    <string-array name="speed">
+        <item>Meter pro Sekunde</item>
+        <item>Meter pro Sekunde</item>
+        <item>Meilen pro Stunde</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>m/s</item>
+        <item>m/s</item>
+        <item>mph</item>
     </string-array>
 
 </resources>

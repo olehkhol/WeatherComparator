@@ -1,168 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.settings.SettingsView">
 
-    <data>
-
-        <variable
-            name="settingsViewModel"
-            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.SettingsViewModel" />
-    </data>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/side_nav_bar"
+        android:theme="@style/Theme.YourPhoneInfo.AppBarOverlay">
 
-        <TextView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:padding="@dimen/settings_padding"
-            android:text="@string/preferences"
-            android:textColor="@color/text_alert"
-            android:textSize="@dimen/settings_title_text_size" />
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/Theme.YourPhoneInfo.PopupOverlay" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <!--UNITS-->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/settings_category_padding"
-            android:text="@string/units"
-            android:textColor="@color/colorAccent" />
-
-        <!--Temperature-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/settings_margin"
-            android:orientation="horizontal"
-            android:paddingVertical="@dimen/settings_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/temperature"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/settings_text_size" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/tempSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:gravity="end"
-                android:spinnerMode="dropdown"
-                bind:selected="@={settingsViewModel.settings.temperatureIndex}" />
-        </LinearLayout>
-
-
-        <!--Pressure-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/settings_margin"
-            android:orientation="horizontal"
-            android:paddingVertical="@dimen/settings_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/pref_pressure"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/settings_text_size" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/presSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:gravity="end"
-                android:spinnerMode="dropdown"
-                bind:selected="@={settingsViewModel.settings.pressureIndex}" />
-        </LinearLayout>
-
-        <!--Wind-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/settings_margin"
-            android:orientation="horizontal"
-            android:paddingVertical="@dimen/settings_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/speed"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/settings_text_size" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/windSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:gravity="end"
-                android:spinnerMode="dropdown"
-                bind:selected="@={settingsViewModel.settings.speedIndex}" />
-        </LinearLayout>
-
-        <!--LOCALIZATION-->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/settings_category_padding"
-            android:text="@string/localization"
-            android:textColor="@color/colorAccent" />
-
-        <!--Language-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/settings_margin"
-            android:orientation="horizontal"
-            android:paddingVertical="@dimen/settings_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/language"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/settings_text_size" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/langSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:gravity="end"
-                android:spinnerMode="dropdown"
-                bind:selected="@={settingsViewModel.settings.languageIndex}" />
-        </LinearLayout>
-    </LinearLayout>
-</layout>
+    <com.google.android.material.circularreveal.CircularRevealFrameLayout
+        android:id="@+id/preference_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>

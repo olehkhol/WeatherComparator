@@ -1,40 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="temperature">
-        <item>Цельсія</item>
-        <item>Фаренгейта</item>
-        <item>Кельвін</item>
-    </string-array>
-
-    <string-array name="temperature_values">
-        <item>℃</item>
-        <item>℉</item>
-        <item>K</item>
-    </string-array>
-
-    <string-array name="speed">
-        <item>Метр за секунду</item>
-        <item>Миля за годину</item>
-        <item>Кілометр за годину</item>
-    </string-array>
-
-    <string-array name="speed_values">
-        <item>м/с</item>
-        <item>миля/год</item>
-        <item>км/год</item>
-    </string-array>
-
-    <string-array name="pressure">
-        <item>Міліметр рт. ст.</item>
-        <item>Гектопаскаль</item>
-        <item>Мілібар</item>
-    </string-array>
-
-    <string-array name="pressure_values">
-        <item>мм рт.ст.</item>
-        <item>гПа</item>
-        <item>мбар</item>
-    </string-array>
 
     <string-array name="directions">
         <item>Північ</item>
@@ -45,6 +10,42 @@
         <item>Південний захід</item>
         <item>Захід</item>
         <item>Північний захід</item>
+    </string-array>
+
+    <string-array name="unit_names">
+        <item>Стандарт (K, м/с)</item>
+        <item>Метрична (℃, м/с)</item>
+        <item>Імперська (℉, миль/год)</item>
+    </string-array>
+
+    <string-array name="unit_values" translatable="false">
+        <item>standard</item>
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+    <string-array name="temperature">
+        <item>Кельвін</item>
+        <item>Цельсій</item>
+        <item>Фаренгейт</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>K</item>
+        <item>℃</item>
+        <item>℉</item>
+    </string-array>
+
+    <string-array name="speed">
+        <item>Метр на секунду</item>
+        <item>Метр на секунду</item>
+        <item>Милі на годину</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>м/с</item>
+        <item>м/с</item>
+        <item>миль/год</item>
     </string-array>
 
 </resources>

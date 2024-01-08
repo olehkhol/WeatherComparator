@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="communication">Comunicazione</string>
     <string name="rate_and_review">Valutazione e recensione</string>
     <string name="share">Condividi</string>
@@ -7,14 +8,12 @@
     <string name="more_apps">Più apps</string>
 
     <string name="preferences">Preferenze</string>
-    <string name="units">UNITÀ</string>
+    <string name="units">Unità</string>
     <string name="temperature">Temperatura</string>
-    <string name="pressure">Pressione %1$.0f %2$s</string>
     <string name="speed">Velocità</string>
-    <string name="localization">LOCALIZZAZIONE</string>
+    <string name="localization">Localizzazione</string>
     <string name="language">Lingua</string>
 
-    <string name="search">Ricerca</string>
     <string name="alert_location_title">Abilita GPS</string>
     <string name="alert_location_message">Si prega di abilitare il GPS nel dispositivo</string>
     <string name="alert_wireless_title">Abilita Internet</string>
@@ -23,12 +22,45 @@
     <string name="cancel">Annulla</string>
     <string name="title_home">Previsione</string>
     <string name="title_map">Mappa</string>
+    <string name="pressure">Pressione %1$.0f hPa</string>
     <string name="humidity">Umidità %d%%</string>
     <string name="wind">Vento %1$.1f %2$s</string>
+    <string name="direction">Direzione %s</string>
     <string name="title_info">Info</string>
-    <string name="info_file">info_it.html</string>
     <string name="pref_pressure">Pressione</string>
     <string name="city">Città</string>
-    <string name="enter_name">Inserisci il nome della città:</string>
-    <string name="name">Rome</string>
+
+    <string name="search">Ricerca</string>
+    <string name="enter_city_name">Inserisci il nome della città:</string>
+    <string name="city_name">Rome</string>
+
+    <string name="rewarded_ads">Annunci premiati</string>
+    <string name="support_us">Supportaci:\n\nPer avere due ulteriori tentativi di selezionare un luogo, ti mostreremo un video pubblicitario premiante.\nQuesto ci aiuta a coprire i costi dei servizi di Google Play.\n\nGrazie per la comprensione.</string>
+    <string name="reward">Ricompensa</string>
+    <string name="donate">Dona</string>
+    <string name="later">Più tardi</string>
+
+    <string name="forecast">Previsione</string>
+    <string name="map">Mappa</string>
+    <string name="history">Cronologia</string>
+
+    <string name="settings">Impostazioni</string>
+    <string name="authentication">Autenticazione</string>
+    <string name="account">Account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Accedi</string>
+    <string name="sign_out">Esci</string>
+    <string name="user_interface">Interfaccia utente</string>
+    <string name="navigation">Navigazione</string>
+    <string name="dark_theme">Tema scuro</string>
+    <string name="light_theme">Tema chiaro</string>
+    <string name="theme">Tema</string>
+    <string name="default_theme">Predefinito</string>
+    <string name="units_of_measurement">Unità di misura</string>
+    <string name="system">Sistema</string>
+
+    <string name="slogan_openweathermap">Offerto da OpenWeatherMap</string>
+    <string name="select_place_or_search_city">Seleziona un luogo sulla mappa o cerca una città per nome nella barra degli strumenti</string>
+
 </resources>

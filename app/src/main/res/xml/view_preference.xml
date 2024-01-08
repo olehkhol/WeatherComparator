@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="locale_category"
+        android:title="@string/localization">
+
+        <ListPreference
+            android:key="ĺᐩΤᚐԴ亠ﮃᔦۂۉ"
+            android:summary="%s"
+            android:title="@string/language"
+            app:entries="@array/language_names"
+            app:entryValues="@array/language_codes" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="unit_category"
+        android:title="@string/units_of_measurement">
+
+        <ListPreference
+            android:key="ῚᓯוּʈٻѓᖭᴶỈｲ"
+            android:summary="%s"
+            android:title="@string/system"
+            app:defaultValue="metric"
+            app:entries="@array/unit_names"
+            app:entryValues="@array/unit_values" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="ui_category"
+        android:title="@string/user_interface">
+
+        <ListPreference
+            android:key="тܪﹹᓼᓗےリˢᒋｴ"
+            android:summary="%s"
+            android:title="@string/theme"
+            app:entries="@array/theme_names"
+            app:entryValues="@array/theme_codes" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

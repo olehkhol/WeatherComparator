@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mtv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/side_nav_bar"
+        android:gravity="center"
+        android:padding="@dimen/search_padding"
+        android:textColor="@color/white"
+        android:textSize="@dimen/search_title_text_size" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mtv_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/settings_category_padding"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/search_text_size" />
+
+    <ViewStub
+        android:id="@+id/vs_holder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.circularreveal.CircularRevealLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:gravity="center|end"
+        android:padding="4dp">
+
+        <ua.in.khol.oleh.touristweathercomparer.ui.widgets.ProgressButton
+            android:id="@+id/btn_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:enabled="false"
+            android:gravity="center"
+            app:indicatorColor="@color/colorAccent"
+            app:indicatorSize="@dimen/circular_progress_size" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dismiss"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent" />
+    </com.google.android.material.circularreveal.CircularRevealLinearLayout>
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>

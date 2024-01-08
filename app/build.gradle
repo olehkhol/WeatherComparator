@@ -1,115 +1,93 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    alias(libs.plugins.androidApplication)
+}
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'ua.in.khol.oleh.touristweathercomparer'
+    compileSdk 34
 
     defaultConfig {
-        applicationId 'ua.in.khol.oleh.touristweathercomparer'
-        versionCode 39
-        versionName "1.38"
-
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-
-        multiDexEnabled true
-
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        testInstrumentationRunner 'com.android.test.runner.MultiDexTestRunner'
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        applicationId "ua.in.khol.oleh.touristweathercomparer"
+        minSdk 24
+        targetSdk 34
+        versionCode 48
+        versionName '1.47'
 
         bundle {
             language {
                 enableSplit = false
             }
+            density {
+                enableSplit = false
+            }
         }
-    }
 
-    buildFeatures {
-        dataBinding = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
-    testOptions {
-        unitTests.includeAndroidResources = true
-        //unitTests.returnDefaultValues = true
+    buildFeatures {
+        buildConfig true
     }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "androidx.multidex:multidex:${androidx.multidex}"
-    implementation "androidx.lifecycle:lifecycle-common:${androidx.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${androidx.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${androidx.lifecycle}"
-    implementation "androidx.navigation:navigation-fragment:${androidx.navigation}"
-    implementation "androidx.navigation:navigation-ui:${androidx.navigation}"
-    implementation "androidx.constraintlayout:constraintlayout:${androidx.constraint}"
-    implementation "androidx.constraintlayout:constraintlayout-solver:${androidx.constraint}"
-    implementation "androidx.appcompat:appcompat:${androidx.appcompat}"
-    implementation "androidx.vectordrawable:vectordrawable-animated:${androidx.vectordrawable}"
-    implementation "androidx.browser:browser:${androidx.browser}"
-    implementation "androidx.exifinterface:exifinterface:${androidx.exifinterface}"
-    implementation "androidx.legacy:legacy-support-v4:${androidx.legacy}"
-    implementation "androidx.recyclerview:recyclerview:${androidx.recyclerview}"
-    implementation "androidx.cardview:cardview:${androidx.cardview}"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${androidx.swiperefresh}"
-    implementation "androidx.preference:preference:${androidx.preference}"
-    implementation "androidx.viewpager2:viewpager2:${androidx.viewpager2}"
-    implementation "androidx.room:room-runtime:${androidx.room}"
-    annotationProcessor "androidx.room:room-compiler:${androidx.room}"
-    implementation "androidx.room:room-rxjava2:${androidx.room}"
+    // androidx libraries
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.constraintlayout.solver
+    implementation libs.androidx.preference
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.cardview
+    implementation libs.androidx.fragment
+    implementation libs.androidx.navigation.fragment
+    implementation libs.androidx.navigation.ui
+    implementation libs.androidx.lifecycle.extensions
+    implementation libs.androidx.paging.runtime
+    implementation libs.androidx.paging.rxjava2
+    implementation libs.androidx.room.runtime
+    annotationProcessor libs.androidx.room.compiler
+    implementation libs.androidx.room.rxjava2
 
-    implementation "com.google.android.gms:play-services-location:${google.location}"
-    implementation "com.google.android.gms:play-services-maps:${google.maps}"
-    implementation "com.google.android.libraries.places:places:${google.places}"
-    implementation "com.google.android.material:material:${google.material}"
-    implementation "com.google.dagger:dagger:${google.dagger}"
-    annotationProcessor "com.google.dagger:dagger-compiler:${google.dagger}"
-    implementation "com.google.dagger:dagger-android:${google.dagger}"
-    implementation "com.google.dagger:dagger-android-support:${google.dagger}"
-    annotationProcessor "com.google.dagger:dagger-android-processor:${google.dagger}"
-    implementation "com.google.guava:guava:${google.guava}"
+    // google libraries
+    implementation libs.google.material
+    implementation libs.google.dagger
+    annotationProcessor libs.google.dagger.compiler
 
-    implementation "io.reactivex.rxjava2:rxjava:${reactivex.rxjava}"
-    implementation "io.reactivex.rxjava2:rxandroid:${reactivex.rxandroid}"
+    // gms libraries
+    implementation libs.google.maps
+    implementation libs.google.places
 
-    //noinspection GradleDependency
-    implementation "com.squareup.okhttp3:okhttp:${squareup.okhttp}"
-    //noinspection GradleDependency
-    implementation "com.squareup.retrofit2:retrofit:${squareup.retrofit}"
-    //noinspection GradleDependency
-    implementation "com.squareup.retrofit2:converter-gson:${squareup.retrofit}"
-    //noinspection GradleDependency
-    implementation "com.squareup.retrofit2:adapter-rxjava2:${squareup.retrofit}"
-    implementation "com.squareup.picasso:picasso:${squareup.picasso}"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:${squareup.leakcanary}"
+    // volley
+    implementation libs.volley
 
-    implementation "org.conscrypt:conscrypt-android:$conscrypt"
-    implementation "joda-time:joda-time:$joda"
-    implementation "com.jakewharton.timber:timber:$timber"
+    // squareup libraries
+    implementation libs.squareup.okhttp
+    implementation libs.squareup.retrofit
+    implementation libs.squareup.retrofit.converter.gson
+    implementation libs.squareup.retrofit.adapter.rxjava2
+    implementation libs.squareup.picasso
+    debugImplementation libs.squareup.leakcanary
 
-    // Dependencies for testing
-    testImplementation "junit:junit:$junit"
-    testImplementation "io.mockk:mockk:$mockk"
+    // reactivex libraries
+    implementation libs.reactivex.rxjava
+    implementation libs.reactivex.rxandroid
 
-    androidTestImplementation "androidx.test.ext:junit:${androidx.test.ext}"
-    androidTestImplementation "androidx.test.espresso:espresso-core:${androidx.test.espresso}"
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }

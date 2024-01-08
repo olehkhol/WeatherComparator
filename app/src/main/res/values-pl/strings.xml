@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="communication">Komunikacja</string>
     <string name="rate_and_review">Opinia i ocena</string>
     <string name="share">Udostępnij</string>
@@ -7,14 +8,12 @@
     <string name="more_apps">Więcej apps</string>
 
     <string name="preferences">Ustawienia</string>
-    <string name="units">JEDNOSTKI</string>
+    <string name="units">Jednostki</string>
     <string name="temperature">Temperatura</string>
-    <string name="pressure">Ciśnienie %1$.0f %2$s</string>
     <string name="speed">Prędkość</string>
-    <string name="localization">LOKALIZACJA</string>
+    <string name="localization">Lokalizacja</string>
     <string name="language">Język</string>
 
-    <string name="search">Szukaj</string>
     <string name="alert_location_title">Włącz GPS</string>
     <string name="alert_location_message">Włącz GPS na swoim urządzeniu</string>
     <string name="alert_wireless_title">Włącz Internet</string>
@@ -23,12 +22,45 @@
     <string name="cancel">Anuluj</string>
     <string name="title_home">Prognoza</string>
     <string name="title_map">Mapa</string>
+    <string name="pressure">Ciśnienie %1$.0f hPa</string>
     <string name="humidity">Wilgotność %d%%</string>
     <string name="wind">Wiatr %1$.1f %2$s</string>
+    <string name="direction">Kierunek %s</string>
     <string name="title_info">Informacje</string>
     <string name="pref_pressure">Ciśnienie</string>
-    <string name="info_file">info_pl.html</string>
     <string name="city">Miasto</string>
-    <string name="enter_name">Wpisz nazwę miasta:</string>
-    <string name="name">Warsaw</string>
+
+    <string name="search">Szukaj</string>
+    <string name="enter_city_name">Wpisz nazwę miasta:</string>
+    <string name="city_name">Warsaw</string>
+
+    <string name="rewarded_ads">Reklamy z nagrodą</string>
+    <string name="support_us">Wspieraj nas:\n\nAby otrzymać dwa dodatkowe próby wyboru miejsca, pokażemy Ci nagradzane reklamy wideo.\nPomaga nam to pokryć koszty usług Google Play.\n\nDziękujemy za zrozumienie.</string>
+    <string name="reward">Nagroda</string>
+    <string name="donate">Wesprzyj</string>
+    <string name="later">Później</string>
+
+    <string name="forecast">Prognoza</string>
+    <string name="map">Mapa</string>
+    <string name="history">Historia</string>
+
+    <string name="settings">Ustawienia</string>
+    <string name="authentication">Uwierzytelnianie</string>
+    <string name="account">Konto</string>
+    <string name="email">Email</string>
+    <string name="password">Hasło</string>
+    <string name="sign_in">Zaloguj</string>
+    <string name="sign_out">Wyloguj</string>
+    <string name="user_interface">Interfejs użytkownika</string>
+    <string name="navigation">Nawigacja</string>
+    <string name="dark_theme">Ciemny motyw</string>
+    <string name="light_theme">Jasny motyw</string>
+    <string name="theme">Motyw</string>
+    <string name="default_theme">Domyślne</string>
+    <string name="units_of_measurement">Jednostki miary</string>
+    <string name="system">System</string>
+
+    <string name="slogan_openweathermap">Obsługiwane przez OpenWeatherMap</string>
+    <string name="select_place_or_search_city">Wybierz miejsce na mapie lub wyszukaj miasto według nazwy na pasku narzędzi</string>
+
 </resources>

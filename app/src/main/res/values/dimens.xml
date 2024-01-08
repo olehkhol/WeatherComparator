@@ -1,84 +1,88 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+    <dimen name="mini_corner_radius">4dp</dimen>
+    <dimen name="mini_elevation">2dp</dimen>
+    <dimen name="mini_current_padding">4dp</dimen>
+    <dimen name="mini_current_date_text_size">12sp</dimen>
+    <dimen name="mini_current_text_size">10sp</dimen>
+    <dimen name="mini_current_constraint_height">42dp</dimen>
+    <dimen name="mini_current_temp_text_size">14sp</dimen>
+    <dimen name="mini_current_arrow_size">18dp</dimen>
+    <dimen name="mini_icon_size">16dp</dimen>
 
+    <dimen name="corner_radius">4dp</dimen>
     <dimen name="elevation">4dp</dimen>
     <dimen name="text_size">16sp</dimen>
-
     <dimen name="nav_header_text_size">26sp</dimen>
     <dimen name="nav_header_padding_top">32dp</dimen>
     <dimen name="nav_header_padding_horizontal">16dp</dimen>
     <dimen name="nav_header_padding_bottom">16dp</dimen>
 
-    <dimen name="current_margin">4dp</dimen>
-    <dimen name="current_padding">4dp</dimen>
-    <dimen name="current_temp_text_size">24sp</dimen>
-    <dimen name="current_temp_text_size_land">20sp</dimen>
-    <dimen name="current_date_text_size">16sp</dimen>
-    <dimen name="current_date_text_size_land">14sp</dimen>
-    <dimen name="current_constraint_height">60dp</dimen>
-    <dimen name="current_constraint_height_land">30dp</dimen>
-    <dimen name="current_text_size">14sp</dimen>
-    <dimen name="current_text_size_land">12sp</dimen>
-    <dimen name="current_arrow_size">24dp</dimen>
-    <dimen name="current_arrow_size_land">20dp</dimen>
-    <dimen name="current_margin_land">8dp</dimen>
+    <dimen name="tab_item_padding">4dp</dimen>
+    <dimen name="current_margin">10dp</dimen>
+    <dimen name="hourly_margin">8dp</dimen>
+    <dimen name="space_between_hourly_widgets">2dp</dimen>
 
-    <dimen name="average_margin">4dp</dimen>
-    <dimen name="average_padding">4dp</dimen>
-    <dimen name="average_temp_text_size">20sp</dimen>
-    <dimen name="average_temp_text_size_land">18sp</dimen>
-    <dimen name="average_date_text_size">16sp</dimen>
-    <dimen name="average_date_text_size_land">14sp</dimen>
-    <dimen name="average_constraint_height">56dp</dimen>
-    <dimen name="average_constraint_height_land">28dp</dimen>
-    <dimen name="average_text_size">14sp</dimen>
-    <dimen name="average_text_size_land">12sp</dimen>
-    <dimen name="average_arrow_size">20dp</dimen>
-    <dimen name="average_arrow_size_land">18dp</dimen>
-    <dimen name="average_margin_land">8dp</dimen>
+    <dimen name="current_padding">8dp</dimen>
+    <dimen name="current_temp_text_size">28sp</dimen>
+    <dimen name="current_date_text_size">18sp</dimen>n>
+    <dimen name="current_constraint_height">72dp</dimen>
+    <dimen name="current_text_size">16sp</dimen>
+    <dimen name="current_arrow_size">28dp</dimen>
+
+    <dimen name="hourly_padding">8dp</dimen>
+    <dimen name="hourly_temp_text_size">22sp</dimen>
+    <dimen name="hourly_date_text_size">18sp</dimen>
+    <dimen name="hourly_constraint_height">64dp</dimen>
+    <dimen name="hourly_text_size">16sp</dimen>
+    <dimen name="hourly_arrow_size">24dp</dimen>
+    <dimen name="hourly_icon_size">16dp</dimen>
+
+    <dimen name="icon_width">32dp</dimen>
+    <dimen name="icon_height">32dp</dimen>
 
     <dimen name="mini_average_width">300dp</dimen>
-    <dimen name="mini_average_date_text_size">12sp</dimen>
-    <dimen name="mini_average_temp_text_size">14sp</dimen>
-    <dimen name="mini_average_constraint_height">28dp</dimen>
-    <dimen name="mini_average_text_size">12sp</dimen>
-    <dimen name="mini_average_arrow_size">18dp</dimen>
+    <dimen name="mini_average_date_text_size">14sp</dimen>
+    <dimen name="mini_average_temp_text_size">16sp</dimen>
+    <dimen name="mini_average_constraint_height">32dp</dimen>
+    <dimen name="mini_average_text_size">14sp</dimen>
+    <dimen name="mini_average_arrow_size">20dp</dimen>
 
-    <dimen name="canape_image_size">18dp</dimen>
-    <dimen name="canape_image_size_land">16dp</dimen>
-    <dimen name="canape_text_size">14sp</dimen>
-    <dimen name="canape_text_size_land">12sp</dimen>
-
-    <dimen name="minipe_image_size">16dp</dimen>
-    <dimen name="minipe_text_size">12sp</dimen>
-
-    <dimen name="tab_item_padding">4dp</dimen>
-    <dimen name="tab_item_name_text_size">16sp</dimen>
-    <dimen name="tab_item_name_text_size_land">14sp</dimen>
-    <dimen name="tab_item_location_text_size">14sp</dimen>
-    <dimen name="tab_item_location_text_size_land">12sp</dimen>
-
-    <dimen name="settings_padding">4dp</dimen>
+    <dimen name="tab_item_name_text_size">18sp</dimen>
+    <dimen name="tab_item_location_text_size">16sp</dimen>
+    <dimen name="settings_padding">8dp</dimen>
     <dimen name="settings_margin">16dp</dimen>
-    <dimen name="settings_title_text_size">16sp</dimen>
-    <dimen name="settings_category_padding">8dp</dimen>
-    <dimen name="settings_category_padding_half">4dp</dimen>
+    <dimen name="settings_title_text_size">18sp</dimen>
+    <dimen name="settings_category_padding">12dp</dimen>
     <dimen name="settings_text_size">16sp</dimen>
 
-    <dimen name="search_padding">4dp</dimen>
-    <dimen name="search_title_text_size">20sp</dimen>
-    <dimen name="search_text_size">20sp</dimen>
+    <dimen name="search_padding">8dp</dimen>
+    <dimen name="search_title_text_size">22sp</dimen>
+    <dimen name="search_text_size">16sp</dimen>
     <dimen name="search_margin_horizontal">16dp</dimen>
-    <dimen name="search_margin">8dp</dimen>
+    <dimen name="search_margin">12dp</dimen>
 
-    <dimen name="alert_title_padding">4dp</dimen>
-    <dimen name="alert_title_text_size">20sp</dimen>
-    <dimen name="alert_message_padding">8dp</dimen>
+    <dimen name="alert_title_padding">8dp</dimen>
+    <dimen name="alert_title_text_size">22sp</dimen>
+    <dimen name="alert_message_padding">12dp</dimen>
 
     <dimen name="spinner_item_text_size">16sp</dimen>
-    <dimen name="spinner_item_vertical_padding">8dp</dimen>
-    <dimen name="spinner_item_horizontal_padding">4dp</dimen>
+    <dimen name="spinner_item_vertical_padding">10dp</dimen>
+    <dimen name="spinner_item_horizontal_padding">6dp</dimen>
 
-    <dimen name="marker_title_text_size">14sp</dimen>
-    <dimen name="marker_text_size">12sp</dimen>
+    <dimen name="marker_title_text_size">16sp</dimen>
+    <dimen name="marker_text_size">14sp</dimen>
 
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">192dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="circular_progress_size">28dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
+    <dimen name="half_padding">8dp</dimen>
+
+    <dimen name="text_padding">8dp</dimen>
+    <dimen name="text_line_height">20sp</dimen>
+    <dimen name="custom_width">200dp</dimen>
 </resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.map.MapView">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ua.in.khol.oleh.touristweathercomparer.ui.widgets.MiniCurrentWidget
+        android:id="@+id/mini_current"
+        android:layout_width="@dimen/custom_width"
+        android:layout_margin="@dimen/half_margin"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:visibility="invisible" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cpi_predicting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/colorAccentDark"
+        app:indicatorSize="@dimen/circular_progress_size" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

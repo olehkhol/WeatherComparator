@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="communication">Kommunikation</string>
     <string name="rate_and_review">Bewertung und rezension</string>
     <string name="share">Teilen</string>
@@ -7,14 +8,12 @@
     <string name="more_apps">Mehr apps</string>
 
     <string name="preferences">Einstellungen</string>
-    <string name="units">EINHEITEN</string>
+    <string name="units">Einheiten</string>
     <string name="temperature">Temperatur</string>
-    <string name="pressure">Druck %1$.0f %2$s</string>
     <string name="speed">Geschwindigkeit</string>
-    <string name="localization">LOKALISIERUNG</string>
+    <string name="localization">Lokalisierung</string>
     <string name="language">Sprache</string>
 
-    <string name="search">Suche</string>
     <string name="alert_location_title">GPS aktivieren</string>
     <string name="alert_location_message">Bitte aktivieren sie GPS in Ihrem gerät</string>
     <string name="alert_wireless_title">Internet aktivieren</string>
@@ -23,13 +22,45 @@
     <string name="cancel">Abbrechen</string>
     <string name="title_home">Prognose</string>
     <string name="title_map">Karte</string>
-    <string name="humidity">Feuchtigkeit %d%%</string>
+    <string name="pressure">Druck %1$.0f hPa</string>
+    <string name="humidity">Luftfeuchtigkeit %d%%</string>
     <string name="wind">Wind %1$.1f %2$s</string>
+    <string name="direction">Richtung %s</string>
     <string name="title_info">Info</string>
-    <string name="info_file">info_de.html</string>
     <string name="pref_pressure">Druck</string>
     <string name="city">Stadt</string>
-    <string name="enter_name">Geben Sie einen Städtenamen an:</string>
-    <string name="name">Berlin</string>
+
+    <string name="search">Suche</string>
+    <string name="enter_city_name">Geben Sie einen Städtenamen an:</string>
+    <string name="city_name">Berlin</string>
+
+    <string name="rewarded_ads">Anzeigen mit Prämie</string>
+    <string name="support_us">Unterstützen Sie uns:\n\nUm zwei weitere Versuche zur Auswahl eines Ortes zu erhalten, zeigen wir Ihnen eine belohnende Videoanzeige.\nDies hilft uns, die Kosten für Google Play-Dienste zu decken.\n\nVielen Dank für Ihr Verständnis.</string>
+    <string name="reward">Belohnen</string>
+    <string name="donate">Spenden</string>
+    <string name="later">Später</string>
+
+    <string name="forecast">Prognose</string>
+    <string name="map">Karte</string>
+    <string name="history">Verlauf</string>
+
+    <string name="settings">Einstellungen</string>
+    <string name="authentication">Authentifizierung</string>
+    <string name="account">Konto</string>
+    <string name="email">E-Mail</string>
+    <string name="password">Passwort</string>
+    <string name="sign_in">Anmelden</string>
+    <string name="sign_out">Abmelden</string>
+    <string name="user_interface">Benutzerschnittstelle</string>
+    <string name="navigation">Navigation</string>
+    <string name="dark_theme">Dunkles Design</string>
+    <string name="light_theme">Helles Design</string>
+    <string name="theme">Design</string>
+    <string name="default_theme">Voreinstellung</string>
+    <string name="units_of_measurement">Maßeinheiten</string>
+    <string name="system">System</string>
+
+    <string name="slogan_openweathermap">Bereitgestellt von OpenWeatherMap</string>
+    <string name="select_place_or_search_city">Wählen Sie einen Ort auf der Karte aus oder suchen Sie eine Stadt nach Namen in der Symbolleiste</string>
 
 </resources>

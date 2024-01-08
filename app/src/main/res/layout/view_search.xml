@@ -1,51 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <data>
-
-        <variable
-            name="searchViewModel"
-            type="ua.in.khol.oleh.touristweathercomparer.viewmodel.SearchViewModel" />
-    </data>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/search_margin"
+        android:hint="@string/city_name"
+        android:padding="@dimen/search_padding"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/search_text_size" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:padding="@dimen/search_padding"
-            android:text="@string/city"
-            android:textColor="@color/text_alert"
-            android:textSize="@dimen/search_title_text_size" />
+    <ListView
+        android:id="@+id/lv_predicted_names"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/search_margin"
+        android:padding="@dimen/search_padding"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/settings_category_padding"
-            android:text="@string/enter_name"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/search_text_size" />
-
-        <EditText
-            android:hint="@string/name"
-            android:id="@+id/inputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/search_margin"
-            android:padding="8dp"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/search_text_size" />
-
-        <ListView
-            android:id="@+id/namesListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/search_margin_horizontal"
-            android:paddingVertical="@dimen/search_padding" />
-    </LinearLayout>
-</layout>
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cpi_predicting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/colorAccent"
+        app:indicatorSize="@dimen/circular_progress_size" />
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>

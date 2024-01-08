@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="communication">Комунікація</string>
     <string name="rate_and_review">Оцінка та відгук</string>
     <string name="share">Поділитись</string>
@@ -7,14 +8,12 @@
     <string name="more_apps">Більше додатків</string>
 
     <string name="preferences">Налаштування</string>
-    <string name="units">ОДИНИЦІ</string>
+    <string name="units">Одиниці</string>
     <string name="temperature">Температура</string>
-    <string name="pressure">Тиск %1$.0f %2$s</string>
     <string name="speed">Швидкість</string>
-    <string name="localization">ЛОКАЛІЗАЦІЯ</string>
+    <string name="localization">Локалізація</string>
     <string name="language">Мова</string>
 
-    <string name="search">Пошук</string>
     <string name="alert_location_title">Увімкнути GPS</string>
     <string name="alert_location_message">Увімкніть GPS на своєму пристрої</string>
     <string name="alert_wireless_title">Увімкнути Інтернет</string>
@@ -23,12 +22,45 @@
     <string name="cancel">Відміна</string>
     <string name="title_home">Прогноз</string>
     <string name="title_map">Мапа</string>
+    <string name="pressure">Тиск %1$.0f гПа</string>
     <string name="humidity">Вологість %d%%</string>
     <string name="wind">Вітер %1$.1f %2$s</string>
+    <string name="direction">Напрямок %s</string>
     <string name="title_info">Інфо</string>
     <string name="pref_pressure">Тиск</string>
-    <string name="info_file">info_uk.html</string>
     <string name="city">Місто</string>
-    <string name="enter_name">Введіть назву міста:</string>
-    <string name="name">Київ</string>
+
+    <string name="search">Пошук</string>
+    <string name="enter_city_name">Введіть назву міста:</string>
+    <string name="city_name">Київ</string>
+
+    <string name="rewarded_ads">Оголошення з винагородою</string>
+    <string name="support_us">Підтримайте нас:\n\nЩоб отримати ще дві спроби вибрати місце, ми покажемо вам відеорекламу з винагородою.\nЦе допомагає нам покрити витрати на послуги Google Play.\n\nДякуємо за розуміння.</string>
+    <string name="reward">Нагорода</string>
+    <string name="donate">Підтримати</string>
+    <string name="later">Пізніше</string>
+
+    <string name="forecast">Прогноз</string>
+    <string name="map">Мапа</string>
+    <string name="history">Історія</string>
+
+    <string name="settings">Налаштування</string>
+    <string name="authentication">Аутентифікація</string>
+    <string name="account">Обліковий запис</string>
+    <string name="email">Ел.пошта</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Увійти</string>
+    <string name="sign_out">Вийти</string>
+    <string name="user_interface">Інтерфейс користувача</string>
+    <string name="navigation">Навігація</string>
+    <string name="dark_theme">Темна тема</string>
+    <string name="light_theme">Світла тема</string>
+    <string name="theme">Тема</string>
+    <string name="default_theme">За замовчуванням</string>
+    <string name="units_of_measurement">Одиниці вимірювання</string>
+    <string name="system">Система</string>
+
+    <string name="slogan_openweathermap">Працює на OpenWeatherMap</string>
+    <string name="select_place_or_search_city">Виберіть місце на карті або шукайте місто за назвою на панелі інструментів</string>
+
 </resources>

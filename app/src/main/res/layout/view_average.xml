@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ua.in.khol.oleh.touristweathercomparer.ui.widgets.CurrentWidget
+        android:id="@+id/mini_current"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/current_margin"
+        android:visibility="invisible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_hourlies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/hourly_margin"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="invisible" />
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>
