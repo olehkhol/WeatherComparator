@@ -80,16 +80,21 @@ public abstract class ActivityView<VM extends ActivityViewModel>
     }
 
     /**
-     * Magic for ActivityViewModel
+     * Retrieves the class type of the ViewModel associated with an Activity.
+     * This method uses reflection to determine the actual type of ViewModel
+     * required by the Activity. It navigates up the class hierarchy to find
+     * the generic superclass and then extracts the type parameter to get the
+     * concrete class of the ViewModel.
      *
-     * @return generic magic
+     * @return The class type of the ViewModel specific to the Activity.
      */
     private Class<VM> getViewModelClass() {
-        Class<? extends ActivityView> clazz = getClass();
-        Class superclass = clazz.getSuperclass();
+        Class<? extends ActivityView> aClass = getClass();
+        Class superclass = aClass.getSuperclass();
         Type genericSuperclass = superclass.getGenericSuperclass();
         ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
         Type actualTypeArgument = parameterizedType.getActualTypeArguments()[0];
+
         return (Class<VM>) actualTypeArgument;
     }
 

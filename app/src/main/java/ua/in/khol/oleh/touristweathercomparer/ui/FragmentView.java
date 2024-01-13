@@ -61,15 +61,19 @@ public abstract class FragmentView<VM extends FragmentViewModel>
     }
 
     /**
-     * Magic for FragmentViewModel
+     * Determines the ViewModel class type for a Fragment.
+     * Similar to its activity counterpart, this method uses Java reflection
+     * to find the ViewModel type. It inspects the generic superclass of the
+     * FragmentView to identify and return the ViewModel's class type.
      *
-     * @return generic magic
+     * @return The ViewModel class type specifically for the Fragment.
      */
     private Class<VM> getViewModelClass() {
-        Class<? extends FragmentView> clazz = getClass();
-        Type genericSuperclass = clazz.getGenericSuperclass();
+        Class<? extends FragmentView> aClass = getClass();
+        Type genericSuperclass = aClass.getGenericSuperclass();
         ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
         Type actualTypeArgument = parameterizedType.getActualTypeArguments()[0];
+
         return (Class<VM>) actualTypeArgument;
     }
 

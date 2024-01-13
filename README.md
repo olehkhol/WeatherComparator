@@ -1,7 +1,5 @@
-# Weather Averages
+# The source code of an application [Weather Averages](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
 
-###### The source code of an application
-[Weather Averages](https://play.google.com/store/apps/details?id=ua.in.khol.oleh.touristweathercomparer)
 
 ## Contents
 * [Build](#build)
@@ -10,10 +8,13 @@
 * [Dependencies](#dependencies)
 * [License](#license)
 
+
 ## Build
-###### This is a fully functional codebase of the application. 
-###### The only thing you need to do is to fill the API keys file 
-###### and the resources file with your own values.
+### <span style="color:red;">You are free to use this code in any manner you see fit, but please refrain from creating direct clones of my application on Google Play Store or other platforms.</span>
+### <span style="color:green;">Let's respect each other's creative work and innovation.</span>
+### This is a fully functional codebase of the application. 
+### The only thing you need to do is to fill the API keys file 
+### and the resources file with your own values:
 
 ##### `app/src/main/java/ua/in/khol/oleh/touristweathercomparer/Secrets.java`
 ```java
@@ -35,9 +36,55 @@ public interface Secrets {
 </resources>
 ```
 
+
 ## Architecture
 
        MVVM + DI + RX
+
+In the Weather Averages application, ViewModel retrieval is handled uniquely in Activity and Fragment components. This process is critical to the MVVM architecture, ensuring that ViewModels are appropriately instantiated and tied to their respective lifecycle owners.
+
+### ActivityView.getViewModelClass()
+
+This method is used in the `ActivityView` class to dynamically determine the ViewModel class type associated with a specific activity. It employs Java generics and reflection to achieve this:
+```java
+package ua.in.khol.oleh.touristweathercomparer.ui;
+
+public abstract class ActivityView<VM extends ActivityViewModel>
+        extends AppCompatActivity
+        implements ViewModelStoreOwner {
+    
+    private Class<VM> getViewModelClass() {
+        Class<? extends ActivityView> aClass = getClass();
+        Class superclass = aClass.getSuperclass();
+        Type genericSuperclass = superclass.getGenericSuperclass();
+        ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+        Type actualTypeArgument = parameterizedType.getActualTypeArguments()[0];
+        
+        return (Class<VM>) actualTypeArgument;
+    }
+}
+```
+
+### FragmentView.getViewModelClass()
+
+In `FragmentView`, the getViewModelClass method operates slightly differently, tailored for fragments:
+```java
+package ua.in.khol.oleh.touristweathercomparer.ui;
+
+public abstract class FragmentView<VM extends FragmentViewModel>
+        extends Fragment {
+
+    private Class<VM> getViewModelClass() {
+        Class<? extends FragmentView> aClass = getClass();
+        Type genericSuperclass = aClass.getGenericSuperclass();
+        ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+        Type actualTypeArgument = parameterizedType.getActualTypeArguments()[0];
+        
+        return (Class<VM>) actualTypeArgument;
+    }
+}
+```
+
 
 ## Services
 
@@ -47,6 +94,7 @@ Location
 
 Weather
 - [OpenWeatherMap](https://openweathermap.org/api)
+
 
 ## Dependencies
 
@@ -81,6 +129,7 @@ Google
 - [Material](https://material.io/develop/android/docs/getting-started/) Version 1.11.0
 - [Maps](https://developer.android.com/training/maps) Version 18.2.0
 - [Places](https://developers.google.com/places/android-sdk) Version 3.3.0
+
 
 ## License
 
