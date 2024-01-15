@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.YourPhoneInfo" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.WeatherAverages" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
@@ -10,16 +10,16 @@
         <item name="colorSecondaryVariant">@color/colorAccentDark</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.YourPhoneInfo.NoActionBar">
+    <style name="Theme.WeatherAverages.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.YourPhoneInfo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.WeatherAverages.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.YourPhoneInfo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.WeatherAverages.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

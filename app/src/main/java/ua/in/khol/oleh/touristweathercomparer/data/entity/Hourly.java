@@ -73,14 +73,14 @@ public class Hourly {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Current current)) {
+        if (!(obj instanceof Hourly hourly)) {
             return false;
         }
 
-        return Double.compare(latitude, current.latitude) == 0
-                && Double.compare(longitude, current.longitude) == 0
-                && date == current.date
-                && Objects.equals(language, current.language)
-                && Objects.equals(units, current.units);
+        return Double.compare(latitude, hourly.latitude) == 0
+                && Double.compare(longitude, hourly.longitude) == 0
+                && date == hourly.date
+                && Objects.equals(language, hourly.language)
+                && Objects.equals(units, hourly.units);
     }
 }

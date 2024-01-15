@@ -1,7 +1,6 @@
 package ua.in.khol.oleh.touristweathercomparer.ui.average;
 
 import static ua.in.khol.oleh.touristweathercomparer.Globals.MILLIS_IN_SECOND;
-import static ua.in.khol.oleh.touristweathercomparer.Globals.THREE_HOURS;
 
 import android.view.ViewGroup;
 
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import ua.in.khol.oleh.touristweathercomparer.data.entity.Daily;
@@ -102,26 +100,6 @@ public class AverageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    private void insertDailies(List<Daily> dailies) {
-        for (Daily daily : dailies) {
-            int position = findPositionForDaily(daily.date);
-            items.add(position, daily);
-        }
-    }
-
-    private int findPositionForDaily(int date) {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i) instanceof Hourly hourly) {
-                int startOfDayTimestamp = getStartOfDayTimestamp(hourly.date);
-                if (startOfDayTimestamp == date) {
-                    return i;
-                }
-            }
-        }
-
-        return items.size();
-    }
-
     private List<Daily> splitHourliesPerDay(List<Hourly> hourlies) {
         LinkedHashMap<Integer, List<Hourly>> groupedHourlies = groupHourliesByDate(hourlies);
 
@@ -149,7 +127,7 @@ public class AverageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private int getStartOfDayTimestamp(int timestampInSeconds) {
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestampInSeconds * MILLIS_IN_SECOND);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -159,7 +137,6 @@ public class AverageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private Daily calculateDaily(int date, List<Hourly> hourlies) {
-        int count = hourlies.size();
 
         Daily daily = new Daily();
         daily.date = date;
@@ -167,21 +144,17 @@ public class AverageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         daily.units = hourlies.get(0).units;
         daily.tempMin = hourlies.get(0).tempMin;
         daily.tempMax = hourlies.get(0).tempMax;
-        daily.timeMin = hourlies.get(0).date;
-        daily.timeMax = hourlies.get(0).date;
 
         for (Hourly hourly : hourlies) {
             daily.tempMin = Math.min(daily.tempMin, hourly.tempMin);
             daily.tempMax = Math.max(daily.tempMax, hourly.tempMax);
-            daily.timeMin = Math.min(daily.timeMin, hourly.date);
-            daily.timeMax = Math.max(daily.timeMax, hourly.date);
             daily.pressure += hourly.pressure;
             daily.speed += hourly.speed;
             daily.degree += hourly.degree;
             daily.humidity += hourly.humidity;
         }
 
-        daily.timeMax += THREE_HOURS;
+        int count = hourlies.size();
         daily.pressure /= count;
         daily.speed /= count;
         daily.degree /= count;

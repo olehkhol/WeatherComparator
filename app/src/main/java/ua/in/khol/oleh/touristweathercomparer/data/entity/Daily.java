@@ -7,8 +7,6 @@ public class Daily {
     public String language;
     public String units;
     public int date;
-    public int timeMin;
-    public int timeMax;
     public float tempMin;
     public float tempMax;
     public float pressure;
@@ -27,12 +25,12 @@ public class Daily {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Current current)) {
+        if (!(obj instanceof Daily daily)) {
             return false;
         }
 
-        return date == current.date
-                && Objects.equals(language, current.language)
-                && Objects.equals(units, current.units);
+        return date == daily.date
+                && Objects.equals(language, daily.language)
+                && Objects.equals(units, daily.units);
     }
 }

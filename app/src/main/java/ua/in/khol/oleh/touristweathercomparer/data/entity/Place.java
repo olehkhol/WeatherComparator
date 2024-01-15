@@ -87,12 +87,12 @@ public class Place implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Current current)) {
+        if (!(obj instanceof Place place)) {
             return false;
         }
 
-        return Double.compare(latitude, current.latitude) == 0
-                && Double.compare(longitude, current.longitude) == 0
-                && Objects.equals(language, current.language);
+        return Double.compare(latitude, place.latitude) == 0
+                && Double.compare(longitude, place.longitude) == 0
+                && Objects.equals(language, place.language);
     }
 }

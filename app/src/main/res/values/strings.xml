@@ -66,7 +66,6 @@
     <string name="asset_jpg" translatable="false">HSAM5xYzQ7Xs7Zy/PmGBow==</string>
     <string name="current_temperature" translatable="false">%1$.1f %2$s</string>
     <string name="hourly_temperature" translatable="false">%1$.1f..%2$.1f %3$s</string>
-    <string name="hours_range" translatable="false">%1$s..%2$s</string>
     <string name="string" translatable="false">%s</string>
     <string name="login" translatable="false">Login</string>
     <string name="preference" translatable="false">Preference</string>

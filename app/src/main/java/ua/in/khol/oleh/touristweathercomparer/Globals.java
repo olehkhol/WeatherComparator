@@ -6,9 +6,8 @@ public interface Globals {
     int MAXIMUM_POOL_SIZE = 5;
     long KEEP_ALIVE_TIME = 10;
 
-    long REQUEST_TIMEOUT = 3;
+    long REQUEST_TIMEOUT = 1;
     long MILLIS_IN_SECOND = 1000L;
-    long THREE_HOURS = 3 * 60 * 60;
 
     int MENU_ITEM_SEARCH = 1;
     int MENU_ITEM_SETTINGS = 3;

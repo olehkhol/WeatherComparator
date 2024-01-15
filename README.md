@@ -88,11 +88,11 @@ public abstract class FragmentView<VM extends FragmentViewModel>
 
 ## Services
 
-Location
+Location API
 - [Google Geocoding](https://developers.google.com/maps/documentation/geocoding)
-- [Google Time Zone](https://developers.google.com/maps/documentation/timezone)
+- [Google Places](https://developers.google.com/maps/documentation/places)
 
-Weather
+Weather API
 - [OpenWeatherMap](https://openweathermap.org/api)
 
 

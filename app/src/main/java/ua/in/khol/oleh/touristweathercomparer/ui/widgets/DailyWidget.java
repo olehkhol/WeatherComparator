@@ -3,7 +3,6 @@ package ua.in.khol.oleh.touristweathercomparer.ui.widgets;
 import static ua.in.khol.oleh.touristweathercomparer.utils.ContextUtils.getLocalizedContext;
 import static ua.in.khol.oleh.touristweathercomparer.utils.LocaleUtils.getCurrentLocale;
 import static ua.in.khol.oleh.touristweathercomparer.utils.StringUtils.capitalizeFirst;
-import static ua.in.khol.oleh.touristweathercomparer.utils.TimestampUtils.toHourMin;
 import static ua.in.khol.oleh.touristweathercomparer.utils.TimestampUtils.toWeekYearMonthDay;
 import static ua.in.khol.oleh.touristweathercomparer.utils.UnitsUtils.getDirectionIndex;
 
@@ -69,11 +68,7 @@ public class DailyWidget extends MaterialCardView {
         int unitsPosition = Arrays.asList(unitArray).indexOf(daily.units);
 
         date.setText(capitalizeFirst(toWeekYearMonthDay(daily.date, locale), locale));
-        time.setText(
-                context.getString(R.string.hours_range,
-                        toHourMin(daily.timeMin, locale),
-                        toHourMin(daily.timeMax - 1, locale))
-        );
+        time.setText(""); // TODO Replace with something valuable
         temp.setText(
                 context.getString(R.string.hourly_temperature,
                         daily.tempMin,
